@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-flour text-espresso antialiased;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-flour;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-crust rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-crust/80;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-16 md:py-24;
+  }
+
+  .container-custom {
+    @apply container mx-auto px-4 md:px-6 lg:px-8;
+  }
+
+  /* Brand font styling - Lobster with text shadow like the logo */
+  .font-brand {
+    font-family: 'Lobster', cursive;
+    color: #F9F7F2; /* Flour White fill */
+    text-shadow:
+      -2px -2px 0 #8B1E25,
+       2px -2px 0 #8B1E25,
+      -2px  2px 0 #8B1E25,
+       2px  2px 0 #8B1E25,
+       4px  4px 0 #2C2C2C; /* Extra black drop shadow for depth */
+  }
+
+  /* Smaller brand text variant */
+  .font-brand-sm {
+    font-family: 'Lobster', cursive;
+    color: #F9F7F2;
+    text-shadow:
+      -1px -1px 0 #8B1E25,
+       1px -1px 0 #8B1E25,
+      -1px  1px 0 #8B1E25,
+       1px  1px 0 #8B1E25,
+       2px  2px 0 #2C2C2C;
+  }
+
+  /* Brand text on light backgrounds */
+  .font-brand-dark {
+    font-family: 'Lobster', cursive;
+    color: #2C2C2C;
+    text-shadow:
+      -2px -2px 0 #D4A056,
+       2px -2px 0 #D4A056,
+      -2px  2px 0 #D4A056,
+       2px  2px 0 #D4A056;
+  }
+
+  /* Brand text - tomato variant for accent */
+  .font-brand-tomato {
+    font-family: 'Lobster', cursive;
+    color: #CE2029;
+    text-shadow:
+      -1px -1px 0 #F9F7F2,
+       1px -1px 0 #F9F7F2,
+      -1px  1px 0 #F9F7F2,
+       1px  1px 0 #F9F7F2;
+  }
+
+  /* Street food style subheadings with Oswald */
+  .font-street {
+    font-family: var(--font-oswald), 'Oswald', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Horizontal scroll for reviews */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
