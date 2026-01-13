@@ -50,8 +50,8 @@ export default function USPSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-block text-crust font-oswald font-bold text-sm tracking-[0.3em] uppercase mb-4">
-            Wat Ons Uniek Maakt
+          <span className="inline-block font-stamp text-2xl md:text-3xl mb-4">
+            {t('usp.label')}
           </span>
           <h2 className="font-brand-dark text-5xl md:text-6xl lg:text-7xl">
             {t('usp.headline')}

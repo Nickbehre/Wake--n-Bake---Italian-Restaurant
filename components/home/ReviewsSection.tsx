@@ -97,8 +97,8 @@ export default function ReviewsSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="inline-block text-crust font-oswald font-bold text-sm tracking-[0.3em] uppercase mb-4">
-            Social Proof
+          <span className="inline-block font-stamp text-2xl md:text-3xl mb-4">
+            {t('reviews.label')}
           </span>
           <h2 className="font-brand text-5xl md:text-6xl lg:text-7xl mb-6">
             {t('reviews.headline')}

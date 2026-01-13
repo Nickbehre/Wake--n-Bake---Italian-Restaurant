@@ -17,6 +17,19 @@ const translations: Record<Language, Record<string, string>> = {
     'story.subtext1': "Het begon met een obsessie voor de perfecte 'crunch'. Geen shortcuts, alleen tijd, passie en de beste ingrediënten.",
     'story.subtext2': 'Elke dag vers deeg. Rijkelijk belegd. The real Italian deal, right here in Amsterdam.',
     'story.videoCaption': 'Bekijk hoe het allemaal begon',
+    'story.label': 'Ons Verhaal',
+    'story.followInstagram': 'Volg ons op Instagram',
+    'story.clickToEnlarge': 'Klik om te vergroten',
+    'story.close': 'Sluiten',
+    'story.soundOn': 'Geluid aan',
+    'story.soundOff': 'Geluid uit',
+    'story.clickToClose': 'Klik ergens om te sluiten',
+    'story.video1.caption': 'Het Deeg',
+    'story.video1.description': 'De perfecte crunch begint met het perfecte deeg',
+    'story.video2.caption': 'De Oven',
+    'story.video2.description': 'Kijk hoe het rijst in onze authentieke oven',
+    'story.video3.caption': 'Het Resultaat',
+    'story.video3.description': 'Vers uit de oven, klaar om van te genieten',
 
     // Location Section
     'location.headline': 'Kom Proeven.',
@@ -27,7 +40,10 @@ const translations: Record<Language, Record<string, string>> = {
     'location.weekdays': 'Ma - Vr: 08:00 - 18:00',
     'location.weekends': 'Za - Zo: 09:00 - 17:00',
     'location.openNow': 'Nu Open',
+    'location.closed': 'Gesloten',
     'location.googleMaps': 'Open in Google Maps',
+    'location.label': 'Bezoek Ons',
+    'location.orderOnline': 'Bestel Nu Online',
 
     // Navigation
     'nav.home': 'Home',
@@ -43,6 +59,7 @@ const translations: Record<Language, Record<string, string>> = {
     'hero.cta.order': 'BESTEL NU',
 
     // USP Section
+    'usp.label': 'Wat Ons Uniek Maakt',
     'usp.headline': "Waarom Wake N' Bake?",
     'usp.authentic.title': 'Authentiek Ambachtelijk',
     'usp.authentic.desc': 'Traditionele Italiaanse recepten, dagelijks vers gebakken met de beste ingrediënten.',
@@ -52,6 +69,7 @@ const translations: Record<Language, Record<string, string>> = {
     'usp.love.desc': 'Elke focaccia wordt met passie en aandacht voor detail bereid.',
 
     // Menu Section
+    'menu.label': 'Schiacciata',
     'menu.headline': 'Ons Menu',
     'menu.subheadline': 'Verse Schiacciata, dagelijks bereid',
     'menu.regular': 'Normaal',
@@ -62,6 +80,7 @@ const translations: Record<Language, Record<string, string>> = {
     'menu.viewFull': 'Bekijk Volledig Menu',
 
     // Reviews Section
+    'reviews.label': 'Geliefd bij Locals',
     'reviews.headline': 'Geliefd bij Locals',
     'reviews.subheadline': 'Wat onze klanten zeggen',
     'reviews.rating': '4.9 sterren op basis van 200+ reviews',
@@ -86,6 +105,19 @@ const translations: Record<Language, Record<string, string>> = {
     'story.subtext1': "It started with an obsession for the perfect 'crunch'. No shortcuts, just time, passion and the finest ingredients.",
     'story.subtext2': 'Fresh dough every day. Generously topped. The real Italian deal, right here in Amsterdam.',
     'story.videoCaption': 'Watch how it all started',
+    'story.label': 'Our Story',
+    'story.followInstagram': 'Follow us on Instagram',
+    'story.clickToEnlarge': 'Click to enlarge',
+    'story.close': 'Close',
+    'story.soundOn': 'Sound on',
+    'story.soundOff': 'Sound off',
+    'story.clickToClose': 'Click anywhere to close',
+    'story.video1.caption': 'The Dough',
+    'story.video1.description': 'The perfect crunch starts with the perfect dough',
+    'story.video2.caption': 'The Oven',
+    'story.video2.description': 'Watch it rise in our authentic oven',
+    'story.video3.caption': 'The Result',
+    'story.video3.description': 'Fresh from the oven, ready to enjoy',
 
     // Location Section
     'location.headline': 'Come Taste It.',
@@ -96,7 +128,10 @@ const translations: Record<Language, Record<string, string>> = {
     'location.weekdays': 'Mon - Fri: 08:00 - 18:00',
     'location.weekends': 'Sat - Sun: 09:00 - 17:00',
     'location.openNow': 'Open Now',
+    'location.closed': 'Closed',
     'location.googleMaps': 'Open in Google Maps',
+    'location.label': 'Visit Us',
+    'location.orderOnline': 'Order Now Online',
 
     // Navigation
     'nav.home': 'Home',
@@ -112,6 +147,7 @@ const translations: Record<Language, Record<string, string>> = {
     'hero.cta.order': 'ORDER NOW',
 
     // USP Section
+    'usp.label': 'What Makes Us Unique',
     'usp.headline': "Why Wake N' Bake?",
     'usp.authentic.title': 'Authentic & Artisanal',
     'usp.authentic.desc': 'Traditional Italian recipes, freshly baked daily with the finest ingredients.',
@@ -121,6 +157,7 @@ const translations: Record<Language, Record<string, string>> = {
     'usp.love.desc': 'Every focaccia is prepared with passion and attention to detail.',
 
     // Menu Section
+    'menu.label': 'Schiacciata',
     'menu.headline': 'Our Menu',
     'menu.subheadline': 'Fresh Schiacciata, made daily',
     'menu.regular': 'Regular',
@@ -131,6 +168,7 @@ const translations: Record<Language, Record<string, string>> = {
     'menu.viewFull': 'View Full Menu',
 
     // Reviews Section
+    'reviews.label': 'Loved by Locals',
     'reviews.headline': 'Loved by Locals',
     'reviews.subheadline': 'What our customers say',
     'reviews.rating': '4.9 stars based on 200+ reviews',

@@ -21,6 +21,7 @@ const config: Config = {
         lato: ['var(--font-lato)', 'sans-serif'],
         playfair: ['var(--font-playfair)', 'serif'],
         oswald: ['var(--font-oswald)', 'sans-serif'],
+        comodo: ['"Comodo Stamp"', 'cursive'],
       },
     },
   },

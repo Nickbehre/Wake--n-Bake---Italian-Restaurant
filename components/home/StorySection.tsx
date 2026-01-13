@@ -10,22 +10,22 @@ const instagramReels = [
   {
     id: 1,
     video: '/assets/videos/story-1.mp4',
-    caption: 'Het Deeg',
-    description: 'De perfecte crunch begint met het perfecte deeg',
+    captionKey: 'story.video1.caption',
+    descriptionKey: 'story.video1.description',
     rotation: -3,
   },
   {
     id: 2,
     video: '/assets/videos/story-2.mp4',
-    caption: 'De Oven',
-    description: 'Kijk hoe het rijst in onze authentieke oven',
+    captionKey: 'story.video2.caption',
+    descriptionKey: 'story.video2.description',
     rotation: 2,
   },
   {
     id: 3,
     video: '/assets/videos/story-3.mp4',
-    caption: 'Het Resultaat',
-    description: 'Vers uit de oven, klaar om van te genieten',
+    captionKey: 'story.video3.caption',
+    descriptionKey: 'story.video3.description',
     rotation: -2,
   },
 ]
@@ -37,6 +37,7 @@ interface ReelCardProps {
 }
 
 function ReelCard({ reel, index, onOpen }: ReelCardProps) {
+  const { t } = useLanguage()
   const cardRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const isInView = useInView(cardRef, { once: true, margin: '-100px' })
@@ -98,7 +99,7 @@ function ReelCard({ reel, index, onOpen }: ReelCardProps) {
 
           {/* Click to expand hint */}
           <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-            <span className="text-white text-xs font-oswald uppercase tracking-wider">Klik om te vergroten</span>
+            <span className="text-white text-xs font-oswald uppercase tracking-wider">{t('story.clickToEnlarge')}</span>
           </div>
 
           {/* Instagram UI elements */}
@@ -110,7 +111,7 @@ function ReelCard({ reel, index, onOpen }: ReelCardProps) {
               <span className="text-white text-sm font-semibold">wakenbake.nl</span>
             </div>
             <p className="text-white/90 text-sm font-oswald uppercase tracking-wide">
-              {reel.caption}
+              {t(reel.captionKey)}
             </p>
           </div>
         </div>
@@ -137,6 +138,7 @@ interface LightboxProps {
 }
 
 function Lightbox({ reel, onClose }: LightboxProps) {
+  const { t } = useLanguage()
   const [isMuted, setIsMuted] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -162,7 +164,7 @@ function Lightbox({ reel, onClose }: LightboxProps) {
         transition={{ delay: 0.2 }}
         onClick={onClose}
         className="absolute top-6 right-6 z-10 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
-        aria-label="Sluiten"
+        aria-label={t('story.close')}
       >
         <X className="w-8 h-8 text-white" />
       </motion.button>
@@ -177,7 +179,7 @@ function Lightbox({ reel, onClose }: LightboxProps) {
           toggleMute()
         }}
         className="absolute top-6 left-6 z-10 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
-        aria-label={isMuted ? 'Geluid aan' : 'Geluid uit'}
+        aria-label={isMuted ? t('story.soundOn') : t('story.soundOff')}
       >
         {isMuted ? (
           <VolumeX className="w-6 h-6 text-white" />
@@ -224,10 +226,10 @@ function Lightbox({ reel, onClose }: LightboxProps) {
                 </div>
               </div>
               <h3 className="text-white text-2xl font-oswald uppercase tracking-wide mb-2">
-                {reel.caption}
+                {t(reel.captionKey)}
               </h3>
               <p className="text-white/80 font-lato">
-                {reel.description}
+                {t(reel.descriptionKey)}
               </p>
             </div>
           </div>
@@ -244,7 +246,7 @@ function Lightbox({ reel, onClose }: LightboxProps) {
         transition={{ delay: 0.4 }}
         className="absolute bottom-8 text-white/50 text-sm font-oswald uppercase tracking-wider"
       >
-        Klik ergens om te sluiten
+        {t('story.clickToClose')}
       </motion.p>
     </motion.div>
   )
@@ -258,107 +260,107 @@ export default function StorySection() {
 
   return (
     <>
-      <section
-        ref={containerRef}
-        className="relative py-24 md:py-32 bg-flour overflow-hidden"
-      >
-        {/* Subtle texture background */}
-        <div className="absolute inset-0 opacity-[0.03]">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232C2C2C' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
-          />
-        </div>
+    <section
+      ref={containerRef}
+      className="relative py-24 md:py-32 bg-flour overflow-hidden"
+    >
+      {/* Subtle texture background */}
+      <div className="absolute inset-0 opacity-[0.03]">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232C2C2C' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+        />
+      </div>
 
-        {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-crust/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-pistachio/5 rounded-full blur-3xl" />
+      {/* Decorative elements */}
+      <div className="absolute top-20 left-10 w-32 h-32 bg-crust/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 right-10 w-40 h-40 bg-pistachio/5 rounded-full blur-3xl" />
 
-        <div className="container mx-auto px-4 relative z-10">
-          {/* Section Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
+      <div className="container mx-auto px-4 relative z-10">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 font-stamp text-2xl md:text-3xl mb-4"
           >
-            <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 text-tomato font-oswald font-bold text-sm tracking-[0.2em] uppercase mb-4"
-            >
-              <Instagram className="w-4 h-4" />
-              Ons Verhaal
-            </motion.span>
+            <Instagram className="w-5 h-5" />
+            {t('story.label')}
+          </motion.span>
 
-            <h2 className="font-brand-dark text-5xl md:text-6xl lg:text-7xl mb-6">
-              {t('story.headline')}
-            </h2>
+          <h2 className="font-brand-dark text-5xl md:text-6xl lg:text-7xl mb-6">
+            {t('story.headline')}
+          </h2>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.4 }}
-              className="font-lato text-xl md:text-2xl text-espresso/80 max-w-3xl mx-auto leading-relaxed"
-            >
-              {t('story.subtext1')}
-            </motion.p>
-          </motion.div>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.4 }}
+            className="font-lato text-xl md:text-2xl text-espresso/80 max-w-3xl mx-auto leading-relaxed"
+          >
+            {t('story.subtext1')}
+          </motion.p>
+        </motion.div>
 
           {/* Instagram Reels Grid - 3 videos */}
           <div className="relative max-w-5xl mx-auto">
             {/* Grid container - 3 columns for 3 videos */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 lg:gap-10 justify-items-center">
-              {instagramReels.map((reel, index) => (
+            {instagramReels.map((reel, index) => (
                 <ReelCard
                   key={reel.id}
                   reel={reel}
                   index={index}
                   onOpen={() => setSelectedReel(reel)}
                 />
-              ))}
-            </div>
-
-            {/* Floating quote */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ delay: 0.8, duration: 0.6 }}
-              className="mt-16 text-center"
-            >
-              <blockquote className="relative inline-block">
-                <span className="absolute -top-6 -left-4 text-6xl text-crust/20 font-playfair">&ldquo;</span>
-                <p className="font-playfair italic text-2xl md:text-3xl lg:text-4xl text-espresso/90 max-w-4xl mx-auto leading-relaxed px-8">
-                  {t('story.subtext2')}
-                </p>
-                <span className="absolute -bottom-10 -right-4 text-6xl text-crust/20 font-playfair">&rdquo;</span>
-              </blockquote>
-            </motion.div>
+            ))}
           </div>
 
-          {/* Instagram CTA */}
+          {/* Floating quote */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 1, duration: 0.5 }}
-            className="text-center mt-16"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ delay: 0.8, duration: 0.6 }}
+            className="mt-16 text-center"
           >
-            <a
-              href="https://www.instagram.com/wakenbake.nl/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-xl group"
-            >
-              <Instagram className="w-5 h-5" />
-              Volg ons op Instagram
-              <span className="group-hover:translate-x-1 transition-transform">→</span>
-            </a>
+            <blockquote className="relative inline-block">
+              <span className="absolute -top-6 -left-4 text-6xl text-crust/20 font-playfair">&ldquo;</span>
+              <p className="font-playfair italic text-2xl md:text-3xl lg:text-4xl text-espresso/90 max-w-4xl mx-auto leading-relaxed px-8">
+                {t('story.subtext2')}
+              </p>
+              <span className="absolute -bottom-10 -right-4 text-6xl text-crust/20 font-playfair">&rdquo;</span>
+            </blockquote>
           </motion.div>
         </div>
-      </section>
+
+        {/* Instagram CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 1, duration: 0.5 }}
+          className="text-center mt-16"
+        >
+          <a
+              href="https://www.instagram.com/wakenbake.nl/"
+            target="_blank"
+            rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-xl group"
+          >
+            <Instagram className="w-5 h-5" />
+            {t('story.followInstagram')}
+            <span className="group-hover:translate-x-1 transition-transform">→</span>
+          </a>
+        </motion.div>
+      </div>
+    </section>
 
       {/* Lightbox Modal */}
       <AnimatePresence>

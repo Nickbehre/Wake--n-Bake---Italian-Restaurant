@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 
+/* Comodo Stamp Font - CC BY 4.0 License */
+/* Icons made from https://www.onlinewebfonts.com/icon is licensed by CC BY 4.0 */
+@font-face {
+  font-family: 'Comodo Stamp';
+  src: url('/fonts/comodo-stamp.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -92,6 +102,20 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
+  }
+
+  /* Comodo Stamp - Secondary brand font in Wake N' Bake red */
+  .font-stamp {
+    font-family: 'Comodo Stamp', cursive;
+    color: #CE2029; /* Tomato red */
+  }
+
+  /* Comodo Stamp with text shadow for more impact */
+  .font-stamp-shadow {
+    font-family: 'Comodo Stamp', cursive;
+    color: #CE2029;
+    text-shadow:
+      2px 2px 0 #2C2C2C;
   }
 }
 

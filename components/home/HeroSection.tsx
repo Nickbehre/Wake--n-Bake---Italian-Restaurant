@@ -38,7 +38,7 @@ export default function HeroSection() {
           const isPrevious = index === prevIndex
           
           return (
-            <motion.div
+          <motion.div
               key={image}
               initial={{ opacity: index === 0 ? 1 : 0 }}
               animate={{
@@ -50,23 +50,23 @@ export default function HeroSection() {
                 ease: 'easeInOut',
                 opacity: { duration: 1.5 }
               }}
-              className="absolute inset-0"
+            className="absolute inset-0"
               style={{ 
                 zIndex: isActive ? 2 : isPrevious ? 1 : 0,
                 pointerEvents: 'none'
               }}
-            >
-              <Image
+          >
+            <Image
                 src={image}
                 alt={`Wake n' Bake Panificio - Authentiek Italiaans ${index + 1}`}
-                fill
-                className="object-cover"
+              fill
+              className="object-cover"
                 priority={index <= 1}
-                quality={90}
+              quality={90}
                 sizes="100vw"
                 loading={index <= 1 ? 'eager' : 'lazy'}
-              />
-            </motion.div>
+            />
+          </motion.div>
           )
         })}
 
@@ -101,7 +101,7 @@ export default function HeroSection() {
           <h1 className="font-brand text-6xl md:text-8xl lg:text-9xl mb-4 tracking-wide">
             Wake <span className="text-4xl md:text-6xl lg:text-7xl">n</span>&apos; Bake
           </h1>
-          <p className="font-playfair text-2xl md:text-4xl mb-8 text-crust italic">
+          <p className="font-stamp text-3xl md:text-5xl mb-8 drop-shadow-lg">
             Panificio
           </p>
         </motion.div>

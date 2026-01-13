@@ -50,9 +50,9 @@ export default function LocationSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block text-crust font-oswald font-bold text-sm tracking-[0.3em] uppercase mb-4"
+            className="inline-block font-stamp text-2xl md:text-3xl mb-4"
           >
-            The Destination
+            {t('location.label')}
           </motion.span>
           <h2 className="font-brand-dark text-5xl md:text-6xl lg:text-7xl mb-6">
             {t('location.headline')}
@@ -141,7 +141,7 @@ export default function LocationSection() {
                 rel="noopener noreferrer"
                 className="block w-full bg-tomato hover:bg-tomato/90 text-white text-center font-oswald font-bold uppercase tracking-wider py-4 px-6 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
               >
-                Bestel Nu Online
+                {t('location.orderOnline')}
               </a>
             </motion.div>
           </div>
@@ -203,7 +203,7 @@ export default function LocationSection() {
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-tomato rounded-full" />
                   <span className="text-white/80 text-sm font-oswald uppercase tracking-wide">
-                    Closed
+                    {t('location.closed')}
                   </span>
                 </div>
                 <a
@@ -212,7 +212,7 @@ export default function LocationSection() {
                   rel="noopener noreferrer"
                   className="text-crust hover:text-white text-sm font-oswald font-semibold uppercase tracking-wide transition-colors flex items-center gap-1"
                 >
-                  Open in Google Maps
+                  {t('location.googleMaps')}
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </div>
