@@ -39,10 +39,15 @@ export default function Header() {
     setIsMobileMenuOpen(false)
   }, [pathname])
 
+  // Check if we're on menu or gallery page
+  const isMenuOrGalleryPage = pathname === '/menu' || pathname === '/gallerij'
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
+        isMenuOrGalleryPage
+          ? 'bg-tomato py-2'
+          : isScrolled
           ? 'bg-flour/95 backdrop-blur-md shadow-lg py-1'
           : 'bg-transparent py-2'
       }`}
@@ -81,6 +86,8 @@ export default function Header() {
                 className={`font-oswald font-bold uppercase tracking-wider text-sm transition-colors duration-300 relative group ${
                   pathname === item.href
                     ? 'text-crust'
+                    : isMenuOrGalleryPage
+                    ? 'text-white hover:text-crust'
                     : isScrolled
                     ? 'text-espresso hover:text-crust'
                     : 'text-white hover:text-crust'
@@ -95,14 +102,16 @@ export default function Header() {
           {/* CTA, Language Toggle & Social */}
           <div className="hidden lg:flex items-center gap-3">
             {/* Language Toggle */}
-            <LanguageToggle variant={isScrolled ? 'dark' : 'light'} />
+            <LanguageToggle variant={isMenuOrGalleryPage ? 'light' : isScrolled ? 'dark' : 'light'} />
 
             <a
               href="https://www.instagram.com/wakenbake.nl/"
               target="_blank"
               rel="noopener noreferrer"
               className={`p-2 rounded-full transition-colors ${
-                isScrolled
+                isMenuOrGalleryPage
+                  ? 'text-white hover:bg-white/20'
+                  : isScrolled
                   ? 'text-espresso hover:bg-pistachio/20'
                   : 'text-white hover:bg-white/20'
               }`}
@@ -113,7 +122,9 @@ export default function Header() {
             <a
               href="tel:+31201234567"
               className={`p-2 rounded-full transition-colors ${
-                isScrolled
+                isMenuOrGalleryPage
+                  ? 'text-white hover:bg-white/20'
+                  : isScrolled
                   ? 'text-espresso hover:bg-pistachio/20'
                   : 'text-white hover:bg-white/20'
               }`}
@@ -134,10 +145,10 @@ export default function Header() {
 
           {/* Mobile: Language Toggle & Menu Button */}
           <div className="lg:hidden flex items-center gap-2">
-            <LanguageToggle variant={isScrolled ? 'dark' : 'light'} />
+            <LanguageToggle variant={isMenuOrGalleryPage ? 'light' : isScrolled ? 'dark' : 'light'} />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2 ${isScrolled ? 'text-espresso' : 'text-white'}`}
+              className={`p-2 ${isMenuOrGalleryPage || !isScrolled ? 'text-white' : 'text-espresso'}`}
               aria-label={isMobileMenuOpen ? 'Sluit menu' : 'Open menu'}
             >
               {isMobileMenuOpen ? (

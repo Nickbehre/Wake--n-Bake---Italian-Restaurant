@@ -4,9 +4,11 @@ import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import CookieBanner from '@/components/ui/CookieBanner'
+import CartDrawer from '@/components/cart/CartDrawer'
 import { ThemeProvider } from 'next-themes'
 import { Toaster } from 'sonner'
 import { LanguageProvider } from '@/lib/context/LanguageContext'
+import { CartProvider } from '@/lib/context/CartContext'
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -123,11 +125,14 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <LanguageProvider>
-            <Header />
-            <main className="min-h-screen">{children}</main>
-            <Footer />
-            <CookieBanner />
-            <Toaster position="bottom-right" />
+            <CartProvider>
+              <Header />
+              <main className="min-h-screen">{children}</main>
+              <Footer />
+              <CartDrawer />
+              <CookieBanner />
+              <Toaster position="bottom-right" />
+            </CartProvider>
           </LanguageProvider>
         </ThemeProvider>
       </body>

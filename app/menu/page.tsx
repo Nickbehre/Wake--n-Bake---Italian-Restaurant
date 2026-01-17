@@ -18,11 +18,10 @@ export default function MenuPage() {
           <h1 className="font-montserrat font-bold text-5xl md:text-6xl mb-6 text-espresso">
             ONS MENU
           </h1>
-          <p className="text-xl text-espresso/80 max-w-2xl mx-auto mb-8">
+          <p className="text-xl text-espresso/80 max-w-2xl mx-auto">
             Alle producten worden dagelijks vers voor je gemaakt met authentieke
             Italiaanse ingrediënten.
           </p>
-          <MenuPDFButton />
         </div>
 
         {/* Category Navigation */}
@@ -55,6 +54,11 @@ export default function MenuPage() {
             onze producten met zorg, maar er kan kruisbesmetting optreden in
             onze keuken.
           </p>
+        </div>
+
+        {/* Download Menu Button */}
+        <div className="mt-16 text-center">
+          <MenuPDFButton />
         </div>
       </div>
     </div>
