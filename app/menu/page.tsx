@@ -1,26 +1,23 @@
-import { Metadata } from 'next'
+'use client'
+
 import MenuCategory from '@/components/menu/MenuCategory'
 import MenuPDFButton from '@/components/menu/MenuPDFButton'
 import { menuData } from '@/lib/data/menu'
-
-export const metadata: Metadata = {
-  title: "Menu | Wake N' Bake Panificio",
-  description:
-    'Ontdek ons menu met verse focaccia, schiacciata, Italiaanse broodjes en specialiteiten.',
-}
+import { useLanguage } from '@/lib/context/LanguageContext'
 
 export default function MenuPage() {
+  const { t } = useLanguage()
+
   return (
     <div className="min-h-screen bg-flour pt-32 pb-20">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
           <h1 className="font-montserrat font-bold text-5xl md:text-6xl mb-6 text-espresso">
-            ONS MENU
+            {t('menuPage.title')}
           </h1>
           <p className="text-xl text-espresso/80 max-w-2xl mx-auto">
-            Alle producten worden dagelijks vers voor je gemaakt met authentieke
-            Italiaanse ingrediënten.
+            {t('menuPage.subtitle')}
           </p>
         </div>
 
@@ -47,12 +44,10 @@ export default function MenuPage() {
         {/* Allergen Info */}
         <div className="mt-20 p-8 bg-mortadella/20 text-center">
           <h3 className="font-montserrat font-bold text-xl mb-4 text-espresso">
-            Allergeneninformatie
+            {t('menuPage.allergenTitle')}
           </h3>
           <p className="text-espresso/80 max-w-2xl mx-auto">
-            Heb je een allergie of dieetwens? Laat het ons weten! We bereiden
-            onze producten met zorg, maar er kan kruisbesmetting optreden in
-            onze keuken.
+            {t('menuPage.allergenText')}
           </p>
         </div>
 

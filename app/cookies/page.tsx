@@ -1,65 +1,55 @@
-import { Metadata } from 'next'
+'use client'
 
-export const metadata: Metadata = {
-  title: "Cookiebeleid | Wake N' Bake Panificio",
-  description:
-    'Lees ons cookiebeleid en hoe wij cookies gebruiken op onze website.',
-}
+import { useLanguage } from '@/lib/context/LanguageContext'
 
 export default function CookiesPage() {
+  const { t } = useLanguage()
+
   return (
     <div className="min-h-screen bg-flour pt-32 pb-20">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
           <h1 className="font-montserrat font-bold text-5xl mb-8 text-espresso">
-            Cookiebeleid
+            {t('cookies.title')}
           </h1>
 
           <div className="prose prose-lg max-w-none text-espresso/80">
             <p className="lead">
-              Deze website maakt gebruik van cookies om uw ervaring te
-              verbeteren. Hieronder leggen wij uit wat cookies zijn en hoe wij
-              ze gebruiken.
+              {t('cookies.intro')}
             </p>
 
             <p>
-              <strong>Laatst bijgewerkt:</strong> Januari 2026
+              <strong>{t('cookies.lastUpdated')}:</strong> Januari 2026
             </p>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              1. Wat zijn cookies?
+              {t('cookies.section1Title')}
             </h2>
             <p>
-              Cookies zijn kleine tekstbestanden die op uw computer of mobiele
-              apparaat worden opgeslagen wanneer u onze website bezoekt. Ze
-              helpen ons om de website goed te laten functioneren en om uw
-              voorkeuren te onthouden.
+              {t('cookies.section1Text')}
             </p>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              2. Welke cookies gebruiken wij?
+              {t('cookies.section2Title')}
             </h2>
 
             <h3 className="font-montserrat font-bold text-xl mt-8 mb-3 text-espresso">
-              Noodzakelijke cookies
+              {t('cookies.necessaryTitle')}
             </h3>
             <p>
-              Deze cookies zijn essentieel voor het functioneren van de website
-              en kunnen niet worden uitgeschakeld. Ze worden alleen geplaatst
-              als reactie op acties die u uitvoert, zoals het instellen van uw
-              privacyvoorkeuren.
+              {t('cookies.necessaryText')}
             </p>
             <table className="w-full border-collapse my-4">
               <thead>
                 <tr className="bg-crust/10">
                   <th className="border border-espresso/20 p-3 text-left">
-                    Cookie
+                    {t('cookies.tableCookie')}
                   </th>
                   <th className="border border-espresso/20 p-3 text-left">
-                    Doel
+                    {t('cookies.tablePurpose')}
                   </th>
                   <th className="border border-espresso/20 p-3 text-left">
-                    Duur
+                    {t('cookies.tableDuration')}
                   </th>
                 </tr>
               </thead>
@@ -69,7 +59,7 @@ export default function CookiesPage() {
                     cookieConsent
                   </td>
                   <td className="border border-espresso/20 p-3">
-                    Onthoudt uw cookievoorkeuren
+                    {t('cookies.consentPurpose')}
                   </td>
                   <td className="border border-espresso/20 p-3">1 jaar</td>
                 </tr>
@@ -77,29 +67,24 @@ export default function CookiesPage() {
             </table>
 
             <h3 className="font-montserrat font-bold text-xl mt-8 mb-3 text-espresso">
-              Analytische cookies
+              {t('cookies.analyticalTitle')}
             </h3>
             <p>
-              Deze cookies helpen ons begrijpen hoe bezoekers onze website
-              gebruiken. Alle informatie wordt geanonimiseerd verzameld.
+              {t('cookies.analyticalText')}
             </p>
 
             <h3 className="font-montserrat font-bold text-xl mt-8 mb-3 text-espresso">
-              Marketing cookies
+              {t('cookies.marketingTitle')}
             </h3>
             <p>
-              Wij gebruiken momenteel geen marketing cookies. Mocht dit in de
-              toekomst veranderen, dan informeren wij u hierover en vragen wij
-              om uw toestemming.
+              {t('cookies.marketingText')}
             </p>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              3. Hoe kunt u cookies beheren?
+              {t('cookies.section3Title')}
             </h2>
             <p>
-              U kunt uw cookievoorkeuren op elk moment aanpassen via de
-              instellingen van uw browser. Hieronder vindt u links naar de
-              instructies van de meest gebruikte browsers:
+              {t('cookies.section3Text')}
             </p>
             <ul>
               <li>
@@ -145,20 +130,17 @@ export default function CookiesPage() {
             </ul>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              4. Cookies van derden
+              {t('cookies.section4Title')}
             </h2>
             <p>
-              Onze website kan content bevatten van derden, zoals een embedded
-              map van OpenStreetMap. Deze partijen kunnen hun eigen cookies
-              plaatsen. Wij hebben geen controle over deze cookies. Raadpleeg
-              het privacybeleid van deze partijen voor meer informatie.
+              {t('cookies.section4Text')}
             </p>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              5. Contact
+              {t('cookies.section5Title')}
             </h2>
             <p>
-              Heeft u vragen over ons cookiebeleid? Neem dan contact met ons op:
+              {t('cookies.section5Text')}
             </p>
             <ul>
               <li>
@@ -174,11 +156,10 @@ export default function CookiesPage() {
             </ul>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              6. Wijzigingen
+              {t('cookies.section6Title')}
             </h2>
             <p>
-              Wij behouden ons het recht voor om dit cookiebeleid aan te passen.
-              Wijzigingen worden op deze pagina gepubliceerd.
+              {t('cookies.section6Text')}
             </p>
           </div>
         </div>

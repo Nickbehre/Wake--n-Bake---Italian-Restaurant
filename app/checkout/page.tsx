@@ -15,13 +15,7 @@ import {
 import Link from 'next/link'
 import Image from 'next/image'
 import { useCart, type CustomerInfo } from '@/lib/context/CartContext'
-
-// Steps configuration
-const steps = [
-  { id: 1, title: 'Your Details', icon: User },
-  { id: 2, title: 'Pickup Time', icon: Clock },
-  { id: 3, title: 'Payment', icon: CreditCard },
-]
+import { useLanguage } from '@/lib/context/LanguageContext'
 
 // Generate time slots for a given day
 function generateTimeSlots(openingHour: number, closingHour: number): string[] {
@@ -65,9 +59,17 @@ function generateOrderNumber(): string {
 export default function CheckoutPage() {
   const router = useRouter()
   const { items, totalPrice, clearCart, setOrderData } = useCart()
+  const { t } = useLanguage()
   const [currentStep, setCurrentStep] = useState(1)
   const [isMounted, setIsMounted] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+
+  // Steps configuration with translation
+  const steps = [
+    { id: 1, title: t('checkout.step1'), icon: User },
+    { id: 2, title: t('checkout.step2'), icon: Clock },
+    { id: 3, title: t('checkout.step3'), icon: CreditCard },
+  ]
 
   // Form state
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
@@ -110,19 +112,19 @@ export default function CheckoutPage() {
     const errors: Record<string, string> = {}
 
     if (!customerInfo.name.trim()) {
-      errors.name = 'Name is required'
+      errors.name = t('checkout.nameRequired')
     }
 
     if (!customerInfo.email.trim()) {
-      errors.email = 'Email is required'
+      errors.email = t('checkout.emailRequired')
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerInfo.email)) {
-      errors.email = 'Please enter a valid email'
+      errors.email = t('checkout.emailInvalid')
     }
 
     if (!customerInfo.phone.trim()) {
-      errors.phone = 'Phone number is required'
+      errors.phone = t('checkout.phoneRequired')
     } else if (!/^[+]?[\d\s-]{8,}$/.test(customerInfo.phone.replace(/\s/g, ''))) {
-      errors.phone = 'Please enter a valid phone number'
+      errors.phone = t('checkout.phoneInvalid')
     }
 
     setFormErrors(errors)
@@ -131,7 +133,7 @@ export default function CheckoutPage() {
 
   const validateStep2 = (): boolean => {
     if (!selectedTimeSlot) {
-      setFormErrors({ timeSlot: 'Please select a pickup time' })
+      setFormErrors({ timeSlot: t('checkout.selectTimeRequired') })
       return false
     }
     setFormErrors({})
@@ -181,15 +183,15 @@ export default function CheckoutPage() {
           className="inline-flex items-center gap-2 text-espresso/70 hover:text-tomato transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span className="font-lato">Back to Menu</span>
+          <span className="font-lato">{t('checkout.backToMenu')}</span>
         </Link>
 
         {/* Header */}
         <div className="text-center mb-10">
           <h1 className="font-oswald text-4xl md:text-5xl font-bold text-espresso uppercase tracking-wide mb-2">
-            Checkout
+            {t('checkout.title')}
           </h1>
-          <p className="font-lato text-espresso/70">Click & Collect</p>
+          <p className="font-lato text-espresso/70">{t('checkout.clickCollect')}</p>
         </div>
 
         {/* Progress Steps */}
@@ -241,13 +243,13 @@ export default function CheckoutPage() {
                   className="bg-white p-6 md:p-8 shadow-lg"
                 >
                   <h2 className="font-oswald text-2xl font-bold text-espresso uppercase tracking-wide mb-6">
-                    Your Details
+                    {t('checkout.step1')}
                   </h2>
 
                   <div className="space-y-6">
                     <div>
                       <label className="block font-lato font-semibold text-espresso mb-2">
-                        Full Name *
+                        {t('checkout.fullName')} *
                       </label>
                       <input
                         type="text"
@@ -268,7 +270,7 @@ export default function CheckoutPage() {
 
                     <div>
                       <label className="block font-lato font-semibold text-espresso mb-2">
-                        Email Address *
+                        {t('checkout.email')} *
                       </label>
                       <input
                         type="email"
@@ -289,7 +291,7 @@ export default function CheckoutPage() {
 
                     <div>
                       <label className="block font-lato font-semibold text-espresso mb-2">
-                        Phone Number *
+                        {t('checkout.phone')} *
                       </label>
                       <input
                         type="tel"
@@ -313,7 +315,7 @@ export default function CheckoutPage() {
                     onClick={handleNext}
                     className="mt-8 w-full bg-tomato text-white py-4 font-oswald text-lg font-bold uppercase tracking-wide hover:bg-tomato/90 transition-colors"
                   >
-                    Continue to Pickup Time
+                    {t('checkout.continueToPickup')}
                   </button>
                 </motion.div>
               )}
@@ -328,20 +330,20 @@ export default function CheckoutPage() {
                   className="bg-white p-6 md:p-8 shadow-lg"
                 >
                   <h2 className="font-oswald text-2xl font-bold text-espresso uppercase tracking-wide mb-2">
-                    Select Pickup Time
+                    {t('checkout.selectPickupTime')}
                   </h2>
                   <p className="font-lato text-espresso/60 mb-6">
-                    Choose a 15-minute window to collect your order
+                    {t('checkout.selectTimeSlot')}
                   </p>
 
                   {availableTimeSlots.length === 0 ? (
                     <div className="text-center py-12">
                       <Clock className="w-16 h-16 text-espresso/30 mx-auto mb-4" />
                       <p className="font-lato text-espresso/60">
-                        Sorry, no pickup slots available for today.
+                        {t('checkout.noSlotsTitle')}
                       </p>
                       <p className="font-lato text-sm text-espresso/40 mt-2">
-                        Please try again tomorrow between 10:00 - 18:00
+                        {t('checkout.noSlotsText')}
                       </p>
                     </div>
                   ) : (
@@ -381,14 +383,14 @@ export default function CheckoutPage() {
                       onClick={handleBack}
                       className="flex-1 border-2 border-espresso/20 text-espresso py-4 font-oswald text-lg font-bold uppercase tracking-wide hover:border-espresso/40 transition-colors"
                     >
-                      Back
+                      {t('checkout.back')}
                     </button>
                     <button
                       onClick={handleNext}
                       disabled={availableTimeSlots.length === 0}
                       className="flex-1 bg-tomato text-white py-4 font-oswald text-lg font-bold uppercase tracking-wide hover:bg-tomato/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Continue to Payment
+                      {t('checkout.continueToPayment')}
                     </button>
                   </div>
                 </motion.div>
@@ -404,13 +406,13 @@ export default function CheckoutPage() {
                   className="bg-white p-6 md:p-8 shadow-lg"
                 >
                   <h2 className="font-oswald text-2xl font-bold text-espresso uppercase tracking-wide mb-6">
-                    Payment
+                    {t('checkout.payment')}
                   </h2>
 
                   {/* Order Summary */}
                   <div className="bg-flour p-6 mb-6">
                     <h3 className="font-oswald text-lg font-bold text-espresso uppercase tracking-wide mb-4">
-                      Order Summary
+                      {t('checkout.orderSummary')}
                     </h3>
 
                     <div className="space-y-3 mb-4">
@@ -427,7 +429,7 @@ export default function CheckoutPage() {
                     </div>
 
                     <div className="border-t border-espresso/20 pt-4 flex justify-between">
-                      <span className="font-oswald text-lg text-espresso uppercase">Total</span>
+                      <span className="font-oswald text-lg text-espresso uppercase">{t('checkout.total')}</span>
                       <span className="font-oswald text-2xl text-crust font-bold">
                         €{totalPrice.toFixed(2)}
                       </span>
@@ -438,7 +440,7 @@ export default function CheckoutPage() {
                   <div className="bg-crust/10 p-4 mb-6 flex items-center gap-3">
                     <Clock className="w-6 h-6 text-crust" />
                     <div>
-                      <p className="font-lato text-sm text-espresso/60">Pickup Time</p>
+                      <p className="font-lato text-sm text-espresso/60">{t('checkout.pickupTime')}</p>
                       <p className="font-oswald text-lg font-bold text-espresso">{selectedTimeSlot}</p>
                     </div>
                   </div>
@@ -446,7 +448,7 @@ export default function CheckoutPage() {
                   {/* Mock Payment Notice */}
                   <div className="bg-pistachio/20 p-4 mb-6 border-l-4 border-pistachio">
                     <p className="font-lato text-sm text-espresso">
-                      <strong>Demo Mode:</strong> This is a prototype. No actual payment will be processed.
+                      <strong>Demo Mode:</strong> {t('checkout.demoNotice')}
                     </p>
                   </div>
 
@@ -456,7 +458,7 @@ export default function CheckoutPage() {
                       disabled={isProcessing}
                       className="flex-1 border-2 border-espresso/20 text-espresso py-4 font-oswald text-lg font-bold uppercase tracking-wide hover:border-espresso/40 transition-colors disabled:opacity-50"
                     >
-                      Back
+                      {t('checkout.back')}
                     </button>
                     <button
                       onClick={handlePlaceOrder}
@@ -470,10 +472,10 @@ export default function CheckoutPage() {
                             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                             className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
                           />
-                          Processing...
+                          {t('checkout.processing')}
                         </>
                       ) : (
-                        'Pay & Place Order'
+                        t('checkout.payAndOrder')
                       )}
                     </button>
                   </div>
@@ -487,7 +489,7 @@ export default function CheckoutPage() {
             <div className="bg-white p-6 shadow-lg sticky top-24">
               <h3 className="font-oswald text-lg font-bold text-espresso uppercase tracking-wide mb-4 flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5" />
-                Your Order
+                {t('checkout.yourOrder')}
               </h3>
 
               <div className="space-y-4 max-h-80 overflow-y-auto">
@@ -518,7 +520,7 @@ export default function CheckoutPage() {
 
               <div className="border-t border-espresso/10 mt-4 pt-4">
                 <div className="flex justify-between items-center">
-                  <span className="font-oswald text-espresso uppercase">Total</span>
+                  <span className="font-oswald text-espresso uppercase">{t('checkout.total')}</span>
                   <span className="font-oswald text-2xl text-crust font-bold">
                     €{totalPrice.toFixed(2)}
                   </span>

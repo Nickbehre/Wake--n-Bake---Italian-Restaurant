@@ -6,11 +6,13 @@ import { ShoppingBag, X, Plus, Minus, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useCart } from '@/lib/context/CartContext'
+import { useLanguage } from '@/lib/context/LanguageContext'
 
 export default function CartDrawer() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
   const { items, totalItems, totalPrice, updateQuantity, removeItem } = useCart()
+  const { t } = useLanguage()
 
   useEffect(() => {
     setIsMounted(true)
@@ -40,7 +42,7 @@ export default function CartDrawer() {
       >
         <ShoppingBag className="w-5 h-5" />
         <span className="font-oswald font-semibold">
-          {totalItems} {totalItems === 1 ? 'item' : 'items'}
+          {totalItems} {totalItems === 1 ? t('cart.item') : t('cart.items')}
         </span>
         <span className="font-oswald font-bold">€{totalPrice.toFixed(2)}</span>
       </motion.button>
@@ -71,7 +73,7 @@ export default function CartDrawer() {
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-espresso/10">
               <h2 className="font-oswald text-2xl font-bold text-espresso uppercase tracking-wide">
-                Your Order
+                {t('cart.yourOrder')}
               </h2>
               <button
                 onClick={() => setIsOpen(false)}
@@ -86,9 +88,9 @@ export default function CartDrawer() {
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center">
                   <ShoppingBag className="w-16 h-16 text-espresso/30 mb-4" />
-                  <p className="font-lato text-espresso/60">Your cart is empty</p>
+                  <p className="font-lato text-espresso/60">{t('cart.empty')}</p>
                   <p className="font-lato text-sm text-espresso/40 mt-2">
-                    Add some delicious items from our menu!
+                    {t('cart.emptySubtext')}
                   </p>
                 </div>
               ) : (
@@ -158,7 +160,7 @@ export default function CartDrawer() {
                 {/* Total */}
                 <div className="flex justify-between items-center">
                   <span className="font-oswald text-xl text-espresso uppercase tracking-wide">
-                    Total
+                    {t('cart.total')}
                   </span>
                   <span className="font-oswald text-3xl font-bold text-crust">
                     €{totalPrice.toFixed(2)}
@@ -171,11 +173,11 @@ export default function CartDrawer() {
                   onClick={() => setIsOpen(false)}
                   className="block w-full bg-tomato text-white text-center py-4 font-oswald text-lg font-bold uppercase tracking-wide hover:bg-tomato/90 transition-colors"
                 >
-                  Proceed to Checkout
+                  {t('cart.checkout')}
                 </Link>
 
                 <p className="text-center text-xs text-espresso/50 font-lato">
-                  Click & Collect only • Pay at checkout
+                  {t('cart.clickCollect')}
                 </p>
               </div>
             )}

@@ -1,8 +1,13 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { Instagram, MapPin, Phone, Mail, Clock } from 'lucide-react'
+import { useLanguage } from '@/lib/context/LanguageContext'
 
 export default function Footer() {
+  const { t } = useLanguage()
+
   return (
     <footer className="bg-espresso text-white">
       <div className="container mx-auto px-4 py-16">
@@ -26,14 +31,13 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-white/80 leading-relaxed">
-              Authentieke Italiaanse bakkerij in hartje Amsterdam. Elke dag vers
-              gebakken met liefde en passie.
+              {t('footer.description')}
             </p>
           </div>
 
           {/* Contact */}
           <div>
-            <h4 className="font-montserrat font-bold text-lg mb-6">Contact</h4>
+            <h4 className="font-montserrat font-bold text-lg mb-6">{t('footer.contact')}</h4>
             <div className="space-y-3 text-white/80">
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-crust flex-shrink-0 mt-0.5" />
@@ -67,46 +71,46 @@ export default function Footer() {
           {/* Opening Hours */}
           <div>
             <h4 className="font-montserrat font-bold text-lg mb-6">
-              Openingstijden
+              {t('footer.openingHours')}
             </h4>
             <div className="space-y-2 text-white/80">
               <div className="flex items-center gap-3">
                 <Clock className="w-5 h-5 text-crust flex-shrink-0" />
-                <span>Ma - Vr: 08:00 - 18:00</span>
+                <span>{t('location.weekdays')}</span>
               </div>
               <div className="flex items-center gap-3 pl-8">
-                <span>Za - Zo: 09:00 - 17:00</span>
+                <span>{t('location.weekends')}</span>
               </div>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-montserrat font-bold text-lg mb-6">Links</h4>
+            <h4 className="font-montserrat font-bold text-lg mb-6">{t('footer.links')}</h4>
             <div className="space-y-3">
               <Link
                 href="/menu"
                 className="block text-white/80 hover:text-crust transition-colors"
               >
-                Menu
+                {t('nav.menu')}
               </Link>
               <Link
                 href="/over-ons"
                 className="block text-white/80 hover:text-crust transition-colors"
               >
-                Over Ons
+                {t('nav.about')}
               </Link>
               <Link
                 href="/gallerij"
                 className="block text-white/80 hover:text-crust transition-colors"
               >
-                Gallerij
+                {t('nav.gallery')}
               </Link>
               <Link
                 href="/contact"
                 className="block text-white/80 hover:text-crust transition-colors"
               >
-                Contact
+                {t('nav.contact')}
               </Link>
               <Link
                 href="/privacy"
@@ -127,8 +131,7 @@ export default function Footer() {
         {/* Social & Copyright */}
         <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-white/60 text-sm">
-            &copy; {new Date().getFullYear()} Wake N&apos; Bake Panificio. Alle
-            rechten voorbehouden.
+            &copy; {new Date().getFullYear()} Wake N&apos; Bake Panificio. {t('footer.rights')}
           </p>
           <div className="flex items-center gap-4">
             <a

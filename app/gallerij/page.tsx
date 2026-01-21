@@ -1,11 +1,7 @@
-import { Metadata } from 'next'
-import GalleryGrid from '@/components/gallery/GalleryGrid'
+'use client'
 
-export const metadata: Metadata = {
-  title: "Gallerij | Wake N' Bake Panificio",
-  description:
-    "Bekijk onze gallerij met heerlijke foto's van verse focaccia, schiacciata en Italiaanse specialiteiten.",
-}
+import GalleryGrid from '@/components/gallery/GalleryGrid'
+import { useLanguage } from '@/lib/context/LanguageContext'
 
 const galleryImages = [
   {
@@ -56,15 +52,17 @@ const galleryImages = [
 ]
 
 export default function GalleryPage() {
+  const { t } = useLanguage()
+
   return (
     <div className="min-h-screen bg-flour pt-32 pb-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h1 className="font-montserrat font-bold text-5xl md:text-6xl mb-6 text-espresso">
-            GALLERIJ
+            {t('gallery.title')}
           </h1>
           <p className="text-xl text-espresso/80 max-w-2xl mx-auto">
-            Een kijkje in onze bakkerij en onze heerlijke producten
+            {t('gallery.subtitle')}
           </p>
         </div>
 
@@ -73,7 +71,7 @@ export default function GalleryPage() {
         {/* Instagram CTA */}
         <div className="mt-16 text-center">
           <p className="text-espresso/80 mb-4">
-            Volg ons op Instagram voor dagelijkse updates!
+            {t('gallery.instagramCta')}
           </p>
           <a
             href="https://www.instagram.com/wakenbake.nl/"

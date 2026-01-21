@@ -6,19 +6,27 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { toast } from 'sonner'
 import { Send, Loader2 } from 'lucide-react'
+import { useLanguage } from '@/lib/context/LanguageContext'
 
-const formSchema = z.object({
-  name: z.string().min(2, 'Naam moet minimaal 2 karakters zijn'),
-  email: z.string().email('Ongeldig email adres'),
-  phone: z.string().optional(),
-  subject: z.string().min(1, 'Selecteer een onderwerp'),
-  message: z.string().min(10, 'Bericht moet minimaal 10 karakters zijn'),
-})
-
-type FormData = z.infer<typeof formSchema>
+type FormData = {
+  name: string
+  email: string
+  phone?: string
+  subject: string
+  message: string
+}
 
 export default function ContactForm() {
+  const { t } = useLanguage()
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const formSchema = z.object({
+    name: z.string().min(2, t('form.nameError')),
+    email: z.string().email(t('form.emailError')),
+    phone: z.string().optional(),
+    subject: z.string().min(1, t('form.subjectError')),
+    message: z.string().min(10, t('form.messageError')),
+  })
 
   const {
     register,
@@ -37,10 +45,10 @@ export default function ContactForm() {
       await new Promise((resolve) => setTimeout(resolve, 1500))
 
       console.log('Form data:', data)
-      toast.success('Bericht verzonden! We nemen zo snel mogelijk contact op.')
+      toast.success(t('form.success'))
       reset()
     } catch (error) {
-      toast.error('Er ging iets mis. Probeer het opnieuw.')
+      toast.error(t('form.error'))
     } finally {
       setIsSubmitting(false)
     }
@@ -54,14 +62,14 @@ export default function ContactForm() {
             htmlFor="name"
             className="block font-montserrat font-bold mb-2 text-espresso"
           >
-            Naam *
+            {t('form.name')} *
           </label>
           <input
             type="text"
             id="name"
             {...register('name')}
             className="w-full px-4 py-3 border-2 border-espresso/20 focus:border-crust outline-none transition-colors bg-white"
-            placeholder="Jouw naam"
+            placeholder={t('form.namePlaceholder')}
           />
           {errors.name && (
             <p className="text-tomato text-sm mt-1">{errors.name.message}</p>
@@ -73,14 +81,14 @@ export default function ContactForm() {
             htmlFor="email"
             className="block font-montserrat font-bold mb-2 text-espresso"
           >
-            Email *
+            {t('form.email')} *
           </label>
           <input
             type="email"
             id="email"
             {...register('email')}
             className="w-full px-4 py-3 border-2 border-espresso/20 focus:border-crust outline-none transition-colors bg-white"
-            placeholder="jouw@email.nl"
+            placeholder={t('form.emailPlaceholder')}
           />
           {errors.email && (
             <p className="text-tomato text-sm mt-1">{errors.email.message}</p>
@@ -94,14 +102,14 @@ export default function ContactForm() {
             htmlFor="phone"
             className="block font-montserrat font-bold mb-2 text-espresso"
           >
-            Telefoon (optioneel)
+            {t('form.phone')}
           </label>
           <input
             type="tel"
             id="phone"
             {...register('phone')}
             className="w-full px-4 py-3 border-2 border-espresso/20 focus:border-crust outline-none transition-colors bg-white"
-            placeholder="06 12345678"
+            placeholder={t('form.phonePlaceholder')}
           />
         </div>
 
@@ -110,19 +118,19 @@ export default function ContactForm() {
             htmlFor="subject"
             className="block font-montserrat font-bold mb-2 text-espresso"
           >
-            Onderwerp *
+            {t('form.subject')} *
           </label>
           <select
             id="subject"
             {...register('subject')}
             className="w-full px-4 py-3 border-2 border-espresso/20 focus:border-crust outline-none transition-colors bg-white"
           >
-            <option value="">Selecteer een onderwerp</option>
-            <option value="bestelling">Bestelling / Reservering</option>
-            <option value="catering">Catering</option>
-            <option value="feedback">Feedback</option>
-            <option value="vacature">Vacature</option>
-            <option value="anders">Anders</option>
+            <option value="">{t('form.subjectPlaceholder')}</option>
+            <option value="bestelling">{t('form.subjectOrder')}</option>
+            <option value="catering">{t('form.subjectCatering')}</option>
+            <option value="feedback">{t('form.subjectFeedback')}</option>
+            <option value="vacature">{t('form.subjectVacancy')}</option>
+            <option value="anders">{t('form.subjectOther')}</option>
           </select>
           {errors.subject && (
             <p className="text-tomato text-sm mt-1">{errors.subject.message}</p>
@@ -135,14 +143,14 @@ export default function ContactForm() {
           htmlFor="message"
           className="block font-montserrat font-bold mb-2 text-espresso"
         >
-          Bericht *
+          {t('form.message')} *
         </label>
         <textarea
           id="message"
           {...register('message')}
           rows={5}
           className="w-full px-4 py-3 border-2 border-espresso/20 focus:border-crust outline-none transition-colors bg-white resize-none"
-          placeholder="Vertel ons waarmee we je kunnen helpen..."
+          placeholder={t('form.messagePlaceholder')}
         />
         {errors.message && (
           <p className="text-tomato text-sm mt-1">{errors.message.message}</p>
@@ -157,11 +165,11 @@ export default function ContactForm() {
         {isSubmitting ? (
           <>
             <Loader2 className="w-5 h-5 animate-spin" />
-            Verzenden...
+            {t('form.submitting')}
           </>
         ) : (
           <>
-            Verstuur Bericht
+            {t('form.submit')}
             <Send className="w-5 h-5" />
           </>
         )}

@@ -1,102 +1,88 @@
-import { Metadata } from 'next'
+'use client'
 
-export const metadata: Metadata = {
-  title: "Privacybeleid | Wake N' Bake Panificio",
-  description:
-    "Lees ons privacybeleid en hoe wij omgaan met uw persoonsgegevens.",
-}
+import { useLanguage } from '@/lib/context/LanguageContext'
 
 export default function PrivacyPage() {
+  const { t } = useLanguage()
+
   return (
     <div className="min-h-screen bg-flour pt-32 pb-20">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
           <h1 className="font-montserrat font-bold text-5xl mb-8 text-espresso">
-            Privacybeleid
+            {t('privacy.title')}
           </h1>
 
           <div className="prose prose-lg max-w-none text-espresso/80">
             <p className="lead">
-              Wake N&apos; Bake Panificio respecteert uw privacy en zorgt ervoor
-              dat de persoonlijke informatie die u met ons deelt vertrouwelijk
-              wordt behandeld.
+              {t('privacy.intro')}
             </p>
 
             <p>
-              <strong>Laatst bijgewerkt:</strong> Januari 2026
+              <strong>{t('privacy.lastUpdated')}:</strong> Januari 2026
             </p>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              1. Welke gegevens verzamelen wij?
+              {t('privacy.section1Title')}
             </h2>
             <p>
-              Wij verzamelen de volgende persoonsgegevens wanneer u contact met
-              ons opneemt of een bestelling plaatst:
+              {t('privacy.section1Text')}
             </p>
             <ul>
-              <li>Naam</li>
-              <li>E-mailadres</li>
-              <li>Telefoonnummer (optioneel)</li>
-              <li>Bericht- of bestelinhoud</li>
+              <li>{t('privacy.section1Item1')}</li>
+              <li>{t('privacy.section1Item2')}</li>
+              <li>{t('privacy.section1Item3')}</li>
+              <li>{t('privacy.section1Item4')}</li>
             </ul>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              2. Waarom verzamelen wij deze gegevens?
+              {t('privacy.section2Title')}
             </h2>
-            <p>Wij gebruiken uw gegevens voor de volgende doeleinden:</p>
+            <p>{t('privacy.section2Text')}</p>
             <ul>
-              <li>Om uw vragen of opmerkingen te beantwoorden</li>
-              <li>Om uw bestellingen te verwerken</li>
-              <li>Om u te informeren over onze producten en diensten</li>
-              <li>Om onze website en dienstverlening te verbeteren</li>
+              <li>{t('privacy.section2Item1')}</li>
+              <li>{t('privacy.section2Item2')}</li>
+              <li>{t('privacy.section2Item3')}</li>
+              <li>{t('privacy.section2Item4')}</li>
             </ul>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              3. Hoe lang bewaren wij uw gegevens?
+              {t('privacy.section3Title')}
             </h2>
             <p>
-              Wij bewaren uw persoonsgegevens niet langer dan strikt noodzakelijk
-              is voor de doeleinden waarvoor ze zijn verzameld. Contactgegevens
-              worden maximaal 2 jaar bewaard na het laatste contact.
+              {t('privacy.section3Text')}
             </p>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              4. Delen wij uw gegevens met derden?
+              {t('privacy.section4Title')}
             </h2>
             <p>
-              Wij delen uw persoonsgegevens niet met derden, tenzij dit
-              noodzakelijk is voor de uitvoering van onze diensten of wanneer
-              wij hiertoe wettelijk verplicht zijn.
+              {t('privacy.section4Text')}
             </p>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              5. Uw rechten
+              {t('privacy.section5Title')}
             </h2>
-            <p>U heeft het recht om:</p>
+            <p>{t('privacy.section5Text')}</p>
             <ul>
-              <li>Uw persoonsgegevens in te zien</li>
-              <li>Uw persoonsgegevens te laten corrigeren</li>
-              <li>Uw persoonsgegevens te laten verwijderen</li>
-              <li>
-                Bezwaar te maken tegen de verwerking van uw persoonsgegevens
-              </li>
+              <li>{t('privacy.section5Item1')}</li>
+              <li>{t('privacy.section5Item2')}</li>
+              <li>{t('privacy.section5Item3')}</li>
+              <li>{t('privacy.section5Item4')}</li>
             </ul>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              6. Beveiliging
+              {t('privacy.section6Title')}
             </h2>
             <p>
-              Wij nemen passende technische en organisatorische maatregelen om
-              uw persoonsgegevens te beschermen tegen verlies, diefstal en
-              ongeautoriseerde toegang.
+              {t('privacy.section6Text')}
             </p>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              7. Contact
+              {t('privacy.section7Title')}
             </h2>
             <p>
-              Heeft u vragen over ons privacybeleid of wilt u gebruik maken van
-              uw rechten? Neem dan contact met ons op:
+              {t('privacy.section7Text')}
             </p>
             <ul>
               <li>
@@ -113,12 +99,10 @@ export default function PrivacyPage() {
             </ul>
 
             <h2 className="font-montserrat font-bold text-2xl mt-12 mb-4 text-espresso">
-              8. Wijzigingen
+              {t('privacy.section8Title')}
             </h2>
             <p>
-              Wij behouden ons het recht voor om dit privacybeleid aan te
-              passen. Wijzigingen worden op deze pagina gepubliceerd. Wij raden
-              u aan om regelmatig dit beleid te raadplegen.
+              {t('privacy.section8Text')}
             </p>
           </div>
         </div>

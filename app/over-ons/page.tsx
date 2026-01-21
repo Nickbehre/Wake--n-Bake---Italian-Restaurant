@@ -1,42 +1,36 @@
-import { Metadata } from 'next'
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Heart, Wheat, Award, Users } from 'lucide-react'
-
-export const metadata: Metadata = {
-  title: "Over Ons | Wake N' Bake Panificio",
-  description:
-    "Leer meer over Wake N' Bake Panificio, onze passie voor authentiek Italiaans brood en onze reis naar Amsterdam.",
-}
-
-const values = [
-  {
-    icon: Wheat,
-    title: 'Kwaliteit',
-    description:
-      'We gebruiken alleen de beste ingrediënten, van Italiaanse bloem tot verse lokale producten.',
-  },
-  {
-    icon: Heart,
-    title: 'Passie',
-    description:
-      'Elke dag staan we met liefde in de keuken om de perfecte focaccia te maken.',
-  },
-  {
-    icon: Award,
-    title: 'Authenticiteit',
-    description:
-      'Onze recepten zijn overgeleverd van generatie op generatie uit Italië.',
-  },
-  {
-    icon: Users,
-    title: 'Gemeenschap',
-    description:
-      'We zijn trots deel uit te maken van de Amsterdamse buurt en community.',
-  },
-]
+import { useLanguage } from '@/lib/context/LanguageContext'
 
 export default function AboutPage() {
+  const { t } = useLanguage()
+
+  const values = [
+    {
+      icon: Wheat,
+      titleKey: 'about.valueQuality',
+      descKey: 'about.valueQualityDesc',
+    },
+    {
+      icon: Heart,
+      titleKey: 'about.valuePassion',
+      descKey: 'about.valuePassionDesc',
+    },
+    {
+      icon: Award,
+      titleKey: 'about.valueAuthenticity',
+      descKey: 'about.valueAuthenticityDesc',
+    },
+    {
+      icon: Users,
+      titleKey: 'about.valueCommunity',
+      descKey: 'about.valueCommunityDesc',
+    },
+  ]
+
   return (
     <div className="min-h-screen bg-flour">
       {/* Hero Section */}
@@ -44,11 +38,10 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl">
             <h1 className="font-montserrat font-bold text-5xl md:text-6xl mb-6">
-              ONS VERHAAL
+              {t('about.heroTitle')}
             </h1>
             <p className="text-xl text-white/80 leading-relaxed">
-              Van een kleine bakkerij in Toscane naar het hart van Amsterdam.
-              Ontdek de passie achter Wake N&apos; Bake Panificio.
+              {t('about.heroSubtitle')}
             </p>
           </div>
         </div>
@@ -68,28 +61,12 @@ export default function AboutPage() {
             </div>
             <div>
               <h2 className="font-montserrat font-bold text-4xl mb-6 text-espresso">
-                De Droom Begon in Italië
+                {t('about.storyTitle')}
               </h2>
               <div className="prose prose-lg text-espresso/80 space-y-4">
-                <p>
-                  Het verhaal van Wake N&apos; Bake begon in een kleine bakkerij
-                  in de heuvels van Toscane. Daar leerde onze oprichter de kunst
-                  van het broodbakken van zijn grootmoeder - de geheimen van het
-                  perfecte deeg, het belang van geduld en de magie van verse
-                  ingrediënten.
-                </p>
-                <p>
-                  In 2019 brachten we deze Italiaanse traditie naar Amsterdam.
-                  Met dezelfde passie en dezelfde recepten als in Italië, maar
-                  met een moderne twist. Het resultaat? De knapperigste
-                  schiacciata en de luchtigste focaccia van de stad.
-                </p>
-                <p>
-                  Elke ochtend staan we vroeg op om vers deeg te kneden. We
-                  importeren onze bloem rechtstreeks uit Italië en werken alleen
-                  met de beste lokale producten. Geen haast, geen compromissen -
-                  alleen puur vakmanschap.
-                </p>
+                <p>{t('about.storyP1')}</p>
+                <p>{t('about.storyP2')}</p>
+                <p>{t('about.storyP3')}</p>
               </div>
             </div>
           </div>
@@ -100,21 +77,21 @@ export default function AboutPage() {
       <section className="py-20 bg-crust/20">
         <div className="container mx-auto px-4">
           <h2 className="font-montserrat font-bold text-4xl text-center mb-16 text-espresso">
-            Waar Wij Voor Staan
+            {t('about.valuesTitle')}
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value) => (
               <div
-                key={value.title}
+                key={value.titleKey}
                 className="bg-flour p-8 text-center group hover:shadow-xl transition-shadow duration-300"
               >
                 <div className="inline-block p-4 bg-crust/20 rounded-full mb-6 group-hover:bg-crust/30 transition-colors">
                   <value.icon className="w-8 h-8 text-crust" />
                 </div>
                 <h3 className="font-montserrat font-bold text-xl mb-4 text-espresso">
-                  {value.title}
+                  {t(value.titleKey)}
                 </h3>
-                <p className="text-espresso/80">{value.description}</p>
+                <p className="text-espresso/80">{t(value.descKey)}</p>
               </div>
             ))}
           </div>
@@ -127,26 +104,17 @@ export default function AboutPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1">
               <h2 className="font-montserrat font-bold text-4xl mb-6 text-espresso">
-                Ons Team
+                {t('about.teamTitle')}
               </h2>
               <div className="prose prose-lg text-espresso/80 space-y-4">
-                <p>
-                  Achter elke focaccia staat een team van gepassioneerde bakkers
-                  en barista&apos;s. Van onze hoofdbakker Marco, die al 20 jaar
-                  brood bakt, tot onze jonge medewerkers die de traditie
-                  voortzetten.
-                </p>
-                <p>
-                  We geloven in een warme sfeer, zowel in onze keuken als in
-                  onze winkel. Kom gerust langs voor een praatje en ontdek
-                  waarom onze vaste klanten ons als hun tweede huiskamer zien.
-                </p>
+                <p>{t('about.teamP1')}</p>
+                <p>{t('about.teamP2')}</p>
               </div>
               <Link
                 href="/contact"
                 className="inline-flex items-center gap-2 mt-8 bg-tomato hover:bg-tomato/90 text-white font-montserrat font-bold px-8 py-4 transition-all duration-300 transform hover:scale-105"
               >
-                WERKEN BIJ ONS?
+                {t('about.workWithUs')}
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
@@ -166,24 +134,23 @@ export default function AboutPage() {
       <section className="py-20 bg-espresso text-white text-center">
         <div className="container mx-auto px-4">
           <h2 className="font-montserrat font-bold text-4xl mb-6">
-            Proef Het Zelf
+            {t('about.ctaTitle')}
           </h2>
           <p className="text-xl text-white/80 max-w-2xl mx-auto mb-8">
-            De beste manier om ons verhaal te begrijpen? Kom langs en proef onze
-            producten. We verwelkomen je graag!
+            {t('about.ctaText')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/menu"
               className="bg-crust hover:bg-crust/90 text-espresso font-montserrat font-bold px-10 py-4 transition-all duration-300 transform hover:scale-105"
             >
-              BEKIJK MENU
+              {t('about.viewMenu')}
             </Link>
             <Link
               href="/contact"
               className="border-2 border-white text-white hover:bg-white hover:text-espresso font-montserrat font-bold px-10 py-4 transition-all duration-300"
             >
-              BEZOEK ONS
+              {t('about.visitUs')}
             </Link>
           </div>
         </div>

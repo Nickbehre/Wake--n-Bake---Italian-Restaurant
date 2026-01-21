@@ -1,26 +1,23 @@
-import { Metadata } from 'next'
+'use client'
+
 import ContactForm from '@/components/contact/ContactForm'
 import MapSection from '@/components/contact/MapSection'
 import { Phone, Mail, MapPin, Clock, Instagram } from 'lucide-react'
-
-export const metadata: Metadata = {
-  title: "Contact | Wake N' Bake Panificio",
-  description:
-    "Neem contact op met Wake N' Bake Panificio. Bezoek ons op Vijzelstraat 93h, Amsterdam.",
-}
+import { useLanguage } from '@/lib/context/LanguageContext'
 
 export default function ContactPage() {
+  const { t } = useLanguage()
+
   return (
     <div className="min-h-screen bg-flour">
       {/* Header */}
       <section className="bg-espresso text-white pt-32 pb-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="font-montserrat font-bold text-5xl md:text-6xl mb-6">
-            CONTACT & LOCATIE
+            {t('contact.title')}
           </h1>
           <p className="text-xl max-w-2xl mx-auto text-white/80">
-            Kom langs voor de beste Italiaanse focaccia van Amsterdam, of neem
-            contact op voor vragen.
+            {t('contact.subtitle')}
           </p>
         </div>
       </section>
@@ -32,7 +29,7 @@ export default function ContactPage() {
             {/* Contact Info */}
             <div>
               <h2 className="font-montserrat font-bold text-3xl mb-8 text-espresso">
-                Bezoek Onze Bakkerij
+                {t('contact.visitBakery')}
               </h2>
 
               <div className="space-y-6 mb-12">
@@ -42,7 +39,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-montserrat font-bold text-lg mb-1">
-                      Adres
+                      {t('contact.address')}
                     </h3>
                     <p className="text-espresso/80">
                       Vijzelstraat 93h
@@ -58,7 +55,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-montserrat font-bold text-lg mb-1">
-                      Telefoon
+                      {t('contact.phone')}
                     </h3>
                     <a
                       href="tel:+31201234567"
@@ -75,7 +72,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-montserrat font-bold text-lg mb-1">
-                      Email
+                      {t('contact.email')}
                     </h3>
                     <a
                       href="mailto:info@wakenbakepanificio.nl"
@@ -92,11 +89,11 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-montserrat font-bold text-lg mb-1">
-                      Openingstijden
+                      {t('contact.openingHours')}
                     </h3>
                     <div className="text-espresso/80 space-y-1">
-                      <p>Ma - Vr: 08:00 - 18:00</p>
-                      <p>Za - Zo: 09:00 - 17:00</p>
+                      <p>{t('location.weekdays')}</p>
+                      <p>{t('location.weekends')}</p>
                     </div>
                   </div>
                 </div>
@@ -107,7 +104,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-montserrat font-bold text-lg mb-1">
-                      Social Media
+                      {t('contact.socialMedia')}
                     </h3>
                     <a
                       href="https://www.instagram.com/wakenbake.nl/"
@@ -123,12 +120,10 @@ export default function ContactPage() {
 
               <div className="bg-pistachio/20 border-l-4 border-pistachio p-6">
                 <h3 className="font-montserrat font-bold text-lg mb-2 text-espresso">
-                  Takeaway & Catering
+                  {t('contact.takeaway')}
                 </h3>
                 <p className="text-espresso/80">
-                  Bel of mail ons voor grote bestellingen en catering
-                  mogelijkheden. We verzorgen graag jouw evenement met onze
-                  verse Italiaanse producten.
+                  {t('contact.takeawayText')}
                 </p>
               </div>
             </div>
@@ -136,7 +131,7 @@ export default function ContactPage() {
             {/* Contact Form */}
             <div>
               <h2 className="font-montserrat font-bold text-3xl mb-8 text-espresso">
-                Stuur Een Bericht
+                {t('contact.sendMessage')}
               </h2>
               <ContactForm />
             </div>

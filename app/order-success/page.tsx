@@ -6,10 +6,12 @@ import { motion } from 'framer-motion'
 import { CheckCircle, MapPin, Clock } from 'lucide-react'
 import Link from 'next/link'
 import { useCart } from '@/lib/context/CartContext'
+import { useLanguage } from '@/lib/context/LanguageContext'
 
 export default function OrderSuccessPage() {
   const router = useRouter()
   const { orderData, clearOrderData } = useCart()
+  const { t } = useLanguage()
   const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
@@ -75,7 +77,7 @@ export default function OrderSuccessPage() {
 
               {/* Order Number */}
               <div className="text-center py-6 border-b-2 border-dashed border-espresso/20">
-                <p className="font-lato text-espresso/60 text-sm uppercase tracking-wide">Order Number</p>
+                <p className="font-lato text-espresso/60 text-sm uppercase tracking-wide">{t('success.orderNumber')}</p>
                 <p className="font-oswald text-4xl font-bold text-tomato mt-1">
                   #{orderData.orderNumber}
                 </p>
@@ -87,7 +89,7 @@ export default function OrderSuccessPage() {
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <Clock className="w-6 h-6 text-crust" />
                     <span className="font-lato text-espresso/60 uppercase tracking-wide text-sm">
-                      Pickup Time
+                      {t('success.pickupTime')}
                     </span>
                   </div>
                   <p className="font-oswald text-4xl md:text-5xl font-bold text-espresso tracking-wide">
@@ -99,7 +101,7 @@ export default function OrderSuccessPage() {
               {/* Items List */}
               <div className="py-6 border-b-2 border-dashed border-espresso/20">
                 <h3 className="font-oswald text-lg font-bold text-espresso uppercase tracking-wide mb-4">
-                  Order Details
+                  {t('success.orderDetails')}
                 </h3>
                 <div className="space-y-3">
                   {orderData.items.map((item) => (
@@ -119,7 +121,7 @@ export default function OrderSuccessPage() {
               <div className="py-6 border-b-2 border-dashed border-espresso/20">
                 <div className="flex justify-between items-center">
                   <span className="font-oswald text-xl text-espresso uppercase tracking-wide">
-                    Total Paid
+                    {t('success.totalPaid')}
                   </span>
                   <span className="font-oswald text-3xl font-bold text-crust">
                     €{orderData.total.toFixed(2)}
@@ -130,7 +132,7 @@ export default function OrderSuccessPage() {
               {/* Customer Info */}
               <div className="py-6 border-b-2 border-dashed border-espresso/20">
                 <h3 className="font-oswald text-lg font-bold text-espresso uppercase tracking-wide mb-4">
-                  Customer
+                  {t('success.customer')}
                 </h3>
                 <div className="font-lato text-espresso/80 space-y-1">
                   <p>{orderData.customer.name}</p>
@@ -144,7 +146,7 @@ export default function OrderSuccessPage() {
                 <div className="flex items-start gap-3">
                   <MapPin className="w-5 h-5 text-tomato flex-shrink-0 mt-1" />
                   <div>
-                    <p className="font-lato font-semibold text-espresso">Collection Point</p>
+                    <p className="font-lato font-semibold text-espresso">{t('success.collectionPoint')}</p>
                     <p className="font-lato text-espresso/70 text-sm">
                       Vijzelstraat 93h<br />
                       1017 HH Amsterdam
@@ -157,14 +159,14 @@ export default function OrderSuccessPage() {
               <div className="py-6 text-center">
                 <div className="bg-tomato/10 p-4 border-2 border-tomato">
                   <p className="font-oswald text-tomato uppercase tracking-wide font-bold">
-                    Show this receipt at the counter<br />to collect your food
+                    {t('success.showReceipt')}
                   </p>
                 </div>
               </div>
 
               {/* Footer */}
               <div className="text-center text-espresso/40 text-xs font-lato pt-4">
-                <p>Thank you for your order!</p>
+                <p>{t('success.thankYou')}</p>
                 <p className="mt-1">www.wakenbakepanificio.nl</p>
               </div>
             </div>
@@ -202,7 +204,7 @@ export default function OrderSuccessPage() {
             onClick={() => clearOrderData()}
             className="block w-full bg-crust text-espresso text-center py-4 font-oswald text-lg font-bold uppercase tracking-wide hover:bg-crust/90 transition-colors"
           >
-            Order More
+            {t('success.orderMore')}
           </Link>
 
           <Link
@@ -210,7 +212,7 @@ export default function OrderSuccessPage() {
             onClick={() => clearOrderData()}
             className="block w-full border-2 border-white/30 text-white text-center py-4 font-oswald text-lg font-bold uppercase tracking-wide hover:bg-white/10 transition-colors"
           >
-            Back to Home
+            {t('success.backToHome')}
           </Link>
         </motion.div>
       </div>
