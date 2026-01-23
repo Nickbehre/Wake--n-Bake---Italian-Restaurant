@@ -4,20 +4,14 @@ import { useState, useRef } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { useLanguage } from '@/lib/context/LanguageContext'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight, Leaf, Fish } from 'lucide-react'
-
-interface MenuItem {
-  name: string
-  ingredients: string
-  priceRegular: string
-  priceLarge: string
-}
 
 interface MenuCategory {
   id: string
   nameKey: string
   icon: React.ReactNode
-  items: MenuItem[]
+  image: string
 }
 
 const menuCategories: MenuCategory[] = [
@@ -25,64 +19,19 @@ const menuCategories: MenuCategory[] = [
     id: 'pork',
     nameKey: 'menu.category.pork',
     icon: <span className="text-2xl">🐷</span>,
-    items: [
-      {
-        name: 'Mortadella Original',
-        ingredients: 'Fresh burrata, Pistachio mortadella, Pistachio pesto, Crumbled pistachios, EVO',
-        priceRegular: '€8',
-        priceLarge: '€12',
-      },
-      {
-        name: 'Etna',
-        ingredients: 'Calabrese hot salame, Caramelised red onions, Roasted peppers, Sweet gorgonzola creme, Rocket',
-        priceRegular: '€9',
-        priceLarge: '€13',
-      },
-      {
-        name: 'Porchetta',
-        ingredients: 'Roasted pork, Thinly sliced potatoes, Caramelised red onions, Choice of cheese or crème',
-        priceRegular: '€11',
-        priceLarge: '€15',
-      },
-    ],
+    image: '/assets/menu/menu-pork.jpg',
   },
   {
     id: 'beef',
     nameKey: 'menu.category.beef',
     icon: <Fish className="w-6 h-6 text-tomato" />,
-    items: [
-      {
-        name: 'Vitello Tonnato',
-        ingredients: 'Thinly sliced beef, Tuna sauce, Capers, Rocket, EVO',
-        priceRegular: '€9',
-        priceLarge: '€13',
-      },
-      {
-        name: 'Roastbeef Truffle',
-        ingredients: 'Roastbeef, Black truffle mayo, Smoked provola, EVO',
-        priceRegular: '€11',
-        priceLarge: '€15',
-      },
-    ],
+    image: '/assets/menu/menu-beef-fish.jpg',
   },
   {
     id: 'vegetarian',
     nameKey: 'menu.category.vegetarian',
     icon: <Leaf className="w-6 h-6 text-pistachio" />,
-    items: [
-      {
-        name: 'Caprese',
-        ingredients: 'Buffalo mozzarella, Homemade basil pesto, Tomatoes',
-        priceRegular: '€8',
-        priceLarge: '€12',
-      },
-      {
-        name: 'Gialla',
-        ingredients: 'Yellow tomatoes, Burrata, Red peppers, Balsamic glaze',
-        priceRegular: '€9',
-        priceLarge: '€13',
-      },
-    ],
+    image: '/assets/menu/menu-veggie.jpg',
   },
 ]
 
@@ -92,7 +41,7 @@ export default function MenuSection() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
 
-  const activeItems = menuCategories.find((cat) => cat.id === activeCategory)?.items || []
+  const activeMenuImage = menuCategories.find((cat) => cat.id === activeCategory)?.image || ''
 
   return (
     <section ref={sectionRef} className="py-24 bg-flour relative overflow-hidden">
@@ -163,87 +112,34 @@ export default function MenuSection() {
           ))}
         </motion.div>
 
-        {/* Menu Board Container */}
+        {/* Menu Image Container */}
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="max-w-4xl mx-auto"
+          className="max-w-2xl mx-auto"
         >
-          {/* Wooden frame effect */}
-          <div className="relative bg-[#FDF8F0] rounded-sm shadow-2xl border-8 border-[#8B6914]/30">
-            {/* Inner shadow for depth */}
-            <div className="absolute inset-0 shadow-inner pointer-events-none" />
-
-            {/* Paper texture inside */}
-            <div className="relative p-8 md:p-12">
-              {/* Price Header */}
-              <div className="flex justify-end gap-8 pr-4 mb-6 border-b-2 border-dashed border-espresso/20 pb-4">
-                <span className="font-oswald font-bold text-sm text-espresso/60 uppercase tracking-wider w-16 text-center">
-                  {t('menu.regular')}
-                </span>
-                <span className="font-oswald font-bold text-sm text-espresso/60 uppercase tracking-wider w-16 text-center">
-                  {t('menu.large')}
-                </span>
-              </div>
-
-              {/* Menu Items */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeCategory}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-6"
-                >
-                  {activeItems.map((item, index) => (
-                    <motion.div
-                      key={item.name}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="group"
-                    >
-                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 pb-6 border-b border-espresso/10 last:border-b-0">
-                        <div className="flex-1">
-                          {/* Item name with decorative dot leader */}
-                          <div className="flex items-baseline gap-2">
-                            <h3 className="font-oswald font-bold text-xl md:text-2xl text-espresso group-hover:text-tomato transition-colors uppercase tracking-wide">
-                              {item.name}
-                            </h3>
-                            <span className="hidden md:block flex-1 border-b-2 border-dotted border-espresso/20 mx-2" />
-                          </div>
-                          <p className="text-espresso/60 font-lato text-sm md:text-base mt-2 leading-relaxed italic">
-                            {item.ingredients}
-                          </p>
-                        </div>
-                        {/* Prices */}
-                        <div className="flex items-center gap-8 flex-shrink-0">
-                          <div className="w-16 text-center">
-                            <span className="font-playfair text-xl md:text-2xl font-bold text-espresso">
-                              {item.priceRegular}
-                            </span>
-                          </div>
-                          <div className="w-16 text-center">
-                            <span className="font-playfair text-xl md:text-2xl font-bold text-crust">
-                              {item.priceLarge}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
-
-              {/* Decorative stamp/badge */}
-              <div className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-6 w-20 h-20 md:w-24 md:h-24 bg-tomato rounded-full flex items-center justify-center transform rotate-12 shadow-lg">
-                <span className="font-oswald font-bold text-white text-center text-xs md:text-sm uppercase leading-tight">
-                  100%<br />Italiano
-                </span>
-              </div>
-            </div>
+          {/* Menu Image with shadow */}
+          <div className="relative rounded-lg overflow-hidden shadow-2xl">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeCategory}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="relative aspect-[1890/2646]"
+              >
+                <Image
+                  src={activeMenuImage}
+                  alt={`${activeCategory} schiacciata menu`}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, 672px"
+                  priority
+                />
+              </motion.div>
+            </AnimatePresence>
           </div>
         </motion.div>
 

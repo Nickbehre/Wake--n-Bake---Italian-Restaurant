@@ -19,8 +19,8 @@ export default function LocationSection() {
   const contentOpacity = useTransform(scrollYProgress, [0.2, 0.4], [0, 1])
 
   // Exact coordinates for Vijzelstraat 93h, 1017 HH Amsterdam
-  const latitude = 52.3613
-  const longitude = 4.8932
+  const latitude = 52.36383074070107
+  const longitude = 4.891507396929842
 
   // Uber Eats order link
   const UBER_EATS_URL = 'https://www.order.store/nl/store/wake-n-bake-panificio/xon7rL6IRMqMdtpdlRryxg'

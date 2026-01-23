@@ -6,14 +6,14 @@ import { menuData } from '@/lib/data/menu'
 import { useLanguage } from '@/lib/context/LanguageContext'
 
 export default function MenuPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
 
   return (
-    <div className="min-h-screen bg-flour pt-32 pb-20">
+    <div className="min-h-screen bg-flour pt-36 md:pt-40 pb-20">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="font-montserrat font-bold text-5xl md:text-6xl mb-6 text-espresso">
+        <div className="text-center mb-16 mt-4 md:mt-8">
+          <h1 className="font-comodo text-5xl md:text-6xl mb-6 text-espresso">
             {t('menuPage.title')}
           </h1>
           <p className="text-xl text-espresso/80 max-w-2xl mx-auto">
@@ -29,7 +29,7 @@ export default function MenuPage() {
               href={`#${category.id}`}
               className="px-6 py-2 bg-white shadow-md font-montserrat font-semibold text-espresso hover:bg-crust hover:text-espresso transition-colors"
             >
-              {category.name}
+              {language === 'en' && category.nameEN ? category.nameEN : category.name}
             </a>
           ))}
         </nav>

@@ -47,7 +47,7 @@ export default function Header() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isMenuOrGalleryPage
           ? 'bg-tomato py-2'
-          : isScrolled
+          : isScrolled || isMobileMenuOpen
           ? 'bg-flour/95 backdrop-blur-md shadow-lg py-1'
           : 'bg-transparent py-2'
       }`}
@@ -65,7 +65,6 @@ export default function Header() {
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              {/* Using img tag for maximum compatibility */}
               <img
                 src="/assets/logo.png"
                 alt="Wake N' Bake Panificio"
@@ -77,13 +76,13 @@ export default function Header() {
             </motion.div>
           </Link>
 
-          {/* Desktop Navigation - Oswald font, uppercase, bold */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+          {/* Desktop Navigation - Stamp font style */}
+          <nav className="hidden xl:flex items-center gap-2 2xl:gap-6 flex-nowrap">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`font-oswald font-bold uppercase tracking-wider text-sm transition-colors duration-300 relative group ${
+                className={`font-stamp text-base 2xl:text-xl whitespace-nowrap transition-colors duration-300 relative group ${
                   pathname === item.href
                     ? 'text-crust'
                     : isMenuOrGalleryPage
@@ -100,7 +99,7 @@ export default function Header() {
           </nav>
 
           {/* CTA, Language Toggle & Social */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden xl:flex items-center gap-3">
             {/* Language Toggle */}
             <LanguageToggle variant={isMenuOrGalleryPage ? 'light' : isScrolled ? 'dark' : 'light'} />
 
@@ -144,11 +143,11 @@ export default function Header() {
           </div>
 
           {/* Mobile: Language Toggle & Menu Button */}
-          <div className="lg:hidden flex items-center gap-2">
-            <LanguageToggle variant={isMenuOrGalleryPage ? 'light' : isScrolled ? 'dark' : 'light'} />
+          <div className="xl:hidden flex items-center gap-2">
+            <LanguageToggle variant={isMenuOrGalleryPage ? 'light' : (isScrolled || isMobileMenuOpen) ? 'dark' : 'light'} />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2 ${isMenuOrGalleryPage || !isScrolled ? 'text-white' : 'text-espresso'}`}
+              className={`p-2 ${isMenuOrGalleryPage ? 'text-white' : (isScrolled || isMobileMenuOpen) ? 'text-espresso' : 'text-white'}`}
               aria-label={isMobileMenuOpen ? 'Sluit menu' : 'Open menu'}
             >
               {isMobileMenuOpen ? (
@@ -168,14 +167,14 @@ export default function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-flour border-t border-espresso/10"
+            className="xl:hidden bg-flour border-t border-espresso/10"
           >
-            <nav className="container mx-auto px-4 py-6 space-y-4">
+            <nav className="container mx-auto px-4 py-6 flex flex-wrap gap-4">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`block font-oswald font-bold uppercase tracking-wider text-lg ${
+                  className={`font-stamp text-xl md:text-2xl ${
                     pathname === item.href ? 'text-crust' : 'text-espresso'
                   }`}
                 >

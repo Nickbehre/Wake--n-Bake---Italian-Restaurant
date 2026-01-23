@@ -11,7 +11,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-flour">
       {/* Header */}
-      <section className="bg-espresso text-white pt-32 pb-20">
+      <section className="bg-espresso text-white pt-36 md:pt-44 pb-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="font-montserrat font-bold text-5xl md:text-6xl mb-6">
             {t('contact.title')}

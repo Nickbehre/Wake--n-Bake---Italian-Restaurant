@@ -5,49 +5,89 @@ import { useLanguage } from '@/lib/context/LanguageContext'
 
 const galleryImages = [
   {
-    src: '/assets/gallery/focaccia-01.webp',
-    alt: 'Verse focaccia met mortadella en pistachepesto',
-    title: 'Focaccia Mortadella',
+    src: '/assets/gallery/2025-10-06-WakenBake-002.jpg',
+    alt: 'Wake N\' Bake Panificio',
+    title: 'Wake N\' Bake',
   },
   {
-    src: '/assets/gallery/focaccia-02.webp',
-    alt: 'Knapperige focaccia met verse toppings',
-    title: 'Focaccia Special',
+    src: '/assets/gallery/IMG_0973.jpeg',
+    alt: 'Verse Schiacciata',
+    title: 'Schiacciata',
   },
   {
-    src: '/assets/gallery/schiacciata-01.webp',
-    alt: 'Schiacciata met prosciutto',
-    title: 'Schiacciata Prosciutto',
+    src: '/assets/gallery/IMG_1130.jpeg',
+    alt: 'Heerlijke Italiaanse broodjes',
+    title: 'Panini',
   },
   {
-    src: '/assets/gallery/pizza-slice-01.webp',
-    alt: 'Pizza slice met verse ingrediënten',
-    title: 'Pizza al Taglio',
+    src: '/assets/gallery/IMG_1131.jpeg',
+    alt: 'Vers uit de oven',
+    title: 'Vers Gebakken',
   },
   {
-    src: '/assets/gallery/interior-01.webp',
-    alt: "Interieur van Wake N' Bake Panificio",
-    title: 'Onze Bakkerij',
+    src: '/assets/gallery/IMG_1132.jpeg',
+    alt: 'Authentieke Italiaanse smaak',
+    title: 'Authentiek Italiaans',
   },
   {
-    src: '/assets/gallery/coffee-01.webp',
-    alt: 'Perfecte Italiaanse espresso',
-    title: 'Espresso',
+    src: '/assets/gallery/IMG_1133.jpeg',
+    alt: 'Rijkelijk belegd',
+    title: 'Rijkelijk Belegd',
   },
   {
-    src: '/assets/gallery/cornetto-01.webp',
-    alt: 'Verse cornetti met cappuccino',
-    title: 'Cornetti',
+    src: '/assets/gallery/IMG_1498.jpeg',
+    alt: 'Onze specialiteiten',
+    title: 'Specialiteiten',
   },
   {
-    src: '/assets/gallery/tiramisu-01.webp',
-    alt: 'Huisgemaakt tiramisù',
-    title: 'Tiramisù',
+    src: '/assets/gallery/IMG_1500.jpeg',
+    alt: 'Dagelijks vers bereid',
+    title: 'Dagelijks Vers',
   },
   {
-    src: '/assets/gallery/team-01.webp',
-    alt: 'Ons team aan het werk',
-    title: 'Ons Team',
+    src: '/assets/gallery/IMG_2280.jpeg',
+    alt: 'In onze bakkerij',
+    title: 'De Bakkerij',
+  },
+  {
+    src: '/assets/gallery/IMG_2781.jpeg',
+    alt: 'Met liefde gemaakt',
+    title: 'Met Liefde Gemaakt',
+  },
+  {
+    src: '/assets/gallery/IMG_3065.jpeg',
+    alt: 'Verse ingrediënten',
+    title: 'Verse Ingrediënten',
+  },
+  {
+    src: '/assets/gallery/IMG_3088.jpeg',
+    alt: 'Ambachtelijk bereid',
+    title: 'Ambachtelijk',
+  },
+  {
+    src: '/assets/gallery/IMG_8268.jpeg',
+    alt: 'Italiaanse tradities',
+    title: 'Italiaanse Tradities',
+  },
+  {
+    src: '/assets/gallery/IMG_8353.jpeg',
+    alt: 'Ons assortiment',
+    title: 'Assortiment',
+  },
+  {
+    src: '/assets/gallery/IMG_8406.jpeg',
+    alt: 'Heerlijke creaties',
+    title: 'Creaties',
+  },
+  {
+    src: '/assets/gallery/IMG_9032.jpeg',
+    alt: 'Schiacciata close-up',
+    title: 'Schiacciata Detail',
+  },
+  {
+    src: '/assets/gallery/IMG_9033.jpeg',
+    alt: 'Klaar om te serveren',
+    title: 'Klaar om te Serveren',
   },
 ]
 
@@ -55,9 +95,9 @@ export default function GalleryPage() {
   const { t } = useLanguage()
 
   return (
-    <div className="min-h-screen bg-flour pt-32 pb-20">
+    <div className="min-h-screen bg-flour pt-36 md:pt-44 pb-20">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 mt-4 md:mt-8">
           <h1 className="font-montserrat font-bold text-5xl md:text-6xl mb-6 text-espresso">
             {t('gallery.title')}
           </h1>

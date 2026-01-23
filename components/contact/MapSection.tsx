@@ -3,8 +3,8 @@
 import { MapPin, ExternalLink } from 'lucide-react'
 
 export default function MapSection() {
-  const latitude = 52.3625
-  const longitude = 4.8892
+  const latitude = 52.36383074070107
+  const longitude = 4.891507396929842
   const address = 'Vijzelstraat 93h, 1017 HH Amsterdam'
 
   return (

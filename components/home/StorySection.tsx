@@ -262,8 +262,30 @@ export default function StorySection() {
     <>
     <section
       ref={containerRef}
-      className="relative py-24 md:py-32 bg-flour overflow-hidden"
+      className="relative pt-0 pb-24 md:pb-32 bg-flour overflow-hidden"
     >
+      {/* Ripped Paper Edge Transition from Hero */}
+      <div className="relative w-full -mt-1">
+        <svg
+          viewBox="0 0 1440 120"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-auto"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0 120V60C20 65 40 50 60 55C80 60 100 45 120 50C140 55 160 40 180 45C200 50 220 35 240 40C260 45 280 30 300 35C320 40 340 25 360 30C380 35 400 20 420 25C440 30 460 15 480 20C500 25 520 10 540 15C560 20 580 5 600 10C620 15 640 0 660 5C680 10 700 0 720 5C740 10 760 0 780 5C800 10 820 0 840 5C860 10 880 0 900 5C920 10 940 0 960 5C980 10 1000 0 1020 5C1040 10 1060 0 1080 5C1100 10 1120 0 1140 5C1160 10 1180 0 1200 5C1220 10 1240 0 1260 5C1280 10 1300 0 1320 5C1340 10 1360 0 1380 5C1400 10 1420 0 1440 5V120H0Z"
+            fill="#F9F7F2"
+          />
+          <path
+            d="M0 120V70C20 75 40 60 60 65C80 70 100 55 120 60C140 65 160 50 180 55C200 60 220 45 240 50C260 55 280 40 300 45C320 50 340 35 360 40C380 45 400 30 420 35C440 40 460 25 480 30C500 35 520 20 540 25C560 30 580 15 600 20C620 25 640 10 660 15C680 20 700 10 720 15C740 20 760 10 780 15C800 20 820 10 840 15C860 20 880 10 900 15C920 20 940 10 960 15C980 20 1000 10 1020 15C1040 20 1060 10 1080 15C1100 20 1120 10 1140 15C1160 20 1180 10 1200 15C1220 20 1240 10 1260 15C1280 20 1300 10 1320 15C1340 20 1360 10 1380 15C1400 20 1420 10 1440 15V120H0Z"
+            fill="#F9F7F2"
+            fillOpacity="0.7"
+          />
+        </svg>
+        {/* Shadow above the rip for depth */}
+        <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-black/20 to-transparent pointer-events-none" />
+      </div>
       {/* Subtle texture background */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div

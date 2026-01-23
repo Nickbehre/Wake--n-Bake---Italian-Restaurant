@@ -3,12 +3,18 @@
 import { motion } from 'framer-motion'
 import MenuCard from './MenuCard'
 import type { MenuCategory as MenuCategoryType } from '@/lib/data/menu'
+import { useLanguage } from '@/lib/context/LanguageContext'
 
 interface MenuCategoryProps {
   category: MenuCategoryType
 }
 
 export default function MenuCategory({ category }: MenuCategoryProps) {
+  const { language } = useLanguage()
+
+  const categoryName = language === 'en' && category.nameEN ? category.nameEN : category.name
+  const categoryDescription = language === 'en' && category.descriptionEN ? category.descriptionEN : category.description
+
   return (
     <motion.section
       initial={{ opacity: 0 }}
@@ -18,9 +24,9 @@ export default function MenuCategory({ category }: MenuCategoryProps) {
     >
       <div className="mb-8">
         <h2 className="font-montserrat font-bold text-3xl md:text-4xl text-espresso mb-2">
-          {category.name}
+          {categoryName}
         </h2>
-        <p className="text-espresso/70 text-lg">{category.description}</p>
+        <p className="text-espresso/70 text-lg">{categoryDescription}</p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

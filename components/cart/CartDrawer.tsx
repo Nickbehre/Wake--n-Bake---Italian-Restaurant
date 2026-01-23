@@ -2,17 +2,23 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ShoppingBag, X, Plus, Minus, Trash2 } from 'lucide-react'
+import { ShoppingBag, X, Plus, Minus, Trash2, Bike, Store } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useCart } from '@/lib/context/CartContext'
+import { useCartStore } from '@/lib/store/cart-store'
 import { useLanguage } from '@/lib/context/LanguageContext'
 
 export default function CartDrawer() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
-  const { items, totalItems, totalPrice, updateQuantity, removeItem } = useCart()
+
+  // Use global Zustand store
+  const { items, totals, updateQuantity, removeItem } = useCartStore()
   const { t } = useLanguage()
+
+  // Derived state
+  const totalItems = items.reduce((acc, item) => acc + item.quantity, 0)
+  const totalPrice = totals.total
 
   useEffect(() => {
     setIsMounted(true)
@@ -24,6 +30,11 @@ export default function CartDrawer() {
   }
 
   // Don't show floating button if cart is empty
+  // Actually, user wants to see the buttons for Bezorgen/Afhalen?
+  // Usually the cart drawer is only for items you added.
+  // The Prompt says: "In the CartDrawer or Menu page: Add two buttons at the checkout entry point"
+  // Assuming "checkout entry point" means the bottom of the cart drawer where the Checkout button currently is.
+  // So logic stays: hide if empty.
   if (totalItems === 0 && !isOpen) {
     return null
   }
@@ -106,12 +117,17 @@ export default function CartDrawer() {
                     >
                       {/* Item Image */}
                       <div className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          fill
-                          className="object-cover"
-                        />
+                        {/* Fallback if no image, but our data has images */}
+                        {item.image ? (
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-200" />
+                        )}
                       </div>
 
                       {/* Item Details */}
@@ -119,8 +135,13 @@ export default function CartDrawer() {
                         <h3 className="font-montserrat font-semibold text-espresso truncate">
                           {item.name}
                         </h3>
+                        {item.sizeLabel && (
+                          <span className="text-xs text-crust font-oswald uppercase bg-crust/10 px-2 py-0.5 rounded inline-block">
+                            {item.sizeLabel}
+                          </span>
+                        )}
                         <p className="font-oswald text-crust font-bold text-lg">
-                          {item.price}
+                          €{item.price.toFixed(2)}
                         </p>
 
                         {/* Quantity Controls */}
@@ -154,11 +175,11 @@ export default function CartDrawer() {
               )}
             </div>
 
-            {/* Footer with Total and Checkout */}
+            {/* Footer with Total and Checkout Options */}
             {items.length > 0 && (
               <div className="border-t border-espresso/10 p-6 space-y-4">
                 {/* Total */}
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mb-2">
                   <span className="font-oswald text-xl text-espresso uppercase tracking-wide">
                     {t('cart.total')}
                   </span>
@@ -167,17 +188,32 @@ export default function CartDrawer() {
                   </span>
                 </div>
 
-                {/* Checkout Button */}
-                <Link
-                  href="/checkout"
-                  onClick={() => setIsOpen(false)}
-                  className="block w-full bg-tomato text-white text-center py-4 font-oswald text-lg font-bold uppercase tracking-wide hover:bg-tomato/90 transition-colors"
-                >
-                  {t('cart.checkout')}
-                </Link>
+                {/* CHOICE: UBER OR CLICK & COLLECT */}
+                <div className="space-y-3">
+                  {/* 1. Uber Eats */}
+                  <a
+                    href="https://www.order.store/nl/store/wake-n-bake-panificio/xon7rL6IRMqMdtpdlRryxg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-3 bg-black text-white text-center py-4 rounded font-oswald text-lg font-bold uppercase tracking-wide hover:bg-gray-800 transition-colors group"
+                  >
+                    <Bike className="w-5 h-5 group-hover:animate-pulse" />
+                    {t('cart.delivery')}
+                  </a>
 
-                <p className="text-center text-xs text-espresso/50 font-lato">
-                  {t('cart.clickCollect')}
+                  {/* 2. Click & Collect */}
+                  <Link
+                    href="/checkout"
+                    onClick={() => setIsOpen(false)}
+                    className="w-full flex items-center justify-center gap-3 bg-tomato text-white text-center py-4 rounded font-oswald text-lg font-bold uppercase tracking-wide hover:bg-red-700 transition-colors group shadow-md"
+                  >
+                    <Store className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
+                    {t('cart.takeaway')}
+                  </Link>
+                </div>
+
+                <p className="text-center text-xs text-espresso/50 font-lato mt-2">
+                  {t('cart.pickupNote')}
                 </p>
               </div>
             )}
