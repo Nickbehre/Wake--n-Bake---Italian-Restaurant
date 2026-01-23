@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 
 /* Comodo Stamp Font - CC BY 4.0 License */
-/* Icons made from https://www.onlinewebfonts.com/icon is licensed by CC BY 4.0 */
+/* Font from https://www.onlinewebfonts.com is licensed by CC BY 4.0 */
 @font-face {
   font-family: 'Comodo Stamp';
-  src: url('/fonts/comodo-stamp.ttf') format('truetype');
+  src: url('/fonts/Comodo-Stamp.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;

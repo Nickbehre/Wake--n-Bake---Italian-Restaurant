@@ -85,10 +85,10 @@ export default function RootLayout({
               },
               geo: {
                 '@type': 'GeoCoordinates',
-                latitude: 52.3625,
-                longitude: 4.8892,
+                latitude: 52.36383074070107,
+                longitude: 4.891507396929842,
               },
-              telephone: '+31 20 123 4567',
+              telephone: '+31 6 53764546',
               url: 'https://www.wakenbakepanificio.nl',
               servesCuisine: 'Italian',
               priceRange: '€€',

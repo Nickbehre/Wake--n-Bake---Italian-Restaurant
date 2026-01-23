@@ -50,10 +50,10 @@ export default function Footer() {
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-crust flex-shrink-0" />
                 <a
-                  href="tel:+31201234567"
+                  href="tel:+31653764546"
                   className="hover:text-crust transition-colors"
                 >
-                  +31 20 123 4567
+                  +31 6 53764546
                 </a>
               </div>
               <div className="flex items-center gap-3">
@@ -153,6 +153,30 @@ export default function Footer() {
               <span className="text-sm font-bold">TA</span>
             </a>
           </div>
+        </div>
+
+        {/* Font License */}
+        <div className="border-t border-white/10 mt-4 pt-4 text-center">
+          <p className="text-white/40 text-xs">
+            Font &quot;Comodo Stamp&quot; from{' '}
+            <a
+              href="https://www.onlinewebfonts.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white/60 underline"
+            >
+              onlinewebfonts.com
+            </a>{' '}
+            licensed under{' '}
+            <a
+              href="https://creativecommons.org/licenses/by/4.0/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white/60 underline"
+            >
+              CC BY 4.0
+            </a>
+          </p>
         </div>
       </div>
     </footer>

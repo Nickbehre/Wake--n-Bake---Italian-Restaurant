@@ -119,7 +119,7 @@ export default function Header() {
               <Instagram className="w-5 h-5" />
             </a>
             <a
-              href="tel:+31201234567"
+              href="tel:+31653764546"
               className={`p-2 rounded-full transition-colors ${
                 isMenuOrGalleryPage
                   ? 'text-white hover:bg-white/20'
@@ -192,7 +192,7 @@ export default function Header() {
                   <Instagram className="w-6 h-6" />
                 </a>
                 <a
-                  href="tel:+31201234567"
+                  href="tel:+31653764546"
                   className="p-2 text-espresso hover:text-crust transition-colors"
                   aria-label="Bel ons"
                 >
