@@ -37,6 +37,7 @@ interface CartState {
     clearCart: () => void;
     setPickupTime: (date: Date | null) => void;
     setCustomerDetails: (details: CustomerDetails) => void;
+    calculateTotals: () => void;
 }
 
 const TAX_RATE = 0.09; // 9% tax

@@ -2,7 +2,13 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import OrderReceipt from "@/components/emails/OrderReceipt";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend lazily to avoid build-time errors
+function getResend() {
+    if (!process.env.RESEND_API_KEY) {
+        throw new Error("RESEND_API_KEY is not set");
+    }
+    return new Resend(process.env.RESEND_API_KEY);
+}
 
 export async function POST(request: Request) {
     try {
@@ -15,6 +21,7 @@ export async function POST(request: Request) {
         // In a real app, generate the PDF or Receipt here.
         // We send the React Email component.
 
+        const resend = getResend();
         const { data, error } = await resend.emails.send({
             from: 'Wake n Bake <orders@wake-n-bake.nl>', // Requires domain verification
             to: [email],

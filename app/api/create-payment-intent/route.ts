@@ -2,12 +2,18 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { menuData } from "@/lib/data/menu";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2024-12-18.acacia",
-});
-
 // Helper to flatten menu items directly for easier lookup
 const allItems = menuData.categories.flatMap((c) => c.items);
+
+// Initialize Stripe lazily to avoid build-time errors
+function getStripe() {
+    if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error("STRIPE_SECRET_KEY is not set");
+    }
+    return new Stripe(process.env.STRIPE_SECRET_KEY, {
+        apiVersion: "2025-12-15.clover",
+    });
+}
 
 const TAX_RATE = 0.09; // 9% BTW
 
@@ -81,6 +87,7 @@ export async function POST(request: Request) {
         // Generate a short order ID
         const orderId = `WNB-${Math.floor(1000 + Math.random() * 9000)}`;
 
+        const stripe = getStripe();
         const paymentIntent = await stripe.paymentIntents.create({
             amount: amountInCents,
             currency: "eur",

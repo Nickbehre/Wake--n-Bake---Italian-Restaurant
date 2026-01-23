@@ -65,13 +65,22 @@ export default function CheckoutPage() {
           <p className="font-oswald text-espresso tracking-widest uppercase text-sm">Click & Collect</p>
         </header>
 
-        {items.length > 0 && !clientSecret ? (
+        {items.length === 0 ? (
+          <div className="text-center py-20">
+            <h2 className="font-oswald text-3xl text-espresso mb-4">Je winkelmandje is leeg</h2>
+            <p className="text-gray-600 mb-8 font-lato">Ga terug naar het menu om lekkere dingen toe te voegen.</p>
+            <button
+              onClick={() => window.location.href = "/menu"}
+              className="bg-tomato text-white px-8 py-3 rounded hover:bg-red-700 transition font-oswald uppercase bold tracking-wider"
+            >
+              Naar Menu
+            </button>
+          </div>
+        ) : items.length > 0 && !clientSecret ? (
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="w-10 h-10 animate-spin text-tomato mb-4" />
             <p className="font-lato text-gray-500">Betaling voorbereiden...</p>
           </div>
-        ) : items.length === 0 ? (
-          <CheckoutForm /> // Will handle empty state
         ) : (
           <Elements options={options} stripe={stripePromise}>
             <CheckoutForm />
