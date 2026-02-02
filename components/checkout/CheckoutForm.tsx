@@ -248,19 +248,12 @@ export default function CheckoutForm() {
                         ))}
                     </div>
 
-                    <div className="border-t border-stone-300 pt-3 space-y-1 font-lato">
-                        <div className="flex justify-between text-gray-600 text-sm">
-                            <span>Subtotaal</span>
-                            <span>€{totals.subtotal.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between text-gray-500 text-xs">
-                            <span>BTW (9%)</span>
-                            <span>€{totals.tax.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between font-oswald text-xl text-espresso mt-2 pt-2 border-t border-stone-200">
+                    <div className="border-t border-stone-300 pt-3 font-lato">
+                        <div className="flex justify-between font-oswald text-xl text-espresso">
                             <span>Totaal</span>
                             <span>€{totals.total.toFixed(2)}</span>
                         </div>
+                        <p className="text-gray-400 text-xs mt-1">Inclusief BTW</p>
                     </div>
                 </section>
 

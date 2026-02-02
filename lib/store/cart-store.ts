@@ -40,8 +40,7 @@ interface CartState {
     calculateTotals: () => void;
 }
 
-const TAX_RATE = 0.09; // 9% tax
-
+// Prices are already inclusive of BTW (VAT)
 export const useCartStore = create<CartState>()(
     persist(
         (set, get) => ({
@@ -107,17 +106,15 @@ export const useCartStore = create<CartState>()(
 
             calculateTotals: () => {
                 const { items } = get();
-                const subtotal = items.reduce(
+                const total = items.reduce(
                     (acc, item) => acc + item.price * item.quantity,
                     0
                 );
-                const tax = subtotal * TAX_RATE;
-                const total = subtotal + tax;
 
                 set({
                     totals: {
-                        subtotal: parseFloat(subtotal.toFixed(2)),
-                        tax: parseFloat(tax.toFixed(2)),
+                        subtotal: parseFloat(total.toFixed(2)),
+                        tax: 0, // BTW is already included in prices
                         total: parseFloat(total.toFixed(2)),
                     },
                 });

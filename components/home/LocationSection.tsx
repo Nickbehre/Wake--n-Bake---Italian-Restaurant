@@ -1,13 +1,45 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useLanguage } from '@/lib/context/LanguageContext'
 import { MapPin, Clock, ExternalLink, Navigation } from 'lucide-react'
 
+// Check if currently open based on Amsterdam time
+function checkIsOpen(): boolean {
+  // Get current time in Amsterdam timezone
+  const now = new Date()
+  const amsterdamTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Amsterdam' }))
+  const day = amsterdamTime.getDay() // 0 = Sunday, 1 = Monday, etc.
+  const hours = amsterdamTime.getHours()
+  const minutes = amsterdamTime.getMinutes()
+  const currentTime = hours * 60 + minutes // Convert to minutes for easier comparison
+
+  // Opening hours in minutes from midnight
+  // Mon - Fri: 08:00 - 18:00
+  // Sat - Sun: 09:00 - 17:00
+  if (day >= 1 && day <= 5) {
+    // Monday to Friday
+    return currentTime >= 8 * 60 && currentTime < 18 * 60
+  } else {
+    // Saturday (6) and Sunday (0)
+    return currentTime >= 9 * 60 && currentTime < 17 * 60
+  }
+}
+
 export default function LocationSection() {
   const { t } = useLanguage()
   const sectionRef = useRef<HTMLDivElement>(null)
+  const [isOpen, setIsOpen] = useState(false)
+
+  // Update open status on mount and every minute
+  useEffect(() => {
+    setIsOpen(checkIsOpen())
+    const interval = setInterval(() => {
+      setIsOpen(checkIsOpen())
+    }, 60000) // Check every minute
+    return () => clearInterval(interval)
+  }, [])
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -160,12 +192,13 @@ export default function LocationSection() {
 
               {/* Map */}
               <div className="relative h-[400px] md:h-[500px]">
-                {/* Styled Map Iframe */}
+                {/* Google Maps Iframe */}
                 <iframe
-                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${longitude - 0.003}%2C${latitude - 0.0015}%2C${longitude + 0.003}%2C${latitude + 0.0015}&layer=mapnik&marker=${latitude}%2C${longitude}`}
+                  src="https://www.google.com/maps/embed?pb=!1m23!1m12!1m3!1d731.8510597653282!2d4.892293707375058!3d52.36318569111751!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m8!3e6!4m0!4m5!1s0x47c60986e493b3a9%3A0x51d128d5f0204561!2sWake%20N'%20Bake%2C%20Vijzelstraat%2093h%2C%201017%20HH%20Amsterdam!3m2!1d52.363344999999995!2d4.89238!5e1!3m2!1sen!2snl!4v1769987377221!5m2!1sen!2snl"
                   width="100%"
                   height="100%"
-                  style={{ border: 0, filter: 'saturate(0.8) contrast(1.1)', pointerEvents: 'none' }}
+                  style={{ border: 0, filter: 'saturate(0.8) contrast(1.1)' }}
+                  allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Wake N' Bake Panificio Location"
@@ -201,13 +234,13 @@ export default function LocationSection() {
               {/* Bottom bar */}
               <div className="bg-espresso p-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-tomato rounded-full" />
+                  <div className={`w-3 h-3 rounded-full ${isOpen ? 'bg-pistachio' : 'bg-tomato'}`} />
                   <span className="text-white/80 text-sm font-oswald uppercase tracking-wide">
-                    {t('location.closed')}
+                    {isOpen ? t('location.openNow') : t('location.closed')}
                   </span>
                 </div>
                 <a
-                  href={`https://www.google.com/maps/place/Vijzelstraat+93h,+1017+HH+Amsterdam`}
+                  href={`https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-crust hover:text-white text-sm font-oswald font-semibold uppercase tracking-wide transition-colors flex items-center gap-1"

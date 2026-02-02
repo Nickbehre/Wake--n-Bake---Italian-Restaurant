@@ -10,12 +10,14 @@ function getStripe() {
     if (!process.env.STRIPE_SECRET_KEY) {
         throw new Error("STRIPE_SECRET_KEY is not set");
     }
-    return new Stripe(process.env.STRIPE_SECRET_KEY, {
-        apiVersion: "2025-12-15.clover",
-    });
+    return new Stripe(process.env.STRIPE_SECRET_KEY);
 }
 
-const TAX_RATE = 0.09; // 9% BTW
+// Stripe Connect configuration
+const CONNECTED_ACCOUNT_ID = process.env.STRIPE_CONNECTED_ACCOUNT_ID;
+const APPLICATION_FEE_PERCENT = parseFloat(process.env.APPLICATION_FEE_PERCENT || "3"); // Default 3%
+
+// Prices are already inclusive of BTW (VAT)
 
 interface CartItem {
     id: string;           // Unique cart ID (e.g., "mortadella-original-large")
@@ -73,9 +75,8 @@ export async function POST(request: Request) {
             subtotal += priceVal * item.quantity;
         }
 
-        // Add 9% BTW (tax)
-        const tax = subtotal * TAX_RATE;
-        const total = subtotal + tax;
+        // Prices already include BTW, so total = subtotal
+        const total = subtotal;
 
         // Safety check for min amount (Stripe requires >= 50 cents)
         if (total < 0.50) {
@@ -88,7 +89,14 @@ export async function POST(request: Request) {
         const orderId = `WNB-${Math.floor(1000 + Math.random() * 9000)}`;
 
         const stripe = getStripe();
-        const paymentIntent = await stripe.paymentIntents.create({
+
+        // Calculate application fee (platform commission)
+        const applicationFeeAmount = CONNECTED_ACCOUNT_ID
+            ? Math.round(amountInCents * (APPLICATION_FEE_PERCENT / 100))
+            : 0;
+
+        // Build payment intent options
+        const paymentIntentOptions: Stripe.PaymentIntentCreateParams = {
             amount: amountInCents,
             currency: "eur",
             automatic_payment_methods: {
@@ -96,12 +104,20 @@ export async function POST(request: Request) {
             },
             metadata: {
                 order_id: orderId,
-                subtotal: subtotal.toFixed(2),
-                tax: tax.toFixed(2),
                 total: total.toFixed(2),
-                items_count: items.reduce((acc, i) => acc + i.quantity, 0),
+                items_count: String(items.reduce((acc, i) => acc + i.quantity, 0)),
             },
-        });
+        };
+
+        // Add Stripe Connect options if connected account is configured
+        if (CONNECTED_ACCOUNT_ID) {
+            paymentIntentOptions.application_fee_amount = applicationFeeAmount;
+            paymentIntentOptions.transfer_data = {
+                destination: CONNECTED_ACCOUNT_ID,
+            };
+        }
+
+        const paymentIntent = await stripe.paymentIntents.create(paymentIntentOptions);
 
         return NextResponse.json({
             clientSecret: paymentIntent.client_secret,

@@ -39,17 +39,17 @@ export default function Header() {
     setIsMobileMenuOpen(false)
   }, [pathname])
 
-  // Check if we're on menu or gallery page
-  const isMenuOrGalleryPage = pathname === '/menu' || pathname === '/gallerij'
+  // Check if we're on home page
+  const isHomePage = pathname === '/'
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isMenuOrGalleryPage
-          ? 'bg-tomato py-2'
-          : isScrolled || isMobileMenuOpen
-          ? 'bg-flour/95 backdrop-blur-md shadow-lg py-1'
-          : 'bg-transparent py-2'
+        isHomePage
+          ? isScrolled || isMobileMenuOpen
+            ? 'bg-[#f7f1e1]/95 backdrop-blur-md shadow-lg py-1'
+            : 'bg-transparent py-2'
+          : 'bg-[#f7f1e1] shadow-md py-2'
       }`}
     >
       <div className="container mx-auto px-4">
@@ -85,11 +85,9 @@ export default function Header() {
                 className={`font-stamp text-base 2xl:text-xl whitespace-nowrap transition-colors duration-300 relative group ${
                   pathname === item.href
                     ? 'text-crust'
-                    : isMenuOrGalleryPage
+                    : isHomePage && !isScrolled
                     ? 'text-white hover:text-crust'
-                    : isScrolled
-                    ? 'text-espresso hover:text-crust'
-                    : 'text-white hover:text-crust'
+                    : 'text-espresso hover:text-crust'
                 }`}
               >
                 {t(item.key)}
@@ -101,18 +99,16 @@ export default function Header() {
           {/* CTA, Language Toggle & Social */}
           <div className="hidden xl:flex items-center gap-3">
             {/* Language Toggle */}
-            <LanguageToggle variant={isMenuOrGalleryPage ? 'light' : isScrolled ? 'dark' : 'light'} />
+            <LanguageToggle variant={isHomePage && !isScrolled ? 'light' : 'dark'} />
 
             <a
               href="https://www.instagram.com/wakenbake.nl/"
               target="_blank"
               rel="noopener noreferrer"
               className={`p-2 rounded-full transition-colors ${
-                isMenuOrGalleryPage
+                isHomePage && !isScrolled
                   ? 'text-white hover:bg-white/20'
-                  : isScrolled
-                  ? 'text-espresso hover:bg-pistachio/20'
-                  : 'text-white hover:bg-white/20'
+                  : 'text-espresso hover:bg-crust/20'
               }`}
               aria-label="Instagram"
             >
@@ -121,11 +117,9 @@ export default function Header() {
             <a
               href="tel:+31653764546"
               className={`p-2 rounded-full transition-colors ${
-                isMenuOrGalleryPage
+                isHomePage && !isScrolled
                   ? 'text-white hover:bg-white/20'
-                  : isScrolled
-                  ? 'text-espresso hover:bg-pistachio/20'
-                  : 'text-white hover:bg-white/20'
+                  : 'text-espresso hover:bg-crust/20'
               }`}
               aria-label="Bel ons"
             >
@@ -144,10 +138,10 @@ export default function Header() {
 
           {/* Mobile: Language Toggle & Menu Button */}
           <div className="xl:hidden flex items-center gap-2">
-            <LanguageToggle variant={isMenuOrGalleryPage ? 'light' : (isScrolled || isMobileMenuOpen) ? 'dark' : 'light'} />
+            <LanguageToggle variant={isHomePage && !isScrolled && !isMobileMenuOpen ? 'light' : 'dark'} />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2 ${isMenuOrGalleryPage ? 'text-white' : (isScrolled || isMobileMenuOpen) ? 'text-espresso' : 'text-white'}`}
+              className={`p-2 ${isHomePage && !isScrolled && !isMobileMenuOpen ? 'text-white' : 'text-espresso'}`}
               aria-label={isMobileMenuOpen ? 'Sluit menu' : 'Open menu'}
             >
               {isMobileMenuOpen ? (

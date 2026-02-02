@@ -11,9 +11,9 @@ export default function MapSection() {
     <section className="w-full">
       {/* Map Container */}
       <div className="relative w-full h-[400px] bg-espresso/10">
-        {/* Using OpenStreetMap embed as a free alternative */}
+        {/* Google Maps embed */}
         <iframe
-          src={`https://www.openstreetmap.org/export/embed.html?bbox=${longitude - 0.01}%2C${latitude - 0.005}%2C${longitude + 0.01}%2C${latitude + 0.005}&layer=mapnik&marker=${latitude}%2C${longitude}`}
+          src="https://www.google.com/maps/embed?pb=!1m23!1m12!1m3!1d731.8510597653282!2d4.892293707375058!3d52.36318569111751!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m8!3e6!4m0!4m5!1s0x47c60986e493b3a9%3A0x51d128d5f0204561!2sWake%20N'%20Bake%2C%20Vijzelstraat%2093h%2C%201017%20HH%20Amsterdam!3m2!1d52.363344999999995!2d4.89238!5e1!3m2!1sen!2snl!4v1769987377221!5m2!1sen!2snl"
           width="100%"
           height="100%"
           style={{ border: 0 }}

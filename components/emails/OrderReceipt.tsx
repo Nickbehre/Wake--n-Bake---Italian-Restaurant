@@ -29,7 +29,7 @@ interface OrderReceiptProps {
     totals: {
         subtotal: number;
         total: number;
-        tax: number;
+        tax?: number;
     };
 }
 
@@ -115,16 +115,11 @@ export const OrderReceipt = ({
                         {/* Totals */}
                         <Section className="text-right">
                             <Row>
-                                <Column><Text className="m-0 text-gray-500 text-sm">Subtotaal</Text></Column>
-                                <Column className="w-24"><Text className="m-0 text-dark">€{totals.subtotal.toFixed(2)}</Text></Column>
-                            </Row>
-                            <Row>
-                                <Column><Text className="m-0 text-gray-500 text-xs">BTW (9%)</Text></Column>
-                                <Column className="w-24"><Text className="m-0 text-gray-500 text-xs">€{totals.tax.toFixed(2)}</Text></Column>
-                            </Row>
-                            <Row className="mt-2">
                                 <Column><Text className="m-0 font-bold text-xl text-brand uppercase">Totaal</Text></Column>
                                 <Column className="w-24"><Text className="m-0 font-bold text-xl text-dark">€{totals.total.toFixed(2)}</Text></Column>
+                            </Row>
+                            <Row>
+                                <Column><Text className="m-0 text-gray-400 text-xs">Inclusief BTW</Text></Column>
                             </Row>
                         </Section>
 

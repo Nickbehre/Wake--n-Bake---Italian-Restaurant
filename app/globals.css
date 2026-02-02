@@ -17,10 +17,12 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-flour text-espresso antialiased;
+    overflow-x: hidden;
   }
 
   /* Custom scrollbar */
