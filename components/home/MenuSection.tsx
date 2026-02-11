@@ -5,7 +5,8 @@ import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { useLanguage } from '@/lib/context/LanguageContext'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, Leaf, Fish } from 'lucide-react'
+import { ArrowRight, Leaf, Fish, ChefHat, ShoppingBag } from 'lucide-react'
+import MenuPhotoOverlay, { type MenuPhoto } from '@/components/menu/MenuPhotoOverlay'
 
 interface MenuCategory {
   id: string
@@ -35,11 +36,36 @@ const menuCategories: MenuCategory[] = [
   },
 ]
 
+const schiacciatMenuPhotos: MenuPhoto[] = [
+  { src: '/assets/menu/menu-pork.jpg', alt: 'Schiacciata Pork Menu', label: 'Schiacciata — Pork', color: 'bg-crust' },
+  { src: '/assets/menu/menu-beef-fish.jpg', alt: 'Schiacciata Beef & Fish Menu', label: 'Schiacciata — Beef & Fish', color: 'bg-crust' },
+  { src: '/assets/menu/menu-veggie.jpg', alt: 'Schiacciata Vegetarian Menu', label: 'Schiacciata — Vegetarian', color: 'bg-crust' },
+]
+
+const togoMenuPhotos: MenuPhoto[] = [
+  { src: '/assets/menu/schiacciatamenutogo.jpg', alt: 'Schiacciata To-Go Menu', label: 'Schiacciata & Pizza', color: 'bg-pistachio' },
+  { src: '/assets/menu/coffeeandsweetsmenu.jpg', alt: 'Coffee & Sweet Treats Menu', label: 'Coffee & Sweet Treats', color: 'bg-pistachio' },
+]
+
 export default function MenuSection() {
   const { t } = useLanguage()
   const [activeCategory, setActiveCategory] = useState('pork')
+  const [schiacciatOverlayOpen, setSchiacciatOverlayOpen] = useState(false)
+  const [schiacciatOverlayIndex, setSchiacciatOverlayIndex] = useState(0)
+  const [togoOverlayOpen, setTogoOverlayOpen] = useState(false)
+  const [togoOverlayIndex, setTogoOverlayIndex] = useState(0)
   const sectionRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
+
+  const openSchiacciatOverlay = (index: number) => {
+    setSchiacciatOverlayIndex(index)
+    setSchiacciatOverlayOpen(true)
+  }
+
+  const openTogoOverlay = (index: number) => {
+    setTogoOverlayIndex(index)
+    setTogoOverlayOpen(true)
+  }
 
   const activeMenuImage = menuCategories.find((cat) => cat.id === activeCategory)?.image || ''
 
@@ -89,6 +115,19 @@ export default function MenuSection() {
           </p>
         </motion.div>
 
+        {/* Schiacciata Menu Label */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="flex items-center justify-center gap-3 mb-6"
+        >
+          <span className="inline-flex items-center gap-2 bg-crust text-white font-oswald text-sm uppercase tracking-widest px-5 py-2 rounded-full shadow-md">
+            <ChefHat className="w-4 h-4" />
+            {t('menuPage.schiacciatMenuTitle')} — {t('menuPage.madeToOrder')}
+          </span>
+        </motion.div>
+
         {/* Category Tabs */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -119,8 +158,11 @@ export default function MenuSection() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="max-w-2xl mx-auto"
         >
-          {/* Menu Image with shadow */}
-          <div className="relative rounded-lg overflow-hidden shadow-2xl">
+          {/* Menu Image with shadow — clickable to view full size */}
+          <button
+            onClick={() => openSchiacciatOverlay(menuCategories.findIndex(c => c.id === activeCategory))}
+            className="relative rounded-lg overflow-hidden shadow-2xl w-full cursor-pointer group"
+          >
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeCategory}
@@ -134,13 +176,77 @@ export default function MenuSection() {
                   src={activeMenuImage}
                   alt={`${activeCategory} schiacciata menu`}
                   fill
-                  className="object-contain"
+                  className="object-contain group-hover:scale-[1.02] transition-transform duration-300"
                   sizes="(max-width: 768px) 100vw, 672px"
                   priority
                 />
               </motion.div>
             </AnimatePresence>
-          </div>
+          </button>
+        </motion.div>
+
+        {/* Wake N' Bake Menu Label */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.35 }}
+          className="flex items-center justify-center gap-3 mt-20 mb-6"
+        >
+          <span className="inline-flex items-center gap-2 bg-pistachio text-white font-oswald text-sm uppercase tracking-widest px-5 py-2 rounded-full shadow-md">
+            <ShoppingBag className="w-4 h-4" />
+            {t('menuPage.togoMenuTitle')} — {t('menuPage.readyToGo')}
+          </span>
+        </motion.div>
+
+        {/* To-Go Menu Showcase */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto"
+        >
+          <button
+            onClick={() => openTogoOverlay(0)}
+            className="relative rounded-xl overflow-hidden shadow-lg group cursor-pointer text-left"
+          >
+            <div className="relative aspect-[4/3]">
+              <Image
+                src="/assets/menu/schiacciatamenutogo.jpg"
+                alt="Schiacciata & Pizza to-go"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                sizes="(max-width: 768px) 100vw, 512px"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4">
+                <span className="inline-block bg-pistachio/90 backdrop-blur-sm text-white font-oswald text-sm uppercase tracking-wider px-3 py-1.5 rounded-full mb-2">
+                  {t('menuPage.readyToGo')}
+                </span>
+                <p className="text-white font-oswald text-xl font-bold">Schiacciata & Pizza</p>
+              </div>
+            </div>
+          </button>
+          <button
+            onClick={() => openTogoOverlay(1)}
+            className="relative rounded-xl overflow-hidden shadow-lg group cursor-pointer text-left"
+          >
+            <div className="relative aspect-[4/3]">
+              <Image
+                src="/assets/menu/coffeeandsweetsmenu.jpg"
+                alt="Coffee & sweets to-go"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                sizes="(max-width: 768px) 100vw, 512px"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4">
+                <span className="inline-block bg-pistachio/90 backdrop-blur-sm text-white font-oswald text-sm uppercase tracking-wider px-3 py-1.5 rounded-full mb-2">
+                  {t('menuPage.readyToGo')}
+                </span>
+                <p className="text-white font-oswald text-xl font-bold">Coffee & Sweet Treats</p>
+              </div>
+            </div>
+          </button>
         </motion.div>
 
         {/* View Full Menu CTA */}
@@ -159,6 +265,22 @@ export default function MenuSection() {
           </Link>
         </motion.div>
       </div>
+
+      {/* Schiacciata Menu Photo Overlay */}
+      <MenuPhotoOverlay
+        isOpen={schiacciatOverlayOpen}
+        onClose={() => setSchiacciatOverlayOpen(false)}
+        photos={schiacciatMenuPhotos}
+        initialIndex={schiacciatOverlayIndex}
+      />
+
+      {/* To-Go Menu Photo Overlay */}
+      <MenuPhotoOverlay
+        isOpen={togoOverlayOpen}
+        onClose={() => setTogoOverlayOpen(false)}
+        photos={togoMenuPhotos}
+        initialIndex={togoOverlayIndex}
+      />
     </section>
   )
 }

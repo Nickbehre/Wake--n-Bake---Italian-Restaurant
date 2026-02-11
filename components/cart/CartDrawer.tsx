@@ -188,11 +188,11 @@ export default function CartDrawer() {
                   </span>
                 </div>
 
-                {/* CHOICE: UBER OR CLICK & COLLECT */}
+                {/* CHOICE: THUISBEZORGD OR CLICK & COLLECT */}
                 <div className="space-y-3">
-                  {/* 1. Uber Eats */}
+                  {/* 1. Thuisbezorgd */}
                   <a
-                    href="https://www.order.store/nl/store/wake-n-bake-panificio/xon7rL6IRMqMdtpdlRryxg"
+                    href="https://www.thuisbezorgd.nl/menu/wake-n-bake-panificio"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full flex items-center justify-center gap-3 bg-black text-white text-center py-4 rounded font-oswald text-lg font-bold uppercase tracking-wide hover:bg-gray-800 transition-colors group"

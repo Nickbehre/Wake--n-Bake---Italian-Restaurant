@@ -55,7 +55,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" data-contact-form>
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <label

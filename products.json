@@ -1,0 +1,365 @@
+{
+    "Our Signature Schiacciata": [
+      {
+        "name": "Schiacciata Caprese",
+        "description": "Fiordilatte homemade pesto, tomatoes and evo. Made fresh to order. Vegetarisch",
+        "price": "€11.50"
+      },
+      {
+        "name": "Schiacciata Vegetariana",
+        "description": "Burrata, sun dried tomatoes, crumbled pistachios, fresh basil and evo. Made fresh to order. Vegetarisch en Bevat Noten",
+        "price": "€10.50"
+      },
+      {
+        "name": "Schiacciata Mortadella",
+        "description": "Burrata mortadella, pistachio pesto, crumbled pistachios and evo. Made fresh to order. Bevat Noten",
+        "price": "€12.50"
+      },
+      {
+        "name": "Schiacciata Etna",
+        "description": "Sweet Gorgonzola creme, calabrese hot salami, caramelised onions, roasted peppers, rocket and spicy evo. Made fresh to order. Pittig",
+        "price": "€11.50"
+      },
+      {
+        "name": "Schiacciata Porchetta",
+        "description": "Cheese, porchetta di ariccia dop, thin potatoes and caramelised onion. Made fresh to order.",
+        "price": "€12.50"
+      },
+      {
+        "name": "Schiacciata Valtellina",
+        "description": "Cured spiced speck, provola, cherry tomatoes, rocket and evo. Made fresh to order.",
+        "price": "€10.50"
+      },
+      {
+        "name": "Schiacciata San Daniele",
+        "description": "Prosciutto di San Daniele, fior di latte, cherry tomatoes, fresh basil and evo. Made fresh to order.",
+        "price": "€11.50"
+      },
+      {
+        "name": "Schiacciata Vitello Tonnato",
+        "description": "Thinly sliced beef, tuna sauce, capers and rocket. Made fresh to order.",
+        "price": "€12.50"
+      },
+      {
+        "name": "Schiacciata Parmigiana",
+        "description": "Mortadella, roasted eggplant, grana padano creme, rocket and evo. Made fresh to order.",
+        "price": "€11.50"
+      },
+      {
+        "name": "Schiacciata Bresaola",
+        "description": "Bresaola Della valtellina, cherry tomatoes, rocket, shaved Parmesan, balsamic glaze and evo. Made fresh to order.",
+        "price": "€11.50"
+      },
+      {
+        "name": "Schiacciata Vegana",
+        "description": "Eggplant roasted peppers, caramelised red onions, artichokes, zucchini, almond and basil creme, rocket and evo. Made fresh to order. Vegan en Bevat Noten",
+        "price": "€11.50"
+      },
+      {
+        "name": "Schiacciata Tonno",
+        "description": "Sustainably sourced tuna, cherry tomatoes, red onions, mayonnaise, mixed salad and evo. Made fresh to order.",
+        "price": "€12.00"
+      }
+    ],
+    "Pizza Al Taglio": [
+      {
+        "name": "Pizza Margherita",
+        "description": "Homemade tomato sauce, Mozzarella, basil and evo. 100% natural ingredients, prolonged fermentation: delicious and easy to digest. Vegetarisch",
+        "price": "€6.50"
+      },
+      {
+        "name": "Pizza Diavola",
+        "description": "Homemade tomato sauce, Mozzarella, calabrese hot salami and spicy evo. 100% natural ingredients, prolonged fermentation: delicious and easy to digest. Pittig",
+        "price": "€8.00"
+      }
+    ],
+    "Wake N' Bake DEALS": [
+      {
+        "name": "Couples Deal",
+        "description": "Choose 2 Signature Schiacciata, 2 Drinks and dessert.",
+        "price": "€27.50"
+      },
+      {
+        "name": "Pizza Box Share Deal",
+        "description": "Pick 4 pizza flavours, pay 3!",
+        "price": "€25.00"
+      }
+    ],
+    "Coffee And Drinks": [
+      {
+        "name": "Milkshake",
+        "description": "",
+        "price": "€7.00"
+      },
+      {
+        "name": "Iced Latte",
+        "description": "",
+        "price": "€5.50"
+      },
+      {
+        "name": "Iced Americano",
+        "description": "",
+        "price": "€3.50"
+      },
+      {
+        "name": "Americano",
+        "description": "",
+        "price": "€3.50"
+      },
+      {
+        "name": "Cappuccino",
+        "description": "",
+        "price": "€4.50"
+      },
+      {
+        "name": "Latte Macchiato",
+        "description": "",
+        "price": "€4.50"
+      }
+    ],
+    "Sweet Treats": [
+      {
+        "name": "Tartellette",
+        "description": "3 Tartellette – Mini buttery tart shells filled with your choice of pistachio mascarpone cream or ricotta and chocolate. Rich, smooth, and irresistibly Italian.",
+        "price": "€6.00"
+      },
+      {
+        "name": "Tiramisu",
+        "description": "",
+        "price": "€7.00"
+      },
+      {
+        "name": "Pistachio Tiramisú",
+        "description": "A delightful twist on the classic, our homemade tiramisu features a creamy, nutty pistachio mascarpone and a sprinkle of crushed pistachio",
+        "price": "€8.00"
+      },
+      {
+        "name": "Sicilian Cannoli",
+        "description": "",
+        "price": "€3.50"
+      },
+      {
+        "name": "Bomba alla Crema",
+        "description": "Fluffy brioche-style doughnut bursting with smooth, house-made custard cream.",
+        "price": "€4.00"
+      },
+      {
+        "name": "Sfogliatella Riccia",
+        "description": "Crispy, flaky layers filled with sweet ricotta and citrus—an authentic Neapolitan sfogliatella baked fresh daily.",
+        "price": "€4.00"
+      }
+    ],
+    "Cold Drinks": [
+      {
+        "name": "Still Water",
+        "description": "500 ml Mineral Still Tuscany Water",
+        "price": "€3.00"
+      },
+      {
+        "name": "Sparkling Water",
+        "description": "500 ml Still natural mineral water",
+        "price": "€3.50"
+      },
+      {
+        "name": "Ichnusa non Filtrata",
+        "description": "",
+        "price": "€5.00"
+      },
+      {
+        "name": "Coca-cola",
+        "description": "330 ml",
+        "price": "€3.00"
+      },
+      {
+        "name": "Coca-Cola Zero",
+        "description": "330 ml",
+        "price": "€3.00"
+      },
+      {
+        "name": "Estathé Peach Iced Tea 250ml",
+        "description": "",
+        "price": "€3.50"
+      },
+      {
+        "name": "Estathé Lemon Iced Tea 250ml",
+        "description": "",
+        "price": "€3.50"
+      },
+      {
+        "name": "San Pellegrino Chinotto",
+        "description": "",
+        "price": "€3.50"
+      },
+      {
+        "name": "San Pellegrino Limonata",
+        "description": "",
+        "price": "€3.50"
+      },
+      {
+        "name": "San Pellegrino Aranciata",
+        "description": "",
+        "price": "€3.50"
+      },
+      {
+        "name": "San Pellegrino Aranciata Rossa",
+        "description": "330 ml",
+        "price": "€3.50"
+      },
+      {
+        "name": "Estathé Lemon Iced Tea 400ml",
+        "description": "",
+        "price": "€4.50"
+      },
+      {
+        "name": "Estathé Peach Iced Tea 400ml",
+        "description": "400 ml",
+        "price": "€4.50"
+      },
+      {
+        "name": "Yoga ACE",
+        "description": "200 ml",
+        "price": "€3.00"
+      },
+      {
+        "name": "Yoga Ananas",
+        "description": "200 ml",
+        "price": "€3.00"
+      },
+      {
+        "name": "Yoga Pesca Mango",
+        "description": "200 ml",
+        "price": "€3.00"
+      }
+    ],
+    "Biscotti": [
+      {
+        "name": "Galletti",
+        "description": "350 g Mulino Bianco Galletti 350g Biscotti Con Latte Fresco\n\nShortbread biscuits with high-quality fresh milk.",
+        "price": "€4.00"
+      },
+      {
+        "name": "Tarallucci",
+        "description": "350 g Mulino Bianco Tarallucci Shortbread Biscuits 350g - Made with Fresh Eggs",
+        "price": "€4.00"
+      },
+      {
+        "name": "Macine",
+        "description": "350 g Mulino Bianco Macine: Classic Biscuits with Fresh Cream - 350g",
+        "price": "€4.00"
+      },
+      {
+        "name": "Cuor di Mela",
+        "description": "250 g A Soft Heart of Apple in Every Bite",
+        "price": "€5.00"
+      },
+      {
+        "name": "Abbracci",
+        "description": "350 g Mulino Bianco Abbracci Cacao and Cream Cookies\nExperience the Warmth of Abbracci: Mulino Bianco’s Biscuits of Hugs",
+        "price": "€5.00"
+      },
+      {
+        "name": "Nascondini",
+        "description": "330 g Mulino Bianco's Nascondini are shortbread cookies with chocolate. A delicious pastry ideal for dipping, that hides a delicious chocolate to bite.",
+        "price": "€5.00"
+      },
+      {
+        "name": "Mulino Bianco Baiocchi con Crema alla Nocciola e Cacao",
+        "description": "260 g Italian Biscuits filled with a Hazelnut & Chocolate cream filling",
+        "price": "€6.00"
+      },
+      {
+        "name": "Mulino Bianco Baiocchi Pistacchio",
+        "description": "168 g Mulino Bianco Baiocchi Pistachio Cream Biscuits\nPistachio Delight in a Perfectly Portable Size",
+        "price": "€6.00"
+      },
+      {
+        "name": "Pan di Stelle",
+        "description": "350 g Mulino Bianco - Il Biscotto Chocolate Cacao",
+        "price": "€5.00"
+      },
+      {
+        "name": "Gocciole",
+        "description": "Pavesi Gocciole - Chocolate Chip Cookies Biscotti",
+        "price": "€6.00"
+      },
+      {
+        "name": "Loacker Classic Napolitaner",
+        "description": "Three crispy wafers and two layers of delicious Napolitaner cream filling with exquisite Italian hazelnuts make this Classic Napolitaner an absolute best-seller.",
+        "price": "€5.00"
+      },
+      {
+        "name": "Loacker Classic Vaniila",
+        "description": "The fragrance of two generous layers of delicate cream filling made with exquisite vanilla pods between three layers of crispy wafer will guarantee truly exquisite moments of pleasure.",
+        "price": "€5.00"
+      }
+    ],
+    "Italian Pantry": [
+      {
+        "name": "Gusto Etna Sweet Pistachio Cream",
+        "description": "190 g Rich and creamy, this decadent pistachio spread is perfect on our fresh focaccia , croissants, or simply by the spoonful.",
+        "price": "€8.50"
+      },
+      {
+        "name": "Trucillo Coffee Beans 1Kg",
+        "description": "Trucillo Coffee Beans – Miscela Bar (1kg) – A premium Italian espresso blend crafted for barista-quality results. Rich aroma, full body, and a smooth, balanced taste in every cup.",
+        "price": "€35.00"
+      },
+      {
+        "name": "Basso Extra Virgin Olive Oil",
+        "description": "Basso Extra Virgin Olive Oil (1L) – High-quality Italian EVOO with a smooth, balanced flavor. Ideal for dressing, cooking, and everyday Mediterranean dishes.",
+        "price": "€15.00"
+      },
+      {
+        "name": "Basso Chili EVOO",
+        "description": "Basso Chili-Infused EVOO – Extra virgin olive oil with a spicy kick of chili. Perfect for drizzling over pizza, pasta, grilled meats, or anything that needs a bold, flavorful heat",
+        "price": "€10.00"
+      },
+      {
+        "name": "Di Martino Pasta Set Giftbox",
+        "description": "Di Martino Pasta Gift Box – A premium selection of authentic Italian pasta beautifully packaged for gifting. Made with 100% durum wheat and bronze-drawn for perfect texture – ideal for pasta lovers and foodies alike.",
+        "price": "€55.00"
+      },
+      {
+        "name": "Ciobar Classico",
+        "description": "Ciobar – Italian Hot Chocolate\nIconic Italian drinking chocolate, thick, rich, and intensely chocolatey. Made in the classic Italian style, Ciobar is smooth, velvety, and deeply comforting—closer to a dessert than a drink. Perfect for chocolate lovers craving something warm and indulgent.",
+        "price": "€6.50"
+      },
+      {
+        "name": "Trucillo Cremoso Ground Coffee 250g",
+        "description": "Trucillo Ground Coffee – Cremoso (250g)\nPremium Italian ground coffee by Trucillo, crafted for a smooth, full-bodied espresso with a rich crema. This balanced blend delivers notes of chocolate and toasted grains with a velvety finish. Perfect for moka pot or espresso-style at home. Authentic Neapolitan coffee tradition in every cup.",
+        "price": "€8.50"
+      },
+      {
+        "name": "Trucillo Moka Ground Coffee",
+        "description": "Trucillo Moka Coffee\nAuthentic Italian ground coffee by Trucillo, expertly blended for moka pot. Rich and full-bodied with smooth crema and balanced notes of chocolate and roasted aromas. A classic Neapolitan-style coffee that delivers a bold yet rounded cup, perfect for everyday espresso at home.",
+        "price": "€8.50"
+      }
+    ],
+    "Pasta": [
+      {
+        "name": "Malloreddus Gnocchetti Sardi",
+        "description": "Malloreddus (Gnocchetti Sardi)\nTraditional Sardinian pasta made from durum wheat, shaped into small ridged shells that perfectly hold sauce. Tender yet hearty, these handcrafted gnocchetti deliver authentic Mediterranean flavor in every bite. A true Italian classic, simple, comforting, and deeply satisfying.",
+        "price": "€6.00"
+      },
+      {
+        "name": "Fregola Tostata",
+        "description": "Fregola Tostata\nTraditional Sardinian toasted pasta made from semolina, rolled into small pearls and gently oven-roasted for a nutty, rich flavor. With a texture similar to couscous but heartier, fregola is rustic, comforting, and perfect for soaking up sauces and broths. A unique island specialty with deep Mediterranean character.",
+        "price": "€6.00"
+      },
+      {
+        "name": "Mezzi Rigatoni Di Martino",
+        "description": "Mezzi Rigatoni Di Martino\nPremium Italian pasta from Gragnano, crafted by Di Martino using 100% Italian durum wheat and bronze dies for a rough texture that perfectly holds sauce. Short, ridged tubes with a firm bite, ideal for rich tomato, meat, or creamy sauces. Authentic, hearty, and deeply satisfying.",
+        "price": "€5.00"
+      },
+      {
+        "name": "Rigatoni Di Martino",
+        "description": "Rigatoni Di Martino\nAuthentic pasta from Gragnano by Di Martino, made with 100% Italian durum wheat and bronze-cut for a rough surface that clings to sauce. Large ridged tubes with a satisfying bite, perfect for bold tomato sauces, slow-cooked meats, or creamy classics. A true Italian staple with depth and character.",
+        "price": "€5.00"
+      },
+      {
+        "name": "Penne Mezzani Rigate Di Martino",
+        "description": "Penne Mezzani Rigate Di Martino\nClassic Italian pasta from Gragnano by Di Martino, made with 100% Italian durum wheat and bronze-cut for a textured surface that grips sauce. Short, ridged penne with a firm, satisfying bite, perfect for everything from bright tomato sauces to creamy or vegetable-based preparations. Versatile, comforting, and authentically Italian.",
+        "price": "€5.00"
+      }
+    ]
+  }

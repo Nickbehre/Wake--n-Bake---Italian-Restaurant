@@ -40,6 +40,7 @@ export default function OrderSuccessPage() {
 
       clearCart();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!mounted) return null;

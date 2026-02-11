@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { ChevronDown, Bike, Store } from 'lucide-react'
 import { useLanguage } from '@/lib/context/LanguageContext'
 
-const UBER_EATS_URL = 'https://www.order.store/nl/store/wake-n-bake-panificio/xon7rL6IRMqMdtpdlRryxg'
+const THUISBEZORGD_URL = 'https://www.thuisbezorgd.nl/menu/wake-n-bake-panificio'
 
 // Hero images from gallery that rotate continuously
 const heroImages = [
@@ -121,7 +121,7 @@ export default function HeroSection() {
             />
           </div>
           <p className="font-stamp text-3xl md:text-5xl mb-8 drop-shadow-lg relative z-10">
-            Panificio
+            come taste the difference
           </p>
         </motion.div>
 
@@ -140,9 +140,9 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
-          {/* Delivery - Uber Eats */}
+          {/* Delivery - Thuisbezorgd */}
           <a
-            href={UBER_EATS_URL}
+            href={THUISBEZORGD_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="group flex items-center gap-3 bg-black hover:bg-gray-800 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-lg"
@@ -151,7 +151,7 @@ export default function HeroSection() {
             {t('hero.cta.delivery')}
           </a>
 
-          {/* Takeaway - Click & Collect */}
+          {/* Pick-up - Click & Collect */}
           <Link
             href="/menu"
             className="group flex items-center gap-3 bg-tomato hover:bg-red-700 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-lg"

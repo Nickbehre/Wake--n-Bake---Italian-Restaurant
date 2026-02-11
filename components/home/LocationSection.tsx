@@ -16,14 +16,18 @@ function checkIsOpen(): boolean {
   const currentTime = hours * 60 + minutes // Convert to minutes for easier comparison
 
   // Opening hours in minutes from midnight
-  // Mon - Fri: 08:00 - 18:00
-  // Sat - Sun: 09:00 - 17:00
-  if (day >= 1 && day <= 5) {
+  // Mon - Fri: 07:30 - 16:30
+  // Sat: 08:00 - 18:00
+  // Sun: Closed
+  if (day === 0) {
+    // Sunday - closed
+    return false
+  } else if (day >= 1 && day <= 5) {
     // Monday to Friday
-    return currentTime >= 8 * 60 && currentTime < 18 * 60
+    return currentTime >= 7 * 60 + 30 && currentTime < 16 * 60 + 30
   } else {
-    // Saturday (6) and Sunday (0)
-    return currentTime >= 9 * 60 && currentTime < 17 * 60
+    // Saturday
+    return currentTime >= 8 * 60 && currentTime < 18 * 60
   }
 }
 
@@ -54,8 +58,8 @@ export default function LocationSection() {
   const latitude = 52.36383074070107
   const longitude = 4.891507396929842
 
-  // Uber Eats order link
-  const UBER_EATS_URL = 'https://www.order.store/nl/store/wake-n-bake-panificio/xon7rL6IRMqMdtpdlRryxg'
+  // Thuisbezorgd order link
+  const THUISBEZORGD_URL = 'https://www.thuisbezorgd.nl/menu/wake-n-bake-panificio'
 
   return (
     <section
@@ -154,7 +158,8 @@ export default function LocationSection() {
                   </h3>
                   <div className="text-espresso/80 space-y-1">
                     <p>{t('location.weekdays')}</p>
-                    <p>{t('location.weekends')}</p>
+                    <p>{t('location.saturday')}</p>
+                    <p>{t('location.sunday')}</p>
                   </div>
                 </div>
               </div>
@@ -168,7 +173,7 @@ export default function LocationSection() {
               transition={{ delay: 0.4 }}
             >
               <a
-                href={UBER_EATS_URL}
+                href={THUISBEZORGD_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full bg-tomato hover:bg-tomato/90 text-white text-center font-oswald font-bold uppercase tracking-wider py-4 px-6 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"

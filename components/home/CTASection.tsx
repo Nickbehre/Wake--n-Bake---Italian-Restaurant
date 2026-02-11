@@ -75,7 +75,9 @@ export default function CTASection() {
                 <p className="text-espresso/80">
                   {t('location.weekdays')}
                   <br />
-                  {t('location.weekends')}
+                  {t('location.saturday')}
+                  <br />
+                  {t('location.sunday')}
                 </p>
               </div>
             </div>
@@ -97,10 +99,10 @@ export default function CTASection() {
                   </a>
                   <br />
                   <a
-                    href="mailto:info@wakenbakepanificio.nl"
+                    href="mailto:info@wakenbake.nl"
                     className="hover:text-tomato transition-colors"
                   >
-                    info@wakenbakepanificio.nl
+                    info@wakenbake.nl
                   </a>
                 </p>
               </div>

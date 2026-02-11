@@ -2,7 +2,7 @@
 
 import ContactForm from '@/components/contact/ContactForm'
 import MapSection from '@/components/contact/MapSection'
-import { Phone, Mail, MapPin, Clock, Instagram } from 'lucide-react'
+import { Phone, Mail, MapPin, Clock, Instagram, UtensilsCrossed, PartyPopper, Building2, ArrowRight } from 'lucide-react'
 import { useLanguage } from '@/lib/context/LanguageContext'
 
 export default function ContactPage() {
@@ -75,10 +75,10 @@ export default function ContactPage() {
                       {t('contact.email')}
                     </h3>
                     <a
-                      href="mailto:info@wakenbakepanificio.nl"
+                      href="mailto:info@wakenbake.nl"
                       className="text-espresso/80 hover:text-crust transition-colors"
                     >
-                      info@wakenbakepanificio.nl
+                      info@wakenbake.nl
                     </a>
                   </div>
                 </div>
@@ -93,7 +93,8 @@ export default function ContactPage() {
                     </h3>
                     <div className="text-espresso/80 space-y-1">
                       <p>{t('location.weekdays')}</p>
-                      <p>{t('location.weekends')}</p>
+                      <p>{t('location.saturday')}</p>
+                      <p>{t('location.sunday')}</p>
                     </div>
                   </div>
                 </div>
@@ -134,6 +135,67 @@ export default function ContactPage() {
                 {t('contact.sendMessage')}
               </h2>
               <ContactForm />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Catering Section */}
+      <section className="py-20 bg-espresso/[0.03]">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <span className="inline-block bg-crust/10 text-crust font-oswald text-sm uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
+                {t('contact.cateringOptions')}
+              </span>
+              <h2 className="font-montserrat font-bold text-4xl md:text-5xl text-espresso mb-4">
+                {t('contact.cateringTitle')}
+              </h2>
+              <p className="text-espresso/70 text-lg max-w-2xl mx-auto leading-relaxed">
+                {t('contact.cateringDescription')}
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-3 gap-6 mb-10">
+              <div className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-14 h-14 bg-crust/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Building2 className="w-7 h-7 text-crust" />
+                </div>
+                <h3 className="font-oswald font-bold text-lg text-espresso uppercase tracking-wide">
+                  {t('contact.cateringOffice')}
+                </h3>
+              </div>
+              <div className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-14 h-14 bg-tomato/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <PartyPopper className="w-7 h-7 text-tomato" />
+                </div>
+                <h3 className="font-oswald font-bold text-lg text-espresso uppercase tracking-wide">
+                  {t('contact.cateringBirthday')}
+                </h3>
+              </div>
+              <div className="bg-white rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-14 h-14 bg-pistachio/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <UtensilsCrossed className="w-7 h-7 text-pistachio" />
+                </div>
+                <h3 className="font-oswald font-bold text-lg text-espresso uppercase tracking-wide">
+                  {t('contact.cateringPrivate')}
+                </h3>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <a
+                href="#contact-form"
+                onClick={(e) => {
+                  e.preventDefault()
+                  const form = document.querySelector('[data-contact-form]')
+                  if (form) form.scrollIntoView({ behavior: 'smooth' })
+                }}
+                className="inline-flex items-center gap-2 bg-tomato text-white font-oswald font-bold uppercase tracking-wide px-8 py-4 rounded-lg hover:bg-red-700 transition-colors shadow-md"
+              >
+                {t('contact.cateringCta')}
+                <ArrowRight className="w-5 h-5" />
+              </a>
             </div>
           </div>
         </div>

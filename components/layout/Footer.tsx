@@ -27,7 +27,7 @@ export default function Footer() {
                 <h3 className="font-montserrat font-extrabold text-xl">
                   WAKE N&apos; BAKE
                 </h3>
-                <p className="font-playfair text-sm text-crust">Panificio</p>
+                <p className="font-playfair text-sm text-crust">come taste the difference</p>
               </div>
             </div>
             <p className="text-white/80 leading-relaxed">
@@ -59,10 +59,10 @@ export default function Footer() {
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-crust flex-shrink-0" />
                 <a
-                  href="mailto:info@wakenbakepanificio.nl"
+                  href="mailto:info@wakenbake.nl"
                   className="hover:text-crust transition-colors"
                 >
-                  info@wakenbakepanificio.nl
+                  info@wakenbake.nl
                 </a>
               </div>
             </div>
@@ -79,7 +79,10 @@ export default function Footer() {
                 <span>{t('location.weekdays')}</span>
               </div>
               <div className="flex items-center gap-3 pl-8">
-                <span>{t('location.weekends')}</span>
+                <span>{t('location.saturday')}</span>
+              </div>
+              <div className="flex items-center gap-3 pl-8">
+                <span>{t('location.sunday')}</span>
               </div>
             </div>
           </div>

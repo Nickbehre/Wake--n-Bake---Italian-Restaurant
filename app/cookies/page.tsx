@@ -146,10 +146,10 @@ export default function CookiesPage() {
               <li>
                 E-mail:{' '}
                 <a
-                  href="mailto:info@wakenbakepanificio.nl"
+                  href="mailto:info@wakenbake.nl"
                   className="text-crust hover:underline"
                 >
-                  info@wakenbakepanificio.nl
+                  info@wakenbake.nl
                 </a>
               </li>
               <li>Telefoon: +31 20 123 4567</li>

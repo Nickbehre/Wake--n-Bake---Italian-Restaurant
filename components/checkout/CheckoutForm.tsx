@@ -193,7 +193,7 @@ export default function CheckoutForm() {
 
                     <p className="text-gray-600 mb-4 font-lato text-sm italic">
                         <Clock className="inline w-4 h-4 mr-1 text-crust" />
-                        Winkel open: 10:00 - 18:00. Minimaal 30 min bereidingstijd.
+                        Winkel open: Ma-Vr 07:30-16:30, Za 08:00-18:00. Minimaal 30 min bereidingstijd.
                     </p>
 
                     <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-60 overflow-y-auto p-1">

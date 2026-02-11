@@ -9,8 +9,8 @@ import { usePathname } from 'next/navigation'
 import LanguageToggle from '@/components/ui/LanguageToggle'
 import { useLanguage } from '@/lib/context/LanguageContext'
 
-// Uber Eats order link
-const UBER_EATS_URL = 'https://www.order.store/nl/store/wake-n-bake-panificio/xon7rL6IRMqMdtpdlRryxg'
+// Thuisbezorgd order link
+const THUISBEZORGD_URL = 'https://www.thuisbezorgd.nl/menu/wake-n-bake-panificio'
 
 const navItems = [
   { key: 'nav.home', href: '/' },
@@ -127,7 +127,7 @@ export default function Header() {
             </a>
             {/* Order button - links to Uber Eats */}
             <a
-              href={UBER_EATS_URL}
+              href={THUISBEZORGD_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-tomato hover:bg-tomato/90 text-white font-oswald font-bold uppercase tracking-wider px-6 py-2.5 transition-all duration-300 transform hover:scale-105"
@@ -195,7 +195,7 @@ export default function Header() {
               </div>
               {/* Mobile Order button - links to Uber Eats */}
               <a
-                href={UBER_EATS_URL}
+                href={THUISBEZORGD_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full bg-tomato text-white text-center font-oswald font-bold uppercase tracking-wider py-3 mt-4"
