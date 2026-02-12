@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useLanguage } from '@/lib/context/LanguageContext'
-import { MapPin, Clock, ExternalLink, Navigation } from 'lucide-react'
+import { MapPin, Clock, ExternalLink, Navigation, Bike, Store } from 'lucide-react'
 
 // Check if currently open based on Amsterdam time
 function checkIsOpen(): boolean {
@@ -127,7 +127,7 @@ export default function LocationSection() {
                     1017 HH Amsterdam
                   </p>
                   <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`}
+                    href="https://maps.app.goo.gl/Drcw4nWtCkzg65M57"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-crust hover:text-tomato font-oswald font-semibold uppercase tracking-wide transition-colors group"
@@ -165,20 +165,29 @@ export default function LocationSection() {
               </div>
             </motion.div>
 
-            {/* CTA */}
+            {/* CTA - Delivery & To Go */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
+              className="flex flex-col gap-3"
             >
               <a
                 href={THUISBEZORGD_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full bg-tomato hover:bg-tomato/90 text-white text-center font-oswald font-bold uppercase tracking-wider py-4 px-6 rounded-full transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
+                className="flex items-center justify-center gap-3 w-full bg-black hover:bg-gray-800 text-white font-oswald font-bold uppercase tracking-wider py-4 px-6 rounded-full transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
               >
-                {t('location.orderOnline')}
+                <Bike className="w-5 h-5" />
+                {t('hero.cta.delivery')}
+              </a>
+              <a
+                href="/menu"
+                className="flex items-center justify-center gap-3 w-full bg-tomato hover:bg-red-700 text-white font-oswald font-bold uppercase tracking-wider py-4 px-6 rounded-full transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
+              >
+                <Store className="w-5 h-5" />
+                {t('hero.cta.takeaway')}
               </a>
             </motion.div>
           </div>
@@ -245,7 +254,7 @@ export default function LocationSection() {
                   </span>
                 </div>
                 <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`}
+                  href="https://maps.app.goo.gl/Drcw4nWtCkzg65M57"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-crust hover:text-white text-sm font-oswald font-semibold uppercase tracking-wide transition-colors flex items-center gap-1"

@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { menuData } from "@/lib/data/menu";
+import { getAllProducts } from "@/lib/data/products";
 
-// Helper to flatten menu items directly for easier lookup
-const allItems = menuData.categories.flatMap((c) => c.items);
+// Flatten menu items from both data sources for lookup
+const menuItems = menuData.categories.flatMap((c) => c.items);
+const productItems = getAllProducts();
 
 // Initialize Stripe lazily to avoid build-time errors
 function getStripe() {
@@ -40,35 +42,48 @@ export async function POST(request: Request) {
         let subtotal = 0;
 
         for (const item of items) {
-            // Use productId to find the menu item (handles sized items)
             const productId = item.productId || item.id;
-            const dbItem = allItems.find((i) => i.id === productId);
 
-            if (!dbItem) {
+            // Try menu.ts first (items like "mortadella-original")
+            const menuItem = menuItems.find((i) => i.id === productId);
+            // Then try products.ts (items like "schiacciata-caprese")
+            const productItem = productItems.find((i) => i.id === productId);
+
+            let priceVal: number;
+
+            if (menuItem) {
+                // Found in menu.ts — price is a string like "€8 | €12" or "€2.50"
+                if (menuItem.hasSizes && item.size) {
+                    if (item.size === 'large' && menuItem.priceLarge) {
+                        priceVal = menuItem.priceLarge;
+                    } else if (item.size === 'regular' && menuItem.priceRegular) {
+                        priceVal = menuItem.priceRegular;
+                    } else {
+                        priceVal = parseFloat(menuItem.price.replace("€", "").split("|")[0].trim());
+                    }
+                } else {
+                    priceVal = parseFloat(menuItem.price.replace("€", "").replace(",", ".").trim());
+                }
+            } else if (productItem) {
+                // Found in products.ts — price is a number
+                if (productItem.hasSizes && item.size) {
+                    if (item.size === 'large' && productItem.priceLarge) {
+                        priceVal = productItem.priceLarge;
+                    } else if (item.size === 'regular' && productItem.priceRegular) {
+                        priceVal = productItem.priceRegular;
+                    } else {
+                        priceVal = productItem.price;
+                    }
+                } else {
+                    priceVal = productItem.price;
+                }
+            } else {
                 console.warn(`Item not found in menu: ${productId}`);
                 continue;
             }
 
-            let priceVal: number;
-
-            // Check if item has sizes
-            if (dbItem.hasSizes && item.size) {
-                // Use the correct price based on size
-                if (item.size === 'large' && dbItem.priceLarge) {
-                    priceVal = dbItem.priceLarge;
-                } else if (item.size === 'regular' && dbItem.priceRegular) {
-                    priceVal = dbItem.priceRegular;
-                } else {
-                    // Fallback: parse from price string
-                    priceVal = parseFloat(dbItem.price.replace("€", "").split("|")[0].trim());
-                }
-            } else {
-                // Non-sized item - parse price from string (e.g., "€2.50")
-                priceVal = parseFloat(dbItem.price.replace("€", "").replace(",", ".").trim());
-            }
-
             if (isNaN(priceVal)) {
-                console.error("Invalid price format for item", dbItem.id, dbItem.price);
+                console.error("Invalid price format for item", productId);
                 continue;
             }
 
