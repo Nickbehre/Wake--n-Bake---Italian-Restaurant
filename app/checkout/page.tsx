@@ -90,7 +90,7 @@ export default function CheckoutPage() {
             <p className="text-gray-500 mb-6 font-lato px-4">Ga terug naar het menu om lekkere dingen toe te voegen.</p>
             <Link
               href="/menu"
-              className="inline-block bg-tomato text-white px-8 py-3 hover:bg-red-700 transition font-oswald uppercase tracking-wider"
+              className="inline-block bg-tomato text-white px-8 py-3 rounded-full hover:bg-red-700 transition font-oswald uppercase tracking-wider"
             >
               Naar Menu
             </Link>
@@ -103,7 +103,7 @@ export default function CheckoutPage() {
             <p className="text-gray-500 mb-6 font-lato px-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="inline-block bg-tomato text-white px-8 py-3 hover:bg-red-700 transition font-oswald uppercase tracking-wider"
+              className="inline-block bg-tomato text-white px-8 py-3 rounded-full hover:bg-red-700 transition font-oswald uppercase tracking-wider"
             >
               Probeer opnieuw
             </button>

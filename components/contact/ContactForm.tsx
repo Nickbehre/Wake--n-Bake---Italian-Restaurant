@@ -160,7 +160,7 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-tomato hover:bg-tomato/90 text-white font-montserrat font-bold py-4 px-8 transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+        className="w-full bg-tomato hover:bg-tomato/90 text-white font-montserrat font-bold py-4 px-8 rounded-full transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
       >
         {isSubmitting ? (
           <>

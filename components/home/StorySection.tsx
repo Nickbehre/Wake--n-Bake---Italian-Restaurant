@@ -262,7 +262,7 @@ export default function StorySection() {
     <>
     <section
       ref={containerRef}
-      className="relative pt-0 pb-24 md:pb-32 bg-flour overflow-hidden"
+      className="relative -mt-[3rem] pt-[3rem] pb-24 md:pb-32 bg-flour overflow-hidden"
     >
       {/* Ripped Paper Edge Transition from Hero */}
       <div className="relative w-full -mt-1">

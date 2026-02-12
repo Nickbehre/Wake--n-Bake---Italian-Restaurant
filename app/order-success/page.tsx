@@ -96,7 +96,7 @@ export default function OrderSuccessPage() {
 
         <button
           onClick={() => router.push("/")}
-          className="bg-espresso text-white px-8 py-3 rounded font-oswald uppercase hover:bg-black transition"
+          className="bg-espresso text-white px-8 py-3 rounded-full font-oswald uppercase hover:bg-black transition"
         >
           Terug naar Home
         </button>

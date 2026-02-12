@@ -44,7 +44,7 @@ export default function HeroSection() {
   }, [nextImage])
 
   return (
-    <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
+    <section className="relative z-10 h-screen min-h-[600px] flex items-center justify-center overflow-hidden rounded-b-[3rem]">
       {/* Rotating Background Images */}
       <div className="absolute inset-0 z-0 bg-espresso">
         {heroImages.map((image, index) => {
@@ -90,7 +90,7 @@ export default function HeroSection() {
       </div>
 
       {/* Image indicators */}
-      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+      <div className="absolute bottom-32 left-1/2 -translate-x-1/2 z-20 flex gap-2">
         {heroImages.map((_, index) => (
           <button
             key={index}
@@ -145,7 +145,7 @@ export default function HeroSection() {
             href={THUISBEZORGD_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-3 bg-black hover:bg-gray-800 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-lg"
+            className="group flex items-center gap-3 bg-black hover:bg-gray-800 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-full"
           >
             <Bike className="w-5 h-5 group-hover:animate-bounce" />
             {t('hero.cta.delivery')}
@@ -154,7 +154,7 @@ export default function HeroSection() {
           {/* Pick-up - Click & Collect */}
           <Link
             href="/menu"
-            className="group flex items-center gap-3 bg-tomato hover:bg-red-700 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-lg"
+            className="group flex items-center gap-3 bg-tomato hover:bg-red-700 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl rounded-full"
           >
             <Store className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
             {t('hero.cta.takeaway')}

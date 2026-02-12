@@ -111,7 +111,7 @@ export default function LocationSection() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="bg-white p-6 shadow-xl border-l-4 border-crust"
+              className="bg-white p-6 shadow-xl border-l-4 border-crust rounded-lg"
             >
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-crust rounded-full flex-shrink-0">
@@ -146,7 +146,7 @@ export default function LocationSection() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              className="bg-white p-6 shadow-xl border-l-4 border-pistachio"
+              className="bg-white p-6 shadow-xl border-l-4 border-pistachio rounded-lg"
             >
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-pistachio rounded-full flex-shrink-0">
@@ -176,7 +176,7 @@ export default function LocationSection() {
                 href={THUISBEZORGD_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full bg-tomato hover:bg-tomato/90 text-white text-center font-oswald font-bold uppercase tracking-wider py-4 px-6 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
+                className="block w-full bg-tomato hover:bg-tomato/90 text-white text-center font-oswald font-bold uppercase tracking-wider py-4 px-6 rounded-full transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
               >
                 {t('location.orderOnline')}
               </a>

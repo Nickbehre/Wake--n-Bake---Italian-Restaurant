@@ -8,7 +8,7 @@ import CTASection from '@/components/home/CTASection'
 
 export default function HomePage() {
   return (
-    <>
+    <div className="bg-flour">
       <HeroSection />
       <StorySection />
       <USPSection />
@@ -16,6 +16,6 @@ export default function HomePage() {
       <ReviewsSection />
       <LocationSection />
       <CTASection />
-    </>
+    </div>
   )
 }

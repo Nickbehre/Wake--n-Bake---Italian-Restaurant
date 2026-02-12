@@ -5,10 +5,14 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 
-interface GalleryImage {
+export interface GalleryImage {
   src: string
   alt: string
   title: string
+  /** Intrinsic width (for aspect ratio). Use for puzzle layout. */
+  width: number
+  /** Intrinsic height (for aspect ratio). Use for puzzle layout. */
+  height: number
 }
 
 interface GalleryGridProps {
@@ -46,33 +50,41 @@ export default function GalleryGrid({ images }: GalleryGridProps) {
 
   return (
     <>
-      {/* Gallery Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Puzzle gallery — items keep their aspect ratio (portrait/landscape/square) */}
+      <div className="w-full max-w-7xl mx-auto columns-2 sm:columns-3 lg:columns-4 [column-gap:0.875rem] sm:[column-gap:1rem]">
         {images.map((image, index) => (
           <motion.div
             key={image.src}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: index * 0.1 }}
-            whileHover={{ scale: 1.02 }}
-            className="relative aspect-[4/3] cursor-pointer overflow-hidden group"
+            transition={{ delay: index * 0.04, duration: 0.3 }}
+            whileHover={{
+              scale: 1.03,
+              y: -4,
+              transition: { duration: 0.22, ease: 'easeOut' },
+            }}
+            className="relative cursor-pointer overflow-hidden rounded-xl sm:rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 group mb-3 sm:mb-4 break-inside-avoid"
             onClick={() => openLightbox(index)}
           >
-            <Image
-              src={image.src}
-              alt={image.alt}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-espresso/80 via-espresso/0 to-espresso/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div className="absolute bottom-0 left-0 right-0 p-4">
-                <h3 className="font-montserrat font-bold text-white text-xl">
-                  {image.title}
-                </h3>
+            <div className="relative w-full" style={{ aspectRatio: `${image.width} / ${image.height}` }}>
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={image.width}
+                  height={image.height}
+                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-espresso/80 via-espresso/0 to-espresso/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                    <h3 className="font-montserrat font-bold text-white text-base sm:text-xl">
+                      {image.title}
+                    </h3>
+                  </div>
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
         ))}
       </div>
 
@@ -117,7 +129,7 @@ export default function GalleryGrid({ images }: GalleryGridProps) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="relative w-full max-w-5xl aspect-[4/3]"
+              className="relative w-full max-w-5xl aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <Image

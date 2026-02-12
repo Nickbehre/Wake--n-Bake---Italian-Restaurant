@@ -195,7 +195,7 @@ export default function CartDrawer() {
                     href="https://www.thuisbezorgd.nl/menu/wake-n-bake-panificio"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-3 bg-black text-white text-center py-4 rounded font-oswald text-lg font-bold uppercase tracking-wide hover:bg-gray-800 transition-colors group"
+                    className="w-full flex items-center justify-center gap-3 bg-black text-white text-center py-4 rounded-full font-oswald text-lg font-bold uppercase tracking-wide hover:bg-gray-800 transition-colors group"
                   >
                     <Bike className="w-5 h-5 group-hover:animate-pulse" />
                     {t('cart.delivery')}
@@ -205,7 +205,7 @@ export default function CartDrawer() {
                   <Link
                     href="/checkout"
                     onClick={() => setIsOpen(false)}
-                    className="w-full flex items-center justify-center gap-3 bg-tomato text-white text-center py-4 rounded font-oswald text-lg font-bold uppercase tracking-wide hover:bg-red-700 transition-colors group shadow-md"
+                    className="w-full flex items-center justify-center gap-3 bg-tomato text-white text-center py-4 rounded-full font-oswald text-lg font-bold uppercase tracking-wide hover:bg-red-700 transition-colors group shadow-md"
                   >
                     <Store className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
                     {t('cart.takeaway')}

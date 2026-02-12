@@ -78,7 +78,7 @@ export default function ReviewsSection() {
   }
 
   return (
-    <section className="py-24 bg-espresso relative overflow-hidden">
+    <section className="py-24 bg-espresso relative overflow-hidden rounded-[3rem] mx-4 md:mx-8 lg:mx-16 shadow-2xl">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div
@@ -165,7 +165,7 @@ export default function ReviewsSection() {
                 transition={{ delay: index * 0.1 }}
                 className="flex-shrink-0 w-[340px] snap-center"
               >
-                <div className="bg-flour p-8 h-full relative group hover:shadow-2xl transition-shadow duration-300">
+                <div className="bg-flour p-8 h-full relative group hover:shadow-2xl transition-shadow duration-300 rounded-2xl">
                   {/* Quote Icon */}
                   <Quote className="absolute top-4 right-4 w-10 h-10 text-crust/20 group-hover:text-crust/40 transition-colors" />
 

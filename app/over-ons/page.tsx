@@ -66,16 +66,21 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-flour">
       {/* Hero Section */}
-      <section className="relative pt-36 md:pt-44 pb-20 bg-espresso text-white overflow-hidden">
+      <section className="relative pt-36 md:pt-44 pb-20 bg-espresso text-white overflow-hidden rounded-b-[3rem]">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mt-4 md:mt-8">
-            <h1 className="font-montserrat font-bold text-5xl md:text-6xl mb-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-3xl mt-4 md:mt-8"
+          >
+            <span className="inline-block font-stamp text-2xl md:text-3xl mb-4">
               {t('about.heroTitle')}
-            </h1>
-            <p className="text-xl text-white/80 leading-relaxed">
+            </span>
+            <p className="font-lato text-xl md:text-2xl text-white/80 leading-relaxed">
               {t('about.heroSubtitle')}
             </p>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -84,7 +89,12 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Clickable Image Slideshow */}
-            <div className="relative h-[500px] group">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative h-[500px] group"
+            >
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentImageIndex}
@@ -98,7 +108,7 @@ export default function AboutPage() {
                     src={storyImages[currentImageIndex]}
                     alt="Wake N' Bake Panificio"
                     fill
-                    className="object-cover rounded-lg"
+                    className="object-cover rounded-2xl"
                   />
                 </motion.div>
               </AnimatePresence>
@@ -139,43 +149,58 @@ export default function AboutPage() {
               <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm font-oswald">
                 {currentImageIndex + 1} / {storyImages.length}
               </div>
-            </div>
+            </motion.div>
 
             {/* Story Text */}
-            <div>
-              <h2 className="font-montserrat font-bold text-4xl mb-6 text-espresso">
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="font-brand-dark text-4xl md:text-5xl mb-6 text-espresso">
                 {t('about.storyTitle')}
               </h2>
-              <div className="prose prose-lg text-espresso/80 space-y-4">
+              <div className="font-lato text-lg text-espresso/80 space-y-4 leading-relaxed">
                 <p>{t('about.storyP1')}</p>
                 <p>{t('about.storyP2')}</p>
                 <p>{t('about.storyP3')}</p>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Values Section */}
-      <section className="py-20 bg-crust/20">
+      {/* Values Section — floating box */}
+      <section className="py-20 bg-crust rounded-[3rem] mx-4 md:mx-8 lg:mx-16 shadow-2xl">
         <div className="container mx-auto px-4">
-          <h2 className="font-montserrat font-bold text-4xl text-center mb-16 text-espresso">
-            {t('about.valuesTitle')}
-          </h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <span className="inline-block font-stamp text-2xl md:text-3xl mb-4">
+              {t('about.valuesTitle')}
+            </span>
+          </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value) => (
-              <div
+            {values.map((value, index) => (
+              <motion.div
                 key={value.titleKey}
-                className="bg-flour p-8 text-center group hover:shadow-xl transition-shadow duration-300"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-flour p-8 text-center group hover:shadow-xl transition-shadow duration-300 rounded-2xl"
               >
                 <div className="inline-block p-4 bg-crust/20 rounded-full mb-6 group-hover:bg-crust/30 transition-colors">
-                  <value.icon className="w-8 h-8 text-crust" />
+                  <value.icon className="w-8 h-8 text-espresso" />
                 </div>
-                <h3 className="font-montserrat font-bold text-xl mb-4 text-espresso">
+                <h3 className="font-oswald font-bold text-xl mb-4 text-espresso uppercase tracking-wide">
                   {t(value.titleKey)}
                 </h3>
-                <p className="text-espresso/80">{t(value.descKey)}</p>
-              </div>
+                <p className="font-lato text-espresso/80">{t(value.descKey)}</p>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -185,57 +210,73 @@ export default function AboutPage() {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="order-2 lg:order-1">
-              <h2 className="font-montserrat font-bold text-4xl mb-6 text-espresso">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="order-2 lg:order-1"
+            >
+              <h2 className="font-brand-dark text-4xl md:text-5xl mb-6 text-espresso">
                 {t('about.teamTitle')}
               </h2>
-              <div className="prose prose-lg text-espresso/80 space-y-4">
+              <div className="font-lato text-lg text-espresso/80 space-y-4 leading-relaxed">
                 <p>{t('about.teamP1')}</p>
                 <p>{t('about.teamP2')}</p>
               </div>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 mt-8 bg-tomato hover:bg-tomato/90 text-white font-montserrat font-bold px-8 py-4 transition-all duration-300 transform hover:scale-105"
+                className="inline-flex items-center gap-2 mt-8 bg-tomato hover:bg-tomato/90 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105"
               >
                 {t('about.workWithUs')}
                 <ArrowRight className="w-5 h-5" />
               </Link>
-            </div>
-            <div className="relative h-[400px] order-1 lg:order-2">
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative h-[400px] order-1 lg:order-2"
+            >
               <Image
                 src="/assets/gallery/IMG_2280.jpeg"
                 alt="Ons team aan het werk in de bakkerij"
                 fill
-                className="object-cover rounded-lg"
+                className="object-cover rounded-2xl"
               />
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-espresso text-white text-center">
+      {/* CTA Section — floating box */}
+      <section className="py-20 bg-espresso text-white text-center rounded-[3rem] mx-4 md:mx-8 lg:mx-16 shadow-2xl mb-16">
         <div className="container mx-auto px-4">
-          <h2 className="font-montserrat font-bold text-4xl mb-6">
-            {t('about.ctaTitle')}
-          </h2>
-          <p className="text-xl text-white/80 max-w-2xl mx-auto mb-8">
-            {t('about.ctaText')}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/menu"
-              className="bg-crust hover:bg-crust/90 text-espresso font-montserrat font-bold px-10 py-4 transition-all duration-300 transform hover:scale-105"
-            >
-              {t('about.viewMenu')}
-            </Link>
-            <Link
-              href="/contact"
-              className="border-2 border-white text-white hover:bg-white hover:text-espresso font-montserrat font-bold px-10 py-4 transition-all duration-300"
-            >
-              {t('about.visitUs')}
-            </Link>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="font-brand text-5xl md:text-6xl mb-6">
+              {t('about.ctaTitle')}
+            </h2>
+            <p className="font-lato text-xl text-white/80 max-w-2xl mx-auto mb-8">
+              {t('about.ctaText')}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/menu"
+                className="bg-crust hover:bg-crust/90 text-espresso font-oswald font-bold uppercase tracking-wider px-10 py-4 rounded-full transition-all duration-300 transform hover:scale-105"
+              >
+                {t('about.viewMenu')}
+              </Link>
+              <Link
+                href="/contact"
+                className="border-2 border-white text-white hover:bg-white hover:text-espresso font-oswald font-bold uppercase tracking-wider px-10 py-4 rounded-full transition-all duration-300"
+              >
+                {t('about.visitUs')}
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
     </div>

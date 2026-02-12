@@ -44,15 +44,19 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isHomePage
           ? isScrolled || isMobileMenuOpen
-            ? 'bg-[#f7f1e1]/95 backdrop-blur-md shadow-lg py-1'
-            : 'bg-transparent py-2'
-          : 'bg-[#f7f1e1] shadow-md py-2'
+            ? 'pt-2 px-3 md:px-6'
+            : 'pt-0 px-0'
+          : 'pt-2 px-3 md:px-6'
       }`}
     >
-      <div className="container mx-auto px-4">
+      <div className={`container mx-auto transition-all duration-500 ${
+        isHomePage && !isScrolled && !isMobileMenuOpen
+          ? 'bg-transparent px-4 py-2'
+          : 'bg-[#f7f1e1]/95 backdrop-blur-md shadow-lg px-4 py-1 rounded-2xl'
+      }`}>
         <div className="flex items-center justify-between">
           {/* Logo - LARGE brand stamp, image only, NO TEXT */}
           <Link href="/" className="relative z-10 flex-shrink-0">
@@ -77,12 +81,12 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation - Stamp font style */}
-          <nav className="hidden xl:flex items-center gap-2 2xl:gap-6 flex-nowrap">
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-4 2xl:gap-6 flex-nowrap">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`font-stamp text-base 2xl:text-xl whitespace-nowrap transition-colors duration-300 relative group ${
+                className={`font-stamp text-sm xl:text-base 2xl:text-xl whitespace-nowrap transition-colors duration-300 relative group ${
                   pathname === item.href
                     ? 'text-crust'
                     : isHomePage && !isScrolled
@@ -97,7 +101,7 @@ export default function Header() {
           </nav>
 
           {/* CTA, Language Toggle & Social */}
-          <div className="hidden xl:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3">
             {/* Language Toggle */}
             <LanguageToggle variant={isHomePage && !isScrolled ? 'light' : 'dark'} />
 
@@ -130,14 +134,14 @@ export default function Header() {
               href={THUISBEZORGD_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-tomato hover:bg-tomato/90 text-white font-oswald font-bold uppercase tracking-wider px-6 py-2.5 transition-all duration-300 transform hover:scale-105"
+              className="bg-tomato hover:bg-tomato/90 text-white font-oswald font-bold uppercase tracking-wider px-6 py-2.5 rounded-full transition-all duration-300 transform hover:scale-105"
             >
               {t('nav.order')}
             </a>
           </div>
 
           {/* Mobile: Language Toggle & Menu Button */}
-          <div className="xl:hidden flex items-center gap-2">
+          <div className="lg:hidden flex items-center gap-2">
             <LanguageToggle variant={isHomePage && !isScrolled && !isMobileMenuOpen ? 'light' : 'dark'} />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -158,47 +162,47 @@ export default function Header() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="xl:hidden bg-flour border-t border-espresso/10"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="lg:hidden absolute right-3 md:right-6 top-full mt-2 w-56 bg-[#f7f1e1]/95 backdrop-blur-md shadow-xl rounded-2xl overflow-hidden"
           >
-            <nav className="container mx-auto px-4 py-6 flex flex-wrap gap-4">
+            <nav className="px-5 py-4 flex flex-col gap-1">
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`font-stamp text-xl md:text-2xl ${
-                    pathname === item.href ? 'text-crust' : 'text-espresso'
+                  className={`font-stamp text-lg py-2 px-2 rounded-lg transition-colors ${
+                    pathname === item.href ? 'text-crust bg-crust/10' : 'text-espresso hover:bg-espresso/5'
                   }`}
                 >
                   {t(item.key)}
                 </Link>
               ))}
-              <div className="flex items-center gap-4 pt-4 border-t border-espresso/10">
+              <div className="flex items-center gap-3 pt-2 mt-1 border-t border-espresso/10">
                 <a
-                  href="https://www.instagram.com/wakenbakepanificio"
+                  href="https://www.instagram.com/wakenbake.nl/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 text-espresso hover:text-crust transition-colors"
                   aria-label="Instagram"
                 >
-                  <Instagram className="w-6 h-6" />
+                  <Instagram className="w-5 h-5" />
                 </a>
                 <a
                   href="tel:+31653764546"
                   className="p-2 text-espresso hover:text-crust transition-colors"
                   aria-label="Bel ons"
                 >
-                  <Phone className="w-6 h-6" />
+                  <Phone className="w-5 h-5" />
                 </a>
               </div>
-              {/* Mobile Order button - links to Uber Eats */}
               <a
                 href={THUISBEZORGD_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full bg-tomato text-white text-center font-oswald font-bold uppercase tracking-wider py-3 mt-4"
+                className="block w-full bg-tomato text-white text-center font-oswald font-bold uppercase tracking-wider py-2.5 mt-2 rounded-full text-sm"
               >
                 {t('nav.order')}
               </a>

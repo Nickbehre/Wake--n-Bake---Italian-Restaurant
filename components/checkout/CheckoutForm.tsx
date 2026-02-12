@@ -130,7 +130,7 @@ export default function CheckoutForm() {
                 <p className="text-gray-600 mb-8 font-lato">Ga terug naar het menu om lekkere dingen toe te voegen.</p>
                 <button
                     onClick={() => router.push("/menu")}
-                    className="bg-tomato text-white px-8 py-3 rounded hover:bg-red-700 transition font-oswald uppercase bold tracking-wider"
+                    className="bg-tomato text-white px-8 py-3 rounded-full hover:bg-red-700 transition font-oswald uppercase bold tracking-wider"
                 >
                     Naar Menu
                 </button>

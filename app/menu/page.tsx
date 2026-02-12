@@ -1,16 +1,16 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useCallback, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { schiacciataMenuCategories, togoMenuCategories, additionalCategories, productCategories } from '@/lib/data/products';
+import { schiacciataMenuCategories, togoMenuCategories, additionalCategories } from '@/lib/data/products';
 import MenuCategorySection from '@/components/menu/MenuCategorySection';
 import MenuPDFButton from '@/components/menu/MenuPDFButton';
 import CartDrawer from '@/components/cart/CartDrawer';
 import MenuPhotoOverlay, { type MenuPhoto } from '@/components/menu/MenuPhotoOverlay';
 import ProductDetailModal from '@/components/menu/ProductDetailModal';
 import { useLanguage } from '@/lib/context/LanguageContext';
-import { ChefHat, ShoppingBag } from 'lucide-react';
+import { ChefHat, ShoppingBag, ChevronDown } from 'lucide-react';
 import type { Product } from '@/lib/types/order';
 
 const schiacciatMenuPhotos: MenuPhoto[] = [
@@ -32,6 +32,25 @@ export default function MenuPage() {
   const [togoOverlayIndex, setTogoOverlayIndex] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [productModalOpen, setProductModalOpen] = useState(false);
+  const [showFloatingButtons, setShowFloatingButtons] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<'schiacciata' | 'togo' | null>(null);
+
+  // Show floating buttons only after scrolling down
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowFloatingButtons(window.scrollY > 300);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!openDropdown) return;
+    const handleClick = () => setOpenDropdown(null);
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [openDropdown]);
 
   const openSchiacciatOverlay = (index: number) => {
     setSchiacciatOverlayIndex(index);
@@ -48,59 +67,76 @@ export default function MenuPage() {
     setProductModalOpen(true);
   }, []);
 
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    setOpenDropdown(null);
+  };
+
+  const toggleDropdown = (menu: 'schiacciata' | 'togo', e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpenDropdown(openDropdown === menu ? null : menu);
+  };
+
   return (
     <div className="min-h-screen bg-flour pt-36 md:pt-40 pb-20">
-      {/* Floating Menu Navigation Buttons */}
-      <div className="fixed left-3 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-3">
-        <motion.a
-          href="#schiacciata-menu"
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.8, type: 'spring' }}
-          onClick={(e) => { e.preventDefault(); document.getElementById('schiacciata-menu')?.scrollIntoView({ behavior: 'smooth' }); }}
-          className="group w-14 h-14 bg-crust text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110 hover:bg-crust/90"
-          title={t('menuPage.schiacciatMenuTitle')}
-        >
-          <ChefHat className="w-6 h-6" />
-        </motion.a>
-        <motion.a
-          href="#togo-menu"
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 1, type: 'spring' }}
-          onClick={(e) => { e.preventDefault(); document.getElementById('togo-menu')?.scrollIntoView({ behavior: 'smooth' }); }}
-          className="group w-14 h-14 bg-pistachio text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110 hover:bg-pistachio/90"
-          title={t('menuPage.togoMenuTitle')}
-        >
-          <ShoppingBag className="w-6 h-6" />
-        </motion.a>
-      </div>
+      {/* Floating Menu Navigation Buttons — appear on scroll */}
+      <AnimatePresence>
+        {showFloatingButtons && (
+          <>
+            {/* Desktop */}
+            <div className="fixed left-3 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-3">
+              <motion.button
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                onClick={() => scrollTo('schiacciata-menu')}
+                className="group w-14 h-14 bg-crust text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110 hover:bg-crust/90"
+                title={t('menuPage.schiacciatMenuTitle')}
+              >
+                <ChefHat className="w-6 h-6" />
+              </motion.button>
+              <motion.button
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.05 }}
+                onClick={() => scrollTo('togo-menu')}
+                className="group w-14 h-14 bg-pistachio text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110 hover:bg-pistachio/90"
+                title={t('menuPage.togoMenuTitle')}
+              >
+                <ShoppingBag className="w-6 h-6" />
+              </motion.button>
+            </div>
 
-      {/* Mobile floating buttons */}
-      <div className="fixed bottom-24 right-4 z-40 md:hidden flex flex-col gap-2">
-        <motion.a
-          href="#schiacciata-menu"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.8, type: 'spring' }}
-          onClick={(e) => { e.preventDefault(); document.getElementById('schiacciata-menu')?.scrollIntoView({ behavior: 'smooth' }); }}
-          className="w-12 h-12 bg-crust text-white rounded-full shadow-lg flex items-center justify-center"
-          title={t('menuPage.schiacciatMenuTitle')}
-        >
-          <ChefHat className="w-5 h-5" />
-        </motion.a>
-        <motion.a
-          href="#togo-menu"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1, type: 'spring' }}
-          onClick={(e) => { e.preventDefault(); document.getElementById('togo-menu')?.scrollIntoView({ behavior: 'smooth' }); }}
-          className="w-12 h-12 bg-pistachio text-white rounded-full shadow-lg flex items-center justify-center"
-          title={t('menuPage.togoMenuTitle')}
-        >
-          <ShoppingBag className="w-5 h-5" />
-        </motion.a>
-      </div>
+            {/* Mobile */}
+            <div className="fixed bottom-24 right-4 z-40 md:hidden flex flex-col gap-2">
+              <motion.button
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                onClick={() => scrollTo('schiacciata-menu')}
+                className="w-12 h-12 bg-crust text-white rounded-full shadow-lg flex items-center justify-center"
+                title={t('menuPage.schiacciatMenuTitle')}
+              >
+                <ChefHat className="w-5 h-5" />
+              </motion.button>
+              <motion.button
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.05 }}
+                onClick={() => scrollTo('togo-menu')}
+                className="w-12 h-12 bg-pistachio text-white rounded-full shadow-lg flex items-center justify-center"
+                title={t('menuPage.togoMenuTitle')}
+              >
+                <ShoppingBag className="w-5 h-5" />
+              </motion.button>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
 
       <div className="container mx-auto px-4">
         {/* Hero Header */}
@@ -125,35 +161,85 @@ export default function MenuPage() {
           className="sticky top-24 z-30 bg-flour/95 backdrop-blur-sm py-4 mb-16 -mx-4 px-4 border-b border-espresso/10"
         >
           <div className="flex flex-wrap justify-center gap-2 md:gap-3 max-w-5xl mx-auto">
-            {/* Menu type quick links */}
-            <motion.a
-              href="#schiacciata-menu"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1 }}
-              className="px-4 py-2 bg-crust text-white shadow-sm font-oswald font-bold text-sm uppercase tracking-wider rounded-full whitespace-nowrap flex items-center gap-1.5 hover:bg-crust/80 transition-colors"
-            >
-              <ChefHat className="w-3.5 h-3.5" />
-              Schiacciata
-            </motion.a>
-            <motion.a
-              href="#togo-menu"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.15 }}
-              className="px-4 py-2 bg-pistachio text-white shadow-sm font-oswald font-bold text-sm uppercase tracking-wider rounded-full whitespace-nowrap flex items-center gap-1.5 hover:bg-pistachio/80 transition-colors"
-            >
-              <ShoppingBag className="w-3.5 h-3.5" />
-              To-Go
-            </motion.a>
+            {/* Schiacciata dropdown */}
+            <div className="relative">
+              <button
+                onClick={(e) => toggleDropdown('schiacciata', e)}
+                className="px-4 py-2 bg-crust text-white shadow-sm font-oswald font-bold text-sm uppercase tracking-wider rounded-full whitespace-nowrap flex items-center gap-1.5 hover:bg-crust/80 transition-colors"
+              >
+                <ChefHat className="w-3.5 h-3.5" />
+                Schiacciata
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openDropdown === 'schiacciata' ? 'rotate-180' : ''}`} />
+              </button>
+              <AnimatePresence>
+                {openDropdown === 'schiacciata' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -5, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -5, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-xl border border-espresso/10 overflow-hidden min-w-[200px] z-50"
+                  >
+                    {schiacciataMenuCategories.map((cat) =>
+                      cat.products.map((product) => (
+                        <button
+                          key={product.id}
+                          onClick={() => scrollTo(product.id)}
+                          className="block w-full text-left px-4 py-2.5 text-sm font-lato text-espresso hover:bg-crust/10 transition-colors"
+                        >
+                          {product.name}
+                        </button>
+                      ))
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* To-Go dropdown */}
+            <div className="relative">
+              <button
+                onClick={(e) => toggleDropdown('togo', e)}
+                className="px-4 py-2 bg-pistachio text-white shadow-sm font-oswald font-bold text-sm uppercase tracking-wider rounded-full whitespace-nowrap flex items-center gap-1.5 hover:bg-pistachio/80 transition-colors"
+              >
+                <ShoppingBag className="w-3.5 h-3.5" />
+                To-Go
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openDropdown === 'togo' ? 'rotate-180' : ''}`} />
+              </button>
+              <AnimatePresence>
+                {openDropdown === 'togo' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -5, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -5, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-xl border border-espresso/10 overflow-hidden min-w-[200px] z-50"
+                  >
+                    {togoMenuCategories.map((cat) => (
+                      <button
+                        key={cat.id}
+                        onClick={() => scrollTo(cat.id)}
+                        className="block w-full text-left px-4 py-2.5 text-sm font-lato text-espresso hover:bg-pistachio/10 transition-colors"
+                      >
+                        {cat.name}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             <div className="w-px h-8 bg-espresso/20 mx-1 self-center hidden md:block" />
-            {productCategories.map((category, index) => (
+
+            {/* Additional categories */}
+            {additionalCategories.map((category, index) => (
               <motion.a
                 key={category.id}
                 href={`#${category.id}`}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 + index * 0.02 }}
+                onClick={(e) => { e.preventDefault(); scrollTo(category.id); }}
                 className="px-3 py-1.5 bg-white shadow-sm font-montserrat font-semibold text-xs text-espresso hover:bg-crust hover:text-white transition-all duration-200 rounded-full whitespace-nowrap"
               >
                 {category.name}
@@ -172,7 +258,6 @@ export default function MenuPage() {
             viewport={{ once: true }}
             className="relative mb-16 rounded-2xl overflow-hidden"
           >
-            {/* Background image — click to view full menu photo */}
             <button
               onClick={() => openSchiacciatOverlay(0)}
               className="relative h-48 md:h-64 w-full cursor-pointer group/banner"
@@ -226,7 +311,6 @@ export default function MenuPage() {
             viewport={{ once: true }}
             className="relative mb-16 rounded-2xl overflow-hidden"
           >
-            {/* Background image — click to view full menu photo */}
             <button
               onClick={() => openTogoOverlay(0)}
               className="relative h-48 md:h-64 w-full cursor-pointer group/banner"

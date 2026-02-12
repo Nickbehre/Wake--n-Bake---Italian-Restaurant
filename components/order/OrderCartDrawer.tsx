@@ -5,10 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, X, Plus, Minus, Trash2, Bike, Store } from 'lucide-react';
 import Link from 'next/link';
 import { useOrderStore } from '@/lib/store/order-store';
+import { useLanguage } from '@/lib/context/LanguageContext';
 
 export default function OrderCartDrawer() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const { t } = useLanguage();
 
   const items = useOrderStore((state) => state.items);
   const updateQuantity = useOrderStore((state) => state.updateQuantity);
@@ -43,7 +45,7 @@ export default function OrderCartDrawer() {
       >
         <ShoppingBag className="w-5 h-5" />
         <span className="font-oswald font-semibold">
-          {summary.itemCount} {summary.itemCount === 1 ? 'item' : 'items'}
+          {summary.itemCount} {summary.itemCount === 1 ? t('cart.item') : t('cart.items')}
         </span>
         <span className="font-oswald font-bold">€{summary.total.toFixed(2)}</span>
       </motion.button>
@@ -74,7 +76,7 @@ export default function OrderCartDrawer() {
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-espresso/10">
               <h2 className="font-oswald text-2xl font-bold text-espresso uppercase tracking-wide">
-                Your Order
+                {t('checkout.orderSummary')}
               </h2>
               <button
                 onClick={() => setIsOpen(false)}
@@ -89,9 +91,9 @@ export default function OrderCartDrawer() {
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center">
                   <ShoppingBag className="w-16 h-16 text-espresso/30 mb-4" />
-                  <p className="font-lato text-espresso/60">Your cart is empty</p>
+                  <p className="font-lato text-espresso/60">{t('checkoutOptions.emptyCart')}</p>
                   <p className="font-lato text-sm text-espresso/40 mt-2">
-                    Add some delicious items to get started
+                    {t('checkoutOptions.emptyCartText')}
                   </p>
                 </div>
               ) : (
@@ -176,7 +178,7 @@ export default function OrderCartDrawer() {
                 <div className="space-y-2 pb-4 border-b border-espresso/10">
                   <div className="flex justify-between text-sm">
                     <span className="font-lato text-espresso/70">
-                      Subtotal ({summary.itemCount} items)
+                      {t('checkout.orderSummary')} ({summary.itemCount} {summary.itemCount === 1 ? (t('cart.item') || 'item') : (t('cart.items') || 'items')})
                     </span>
                     <span className="font-oswald text-espresso">
                       €{summary.subtotal.toFixed(2)}
@@ -187,7 +189,7 @@ export default function OrderCartDrawer() {
                 {/* Total */}
                 <div className="flex justify-between items-center">
                   <span className="font-oswald text-xl text-espresso uppercase tracking-wide">
-                    Total
+                    {t('checkout.total')}
                   </span>
                   <span className="font-oswald text-3xl font-bold text-crust">
                     €{summary.total.toFixed(2)}
@@ -196,30 +198,19 @@ export default function OrderCartDrawer() {
 
                 {/* Checkout Options */}
                 <div className="space-y-3 pt-2">
-                  {/* Thuisbezorgd Delivery */}
-                  <a
-                    href="https://www.thuisbezorgd.nl/menu/wake-n-bake-panificio"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-3 bg-black text-white text-center py-4 rounded font-oswald text-lg font-bold uppercase tracking-wide hover:bg-gray-800 transition-colors group"
-                  >
-                    <Bike className="w-5 h-5 group-hover:animate-pulse" />
-                    Order via Thuisbezorgd
-                  </a>
-
-                  {/* Click & Collect */}
+                  {/* Single Checkout Button - Goes to Options Page */}
                   <Link
-                    href="/order-checkout"
+                    href="/checkout-options"
                     onClick={() => setIsOpen(false)}
                     className="w-full flex items-center justify-center gap-3 bg-tomato text-white text-center py-4 rounded font-oswald text-lg font-bold uppercase tracking-wide hover:bg-red-700 transition-colors group shadow-md"
                   >
-                    <Store className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
-                    Click & Collect
+                    <ShoppingBag className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
+                    {t('checkoutOptions.continueCheckout')}
                   </Link>
                 </div>
 
                 <p className="text-center text-xs text-espresso/50 font-lato mt-2">
-                  Click & Collect orders can be picked up at our store
+                  {t('checkoutOptions.chooseDelivery')}
                 </p>
               </div>
             )}

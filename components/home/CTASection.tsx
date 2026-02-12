@@ -9,7 +9,7 @@ export default function CTASection() {
   const { t } = useLanguage()
 
   return (
-    <section className="py-20 bg-crust">
+    <section className="py-20 bg-crust rounded-[3rem] mx-4 md:mx-8 lg:mx-16 shadow-2xl">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left: CTA */}
@@ -27,13 +27,13 @@ export default function CTASection() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 href="/contact"
-                className="bg-tomato hover:bg-tomato/90 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-center transition-all duration-300 transform hover:scale-105"
+                className="bg-tomato hover:bg-tomato/90 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-center rounded-full transition-all duration-300 transform hover:scale-105"
               >
                 {t('cta.visit')}
               </Link>
               <a
                 href="tel:+31201234567"
-                className="bg-espresso hover:bg-espresso/90 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-center transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+                className="bg-espresso hover:bg-espresso/90 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-center rounded-full transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
               >
                 <Phone className="w-5 h-5" />
                 {t('cta.call')}
@@ -48,7 +48,7 @@ export default function CTASection() {
             viewport={{ once: true }}
             className="space-y-6"
           >
-            <div className="bg-flour p-6 flex items-start gap-4">
+            <div className="bg-flour p-6 flex items-start gap-4 rounded-2xl">
               <div className="p-3 bg-crust/20 rounded-full">
                 <MapPin className="w-6 h-6 text-espresso" />
               </div>
@@ -64,7 +64,7 @@ export default function CTASection() {
               </div>
             </div>
 
-            <div className="bg-flour p-6 flex items-start gap-4">
+            <div className="bg-flour p-6 flex items-start gap-4 rounded-2xl">
               <div className="p-3 bg-crust/20 rounded-full">
                 <Clock className="w-6 h-6 text-espresso" />
               </div>
@@ -82,7 +82,7 @@ export default function CTASection() {
               </div>
             </div>
 
-            <div className="bg-flour p-6 flex items-start gap-4">
+            <div className="bg-flour p-6 flex items-start gap-4 rounded-2xl">
               <div className="p-3 bg-crust/20 rounded-full">
                 <Phone className="w-6 h-6 text-espresso" />
               </div>
