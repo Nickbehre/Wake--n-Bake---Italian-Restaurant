@@ -32,11 +32,14 @@ export function generateAvailableTimeSlots(): TimeSlot[] {
     while (isBefore(currentSlot, closingTime)) {
         const isAvailable = isAfter(currentSlot, minimumPickupTime);
 
-        slots.push({
-            date: new Date(currentSlot),
-            label: format(currentSlot, "HH:mm"),
-            available: isAvailable,
-        });
+        // Only include future available slots
+        if (isAvailable) {
+            slots.push({
+                date: new Date(currentSlot),
+                label: format(currentSlot, "HH:mm"),
+                available: true,
+            });
+        }
 
         currentSlot = addMinutes(currentSlot, SLOT_INTERVAL_MINUTES);
     }

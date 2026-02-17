@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Instagram, Phone } from 'lucide-react'
+import { Menu, X, Instagram, Phone, Bike, Store } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import LanguageToggle from '@/components/ui/LanguageToggle'
 import { useLanguage } from '@/lib/context/LanguageContext'
@@ -23,6 +24,7 @@ const navItems = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false)
   const pathname = usePathname()
   const { t } = useLanguage()
 
@@ -34,9 +36,10 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Close mobile menu on route change
+  // Close mobile menu and order modal on route change
   useEffect(() => {
     setIsMobileMenuOpen(false)
+    setIsOrderModalOpen(false)
   }, [pathname])
 
   // Check if we're on home page
@@ -129,15 +132,13 @@ export default function Header() {
             >
               <Phone className="w-5 h-5" />
             </a>
-            {/* Order button - links to Uber Eats */}
-            <a
-              href={THUISBEZORGD_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-tomato hover:bg-tomato/90 text-white font-oswald font-bold uppercase tracking-wider px-6 py-2.5 rounded-full transition-all duration-300 transform hover:scale-105"
+            {/* Order button - opens modal */}
+            <button
+              onClick={() => setIsOrderModalOpen(true)}
+              className="bg-tomato hover:bg-tomato/90 text-white font-oswald font-bold uppercase tracking-wider px-6 py-2.5 rounded-full transition-all duration-300 transform hover:scale-105 cursor-pointer"
             >
               {t('nav.order')}
-            </a>
+            </button>
           </div>
 
           {/* Mobile: Language Toggle & Menu Button */}
@@ -198,18 +199,81 @@ export default function Header() {
                   <Phone className="w-5 h-5" />
                 </a>
               </div>
-              <a
-                href={THUISBEZORGD_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full bg-tomato text-white text-center font-oswald font-bold uppercase tracking-wider py-2.5 mt-2 rounded-full text-sm"
+              <button
+                onClick={() => { setIsMobileMenuOpen(false); setIsOrderModalOpen(true); }}
+                className="block w-full bg-tomato text-white text-center font-oswald font-bold uppercase tracking-wider py-2.5 mt-2 rounded-full text-sm cursor-pointer"
               >
                 {t('nav.order')}
-              </a>
+              </button>
             </nav>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Order Modal — rendered via portal so it's not affected by header's fixed/transform */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isOrderModalOpen && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
+                onClick={() => setIsOrderModalOpen(false)}
+              />
+              {/* Modal */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="fixed inset-0 z-[101] flex items-center justify-center pointer-events-none"
+              >
+                <div className="bg-[#f7f1e1] rounded-2xl shadow-2xl p-8 relative w-[90vw] max-w-md pointer-events-auto">
+                  <button
+                    onClick={() => setIsOrderModalOpen(false)}
+                    className="absolute top-4 right-4 text-espresso/50 hover:text-espresso transition-colors cursor-pointer"
+                    aria-label="Close"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+
+                  <h2 className="font-stamp text-3xl text-tomato text-center mb-2">
+                    {t('nav.order')}
+                  </h2>
+                  <p className="font-lato text-espresso/60 text-center text-sm mb-8">
+                    {t('hero.cta.order')}
+                  </p>
+
+                  <div className="flex flex-col gap-4">
+                    <a
+                      href={THUISBEZORGD_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-3 bg-black text-white py-4 px-6 rounded-full font-oswald uppercase tracking-wider text-lg hover:bg-black/80 transition-all duration-300 hover:scale-[1.02]"
+                    >
+                      <Bike className="w-5 h-5" />
+                      {t('hero.cta.delivery')}
+                    </a>
+                    <Link
+                      href="/menu"
+                      onClick={() => setIsOrderModalOpen(false)}
+                      className="flex items-center justify-center gap-3 bg-tomato text-white py-4 px-6 rounded-full font-oswald uppercase tracking-wider text-lg hover:bg-red-700 transition-all duration-300 hover:scale-[1.02]"
+                    >
+                      <Store className="w-5 h-5" />
+                      {t('hero.cta.takeaway')}
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </header>
   )
 }

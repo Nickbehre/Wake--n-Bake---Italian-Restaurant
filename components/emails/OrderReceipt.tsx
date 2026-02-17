@@ -5,7 +5,6 @@ import {
     Head,
     Heading,
     Html,
-    Img,
     Preview,
     Section,
     Text,
@@ -14,13 +13,11 @@ import {
     Column,
     Hr,
 } from '@react-email/components';
-import { format } from 'date-fns';
-import { nl } from 'date-fns/locale';
 
 interface OrderReceiptProps {
     customerName: string;
     orderId: string;
-    pickupTime: string; // ISO String
+    pickupTimeFormatted: string;
     items: Array<{
         name: string;
         quantity: number;
@@ -33,105 +30,303 @@ interface OrderReceiptProps {
     };
 }
 
-// Mock logo URL - replace with actual hosted URL
-const logoUrl = "https://wake-n-bake.nl/logo.png";
-
 export const OrderReceipt = ({
     customerName,
     orderId,
-    pickupTime,
+    pickupTimeFormatted,
     items,
     totals,
 }: OrderReceiptProps) => {
-    const formattedDate = pickupTime
-        ? format(new Date(pickupTime), "EEEE d MMMM 'om' HH:mm", { locale: nl })
-        : "Datum onbekend";
-
     return (
         <Html>
-            <Head />
-            <Preview>Bedankt voor je bestelling bij Wake n Bake!</Preview>
+            <Head>
+                <style>{`
+                    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Lato:wght@300;400;700&family=Lobster&family=Montserrat:wght@600;700&display=swap');
+                `}</style>
+            </Head>
+            <Preview>Bedankt voor je bestelling bij Wake &apos;n Bake!</Preview>
             <Tailwind
                 config={{
                     theme: {
                         extend: {
                             colors: {
-                                brand: '#CE2029',
-                                gold: '#D4A056',
-                                offwhite: '#F9F7F2',
-                                dark: '#2C2C2C',
+                                tomato: '#CE2029',
+                                crust: '#D4A056',
+                                espresso: '#2C2C2C',
+                                flour: '#F9F7F2',
+                                pistachio: '#93C572',
                             },
                         },
                     },
                 }}
             >
-                <Body className="bg-offwhite font-sans text-dark">
-                    <Container className="bg-white my-10 mx-auto p-5 rounded shadow-sm max-w-[600px] border border-gray-200">
-                        {/* Header */}
-                        <Section className="text-center pb-6 border-b border-gray-100">
-                            <Heading className="text-2xl font-bold uppercase tracking-widest text-brand m-0">
-                                Wake n Bake
-                            </Heading>
-                            <Text className="text-gray-500 uppercase text-xs tracking-widest mt-1">Italian Panificio</Text>
-                        </Section>
+                <Body style={{ backgroundColor: '#F9F7F2', fontFamily: "'Lato', 'Helvetica Neue', Arial, sans-serif", margin: 0, padding: 0 }}>
+                    <Container style={{ maxWidth: '600px', margin: '0 auto', padding: '40px 20px' }}>
 
-                        {/* Hero */}
-                        <Section className="py-6 text-center">
-                            <Text className="text-lg">Ciao {customerName},</Text>
-                            <Text className="text-gray-600">Bedankt voor je bestelling! We gaan direct aan de slag om alles vers te bakken.</Text>
-                        </Section>
-
-                        {/* Pickup Info */}
-                        <Section className="bg-gray-50 p-6 rounded text-center mb-6">
-                            <Text className="text-xs font-bold uppercase text-gray-400 mb-2 tracking-widest">Je Ophaaltijd</Text>
-                            <Heading className="text-2xl text-brand font-bold m-0 uppercase">
-                                {formattedDate}
+                        {/* Dark Header */}
+                        <Section style={{
+                            backgroundColor: '#2C2C2C',
+                            borderRadius: '24px 24px 0 0',
+                            padding: '40px 40px 20px',
+                            textAlign: 'center' as const,
+                        }}>
+                            <Heading style={{
+                                fontFamily: "'Lobster', cursive",
+                                color: '#F9F7F2',
+                                fontSize: '36px',
+                                fontWeight: 400,
+                                margin: 0,
+                                textShadow: '2px 2px 0px #8B1E25, 4px 4px 0px rgba(44,44,44,0.5)',
+                            }}>
+                                Wake &apos;n Bake
                             </Heading>
-                            <Text className="text-sm font-bold text-dark mt-4 bg-gray-200 inline-block px-3 py-1 rounded">
-                                Order # {orderId}
+                            <Text style={{
+                                fontFamily: "'Oswald', sans-serif",
+                                color: '#CE2029',
+                                fontSize: '11px',
+                                letterSpacing: '3px',
+                                textTransform: 'uppercase' as const,
+                                fontWeight: 600,
+                                margin: '4px 0 0',
+                            }}>
+                                Italian Panificio
                             </Text>
                         </Section>
 
-                        {/* Line Items */}
-                        <Section className="mb-6">
-                            <Text className="font-bold uppercase text-xs text-gray-400 tracking-widest mb-4 border-b pb-2">Bestelling</Text>
-                            {items.map((item, idx) => (
-                                <Row key={idx} className="mb-3">
-                                    <Column className="w-12">
-                                        <Text className="m-0 font-bold text-brand">{item.quantity}x</Text>
-                                    </Column>
+                        {/* Gold divider */}
+                        <Section style={{ backgroundColor: '#2C2C2C', padding: '0 50px' }}>
+                            <div style={{ height: '1px', backgroundColor: '#D4A056', opacity: 0.4 }} />
+                        </Section>
+
+                        {/* Greeting in dark section */}
+                        <Section style={{
+                            backgroundColor: '#2C2C2C',
+                            padding: '20px 40px 35px',
+                            textAlign: 'center' as const,
+                        }}>
+                            <Text style={{
+                                fontFamily: "'Lato', sans-serif",
+                                color: '#F9F7F2',
+                                fontSize: '18px',
+                                fontWeight: 300,
+                                margin: 0,
+                            }}>
+                                Ciao {customerName}!
+                            </Text>
+                            <Text style={{
+                                fontFamily: "'Lato', sans-serif",
+                                color: '#999',
+                                fontSize: '14px',
+                                fontWeight: 300,
+                                margin: '8px 0 0',
+                            }}>
+                                Bedankt voor je bestelling! We gaan direct aan de slag.
+                            </Text>
+                        </Section>
+
+                        {/* Main white content area */}
+                        <Section style={{
+                            backgroundColor: '#ffffff',
+                            padding: '0',
+                        }}>
+
+                            {/* Pickup Time Card */}
+                            <Section style={{
+                                backgroundColor: '#F9F7F2',
+                                margin: '30px 30px 25px',
+                                borderRadius: '12px',
+                                border: '2px solid #D4A056',
+                                textAlign: 'center' as const,
+                                padding: '25px',
+                            }}>
+                                <Text style={{
+                                    fontFamily: "'Oswald', sans-serif",
+                                    fontSize: '11px',
+                                    fontWeight: 700,
+                                    textTransform: 'uppercase' as const,
+                                    color: '#D4A056',
+                                    letterSpacing: '3px',
+                                    margin: '0 0 8px',
+                                }}>
+                                    Je Ophaaltijd
+                                </Text>
+                                <Heading style={{
+                                    fontFamily: "'Montserrat', sans-serif",
+                                    fontSize: '20px',
+                                    color: '#2C2C2C',
+                                    fontWeight: 700,
+                                    margin: 0,
+                                    textTransform: 'uppercase' as const,
+                                }}>
+                                    {pickupTimeFormatted}
+                                </Heading>
+                                <Text style={{
+                                    fontFamily: "'Oswald', sans-serif",
+                                    fontSize: '12px',
+                                    fontWeight: 600,
+                                    color: '#CE2029',
+                                    backgroundColor: '#fef2f2',
+                                    display: 'inline-block',
+                                    padding: '4px 14px',
+                                    borderRadius: '20px',
+                                    margin: '12px 0 0',
+                                    letterSpacing: '1px',
+                                }}>
+                                    Order #{orderId}
+                                </Text>
+                            </Section>
+
+                            {/* Order Items */}
+                            <Section style={{ padding: '0 30px 20px' }}>
+                                <Text style={{
+                                    fontFamily: "'Oswald', sans-serif",
+                                    fontSize: '11px',
+                                    fontWeight: 700,
+                                    textTransform: 'uppercase' as const,
+                                    color: '#D4A056',
+                                    letterSpacing: '3px',
+                                    borderBottom: '1px solid #E8E4DC',
+                                    paddingBottom: '8px',
+                                    margin: '0 0 16px',
+                                }}>
+                                    Bestelling
+                                </Text>
+
+                                {items.map((item, idx) => (
+                                    <Row key={idx} style={{ marginBottom: '10px' }}>
+                                        <Column style={{ width: '40px' }}>
+                                            <Text style={{
+                                                margin: 0,
+                                                fontFamily: "'Montserrat', sans-serif",
+                                                fontWeight: 700,
+                                                color: '#CE2029',
+                                                fontSize: '14px',
+                                            }}>
+                                                {item.quantity}x
+                                            </Text>
+                                        </Column>
+                                        <Column>
+                                            <Text style={{
+                                                margin: 0,
+                                                fontFamily: "'Lato', sans-serif",
+                                                fontWeight: 400,
+                                                color: '#2C2C2C',
+                                                fontSize: '14px',
+                                            }}>
+                                                {item.name}
+                                            </Text>
+                                        </Column>
+                                        <Column style={{ textAlign: 'right' as const }}>
+                                            <Text style={{
+                                                margin: 0,
+                                                fontFamily: "'Lato', sans-serif",
+                                                color: '#666',
+                                                fontSize: '14px',
+                                            }}>
+                                                &euro;{(item.price * item.quantity).toFixed(2)}
+                                            </Text>
+                                        </Column>
+                                    </Row>
+                                ))}
+                            </Section>
+
+                            {/* Gold divider */}
+                            <Section style={{ padding: '0 30px' }}>
+                                <div style={{ height: '2px', backgroundColor: '#D4A056', opacity: 0.3, borderRadius: '1px' }} />
+                            </Section>
+
+                            {/* Totals */}
+                            <Section style={{ padding: '16px 30px', textAlign: 'right' as const }}>
+                                <Row>
                                     <Column>
-                                        <Text className="m-0 font-medium text-dark">{item.name}</Text>
+                                        <Text style={{
+                                            margin: 0,
+                                            fontFamily: "'Oswald', sans-serif",
+                                            fontWeight: 700,
+                                            fontSize: '20px',
+                                            color: '#2C2C2C',
+                                            textTransform: 'uppercase' as const,
+                                            letterSpacing: '1px',
+                                        }}>
+                                            Totaal
+                                        </Text>
                                     </Column>
-                                    <Column className="text-right">
-                                        <Text className="m-0 text-gray-600">€{(item.price * item.quantity).toFixed(2)}</Text>
+                                    <Column style={{ width: '100px' }}>
+                                        <Text style={{
+                                            margin: 0,
+                                            fontFamily: "'Montserrat', sans-serif",
+                                            fontWeight: 700,
+                                            fontSize: '20px',
+                                            color: '#CE2029',
+                                        }}>
+                                            &euro;{totals.total.toFixed(2)}
+                                        </Text>
                                     </Column>
                                 </Row>
-                            ))}
+                                <Row>
+                                    <Column>
+                                        <Text style={{
+                                            margin: 0,
+                                            fontFamily: "'Lato', sans-serif",
+                                            color: '#aaa',
+                                            fontSize: '11px',
+                                        }}>
+                                            Inclusief BTW
+                                        </Text>
+                                    </Column>
+                                </Row>
+                            </Section>
+
+                            {/* Spacer */}
+                            <Section style={{ padding: '10px' }} />
                         </Section>
 
-                        <Hr className="border-gray-200 my-4" />
+                        {/* Dark Footer */}
+                        <Section style={{
+                            backgroundColor: '#2C2C2C',
+                            borderRadius: '0 0 24px 24px',
+                            padding: '30px 40px',
+                            textAlign: 'center' as const,
+                        }}>
+                            <Text style={{
+                                fontFamily: "'Oswald', sans-serif",
+                                fontWeight: 700,
+                                color: '#D4A056',
+                                textTransform: 'uppercase' as const,
+                                letterSpacing: '2px',
+                                fontSize: '13px',
+                                margin: '0 0 4px',
+                            }}>
+                                Wake &apos;n Bake
+                            </Text>
+                            <Text style={{
+                                fontFamily: "'Lato', sans-serif",
+                                color: '#888',
+                                fontSize: '13px',
+                                margin: '0',
+                                lineHeight: '20px',
+                            }}>
+                                Vijzelstraat 93H
+                            </Text>
+                            <Text style={{
+                                fontFamily: "'Lato', sans-serif",
+                                color: '#888',
+                                fontSize: '13px',
+                                margin: '0 0 16px',
+                                lineHeight: '20px',
+                            }}>
+                                1017 HH Amsterdam
+                            </Text>
 
-                        {/* Totals */}
-                        <Section className="text-right">
-                            <Row>
-                                <Column><Text className="m-0 font-bold text-xl text-brand uppercase">Totaal</Text></Column>
-                                <Column className="w-24"><Text className="m-0 font-bold text-xl text-dark">€{totals.total.toFixed(2)}</Text></Column>
-                            </Row>
-                            <Row>
-                                <Column><Text className="m-0 text-gray-400 text-xs">Inclusief BTW</Text></Column>
-                            </Row>
-                        </Section>
+                            <div style={{ height: '1px', backgroundColor: '#D4A056', opacity: 0.2, margin: '0 40px 16px' }} />
 
-                        <Hr className="border-gray-200 my-8" />
-
-                        {/* Footer */}
-                        <Section className="text-center text-gray-500 text-sm">
-                            <Text className="font-bold text-dark uppercase tracking-widest mb-1">Wake n Bake</Text>
-                            <Text className="m-0">Vijzelstraat 93H</Text>
-                            <Text className="m-0 mb-4">1017 HH Amsterdam</Text>
-
-                            <Text className="text-xs text-gray-400 mt-6">
+                            <Text style={{
+                                fontFamily: "'Lato', sans-serif",
+                                color: '#666',
+                                fontSize: '11px',
+                                margin: 0,
+                                fontStyle: 'italic',
+                            }}>
                                 Laat deze email zien aan onze medewerker.
                             </Text>
                         </Section>

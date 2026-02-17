@@ -12,24 +12,24 @@ function getResend() {
 
 export async function POST(request: Request) {
     try {
-        const { email, orderDetails, pickupTime } = await request.json();
+        const { email, orderDetails, pickupTimeFormatted } = await request.json();
 
         if (!email) {
             return NextResponse.json({ error: "Email required" }, { status: 400 });
         }
 
-        // In a real app, generate the PDF or Receipt here.
-        // We send the React Email component.
+        // Use env var for from address, fallback to Resend sandbox for testing
+        const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
 
         const resend = getResend();
         const { data, error } = await resend.emails.send({
-            from: 'Wake n Bake <orders@wake-n-bake.nl>', // Requires domain verification
+            from: `Wake n Bake <${fromEmail}>`,
             to: [email],
             subject: `Bevestiging bestelling Wake n Bake`,
             react: OrderReceipt({
                 customerName: orderDetails.customerDetails?.name || "Klant",
-                orderId: orderDetails.orderId || "WNB-???", // Should come from Stripe metadata ideally
-                pickupTime: pickupTime, // ISO string
+                orderId: orderDetails.orderId || "WNB-???",
+                pickupTimeFormatted: pickupTimeFormatted, // Pre-formatted on client to avoid timezone issues
                 items: orderDetails.items || [],
                 totals: orderDetails.totals || { subtotal: 0, tax: 0, total: 0 },
             }),
