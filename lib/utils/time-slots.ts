@@ -7,7 +7,7 @@ export interface TimeSlot {
 }
 
 const SLOT_INTERVAL_MINUTES = 15;
-const PREP_BUFFER_MINUTES = 30;
+const PREP_BUFFER_MINUTES = 15;
 
 function getStoreHours(): { openHour: number; openMinute: number; closeHour: number; closeMinute: number } | null {
     const day = getDay(new Date()); // 0 = Sunday

@@ -6,7 +6,7 @@ function getResend() {
   return new Resend(process.env.RESEND_API_KEY);
 }
 
-const FROM_EMAIL = 'order@wakenbake.nl';
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'info@order.wakenbake.nl';
 const FROM_NAME = "Wake N' Bake Panificio";
 const STORE_EMAIL = process.env.ORDER_NOTIFICATION_EMAIL || 'info@wakenbake.nl';
 
