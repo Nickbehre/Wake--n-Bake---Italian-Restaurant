@@ -11,7 +11,6 @@ import {
     Tailwind,
     Row,
     Column,
-    Hr,
 } from '@react-email/components';
 
 interface OrderReceiptProps {
@@ -22,6 +21,7 @@ interface OrderReceiptProps {
         name: string;
         quantity: number;
         price: number;
+        extras?: Array<{ name: string; price: number }>;
     }>;
     totals: {
         subtotal: number;
@@ -39,12 +39,8 @@ export const OrderReceipt = ({
 }: OrderReceiptProps) => {
     return (
         <Html>
-            <Head>
-                <style>{`
-                    @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Lato:wght@300;400;700&family=Lobster&family=Montserrat:wght@600;700&display=swap');
-                `}</style>
-            </Head>
-            <Preview>Bedankt voor je bestelling bij Wake &apos;n Bake!</Preview>
+            <Head />
+            <Preview>Thank you for your order at Wake &apos;n Bake!</Preview>
             <Tailwind
                 config={{
                     theme: {
@@ -60,7 +56,7 @@ export const OrderReceipt = ({
                     },
                 }}
             >
-                <Body style={{ backgroundColor: '#F9F7F2', fontFamily: "'Lato', 'Helvetica Neue', Arial, sans-serif", margin: 0, padding: 0 }}>
+                <Body style={{ backgroundColor: '#F9F7F2', fontFamily: "Arial, Helvetica, sans-serif", margin: 0, padding: 0 }}>
                     <Container style={{ maxWidth: '600px', margin: '0 auto', padding: '40px 20px' }}>
 
                         {/* Dark Header */}
@@ -71,7 +67,7 @@ export const OrderReceipt = ({
                             textAlign: 'center' as const,
                         }}>
                             <Heading style={{
-                                fontFamily: "'Lobster', cursive",
+                                fontFamily: "Georgia, 'Times New Roman', serif",
                                 color: '#F9F7F2',
                                 fontSize: '36px',
                                 fontWeight: 400,
@@ -81,7 +77,7 @@ export const OrderReceipt = ({
                                 Wake &apos;n Bake
                             </Heading>
                             <Text style={{
-                                fontFamily: "'Oswald', sans-serif",
+                                fontFamily: "Arial, Helvetica, sans-serif",
                                 color: '#CE2029',
                                 fontSize: '11px',
                                 letterSpacing: '3px',
@@ -89,7 +85,7 @@ export const OrderReceipt = ({
                                 fontWeight: 600,
                                 margin: '4px 0 0',
                             }}>
-                                Italian Panificio
+                                Come Taste The Difference
                             </Text>
                         </Section>
 
@@ -105,7 +101,7 @@ export const OrderReceipt = ({
                             textAlign: 'center' as const,
                         }}>
                             <Text style={{
-                                fontFamily: "'Lato', sans-serif",
+                                fontFamily: "Arial, Helvetica, sans-serif",
                                 color: '#F9F7F2',
                                 fontSize: '18px',
                                 fontWeight: 300,
@@ -114,13 +110,13 @@ export const OrderReceipt = ({
                                 Ciao {customerName}!
                             </Text>
                             <Text style={{
-                                fontFamily: "'Lato', sans-serif",
+                                fontFamily: "Arial, Helvetica, sans-serif",
                                 color: '#999',
                                 fontSize: '14px',
                                 fontWeight: 300,
                                 margin: '8px 0 0',
                             }}>
-                                Bedankt voor je bestelling! We gaan direct aan de slag.
+                                Thank you for your order! We&apos;re preparing it right away.
                             </Text>
                         </Section>
 
@@ -131,16 +127,17 @@ export const OrderReceipt = ({
                         }}>
 
                             {/* Pickup Time Card */}
+                            <Section style={{ padding: '30px 30px 25px' }}>
                             <Section style={{
                                 backgroundColor: '#F9F7F2',
-                                margin: '30px 30px 25px',
                                 borderRadius: '12px',
                                 border: '2px solid #D4A056',
                                 textAlign: 'center' as const,
                                 padding: '25px',
+                                width: '100%',
                             }}>
                                 <Text style={{
-                                    fontFamily: "'Oswald', sans-serif",
+                                    fontFamily: "Arial, Helvetica, sans-serif",
                                     fontSize: '11px',
                                     fontWeight: 700,
                                     textTransform: 'uppercase' as const,
@@ -148,10 +145,10 @@ export const OrderReceipt = ({
                                     letterSpacing: '3px',
                                     margin: '0 0 8px',
                                 }}>
-                                    Je Ophaaltijd
+                                    Pickup Time
                                 </Text>
                                 <Heading style={{
-                                    fontFamily: "'Montserrat', sans-serif",
+                                    fontFamily: "Arial, Helvetica, sans-serif",
                                     fontSize: '20px',
                                     color: '#2C2C2C',
                                     fontWeight: 700,
@@ -161,7 +158,7 @@ export const OrderReceipt = ({
                                     {pickupTimeFormatted}
                                 </Heading>
                                 <Text style={{
-                                    fontFamily: "'Oswald', sans-serif",
+                                    fontFamily: "Arial, Helvetica, sans-serif",
                                     fontSize: '12px',
                                     fontWeight: 600,
                                     color: '#CE2029',
@@ -175,11 +172,12 @@ export const OrderReceipt = ({
                                     Order #{orderId}
                                 </Text>
                             </Section>
+                            </Section>
 
                             {/* Order Items */}
                             <Section style={{ padding: '0 30px 20px' }}>
                                 <Text style={{
-                                    fontFamily: "'Oswald', sans-serif",
+                                    fontFamily: "Arial, Helvetica, sans-serif",
                                     fontSize: '11px',
                                     fontWeight: 700,
                                     textTransform: 'uppercase' as const,
@@ -189,45 +187,66 @@ export const OrderReceipt = ({
                                     paddingBottom: '8px',
                                     margin: '0 0 16px',
                                 }}>
-                                    Bestelling
+                                    Your Order
                                 </Text>
 
-                                {items.map((item, idx) => (
-                                    <Row key={idx} style={{ marginBottom: '10px' }}>
-                                        <Column style={{ width: '40px' }}>
-                                            <Text style={{
-                                                margin: 0,
-                                                fontFamily: "'Montserrat', sans-serif",
-                                                fontWeight: 700,
-                                                color: '#CE2029',
-                                                fontSize: '14px',
-                                            }}>
-                                                {item.quantity}x
-                                            </Text>
-                                        </Column>
-                                        <Column>
-                                            <Text style={{
-                                                margin: 0,
-                                                fontFamily: "'Lato', sans-serif",
-                                                fontWeight: 400,
-                                                color: '#2C2C2C',
-                                                fontSize: '14px',
-                                            }}>
-                                                {item.name}
-                                            </Text>
-                                        </Column>
-                                        <Column style={{ textAlign: 'right' as const }}>
-                                            <Text style={{
-                                                margin: 0,
-                                                fontFamily: "'Lato', sans-serif",
-                                                color: '#666',
-                                                fontSize: '14px',
-                                            }}>
-                                                &euro;{(item.price * item.quantity).toFixed(2)}
-                                            </Text>
-                                        </Column>
-                                    </Row>
-                                ))}
+                                {items.map((item, idx) => {
+                                    const extrasTotal = item.extras?.reduce((sum, e) => sum + e.price, 0) || 0;
+                                    const itemTotal = (item.price + extrasTotal) * item.quantity;
+                                    return (
+                                        <React.Fragment key={idx}>
+                                            <Row style={{ marginBottom: item.extras && item.extras.length > 0 ? '2px' : '10px' }}>
+                                                <Column style={{ width: '40px', verticalAlign: 'top' }}>
+                                                    <Text style={{
+                                                        margin: 0,
+                                                        fontFamily: "Arial, Helvetica, sans-serif",
+                                                        fontWeight: 700,
+                                                        color: '#CE2029',
+                                                        fontSize: '14px',
+                                                    }}>
+                                                        {item.quantity}x
+                                                    </Text>
+                                                </Column>
+                                                <Column style={{ verticalAlign: 'top' }}>
+                                                    <Text style={{
+                                                        margin: 0,
+                                                        fontFamily: "Arial, Helvetica, sans-serif",
+                                                        fontWeight: 400,
+                                                        color: '#2C2C2C',
+                                                        fontSize: '14px',
+                                                    }}>
+                                                        {item.name}
+                                                    </Text>
+                                                </Column>
+                                                <Column style={{ textAlign: 'right' as const, verticalAlign: 'top', width: '80px' }}>
+                                                    <Text style={{
+                                                        margin: 0,
+                                                        fontFamily: "Arial, Helvetica, sans-serif",
+                                                        color: '#666',
+                                                        fontSize: '14px',
+                                                    }}>
+                                                        &euro;{itemTotal.toFixed(2)}
+                                                    </Text>
+                                                </Column>
+                                            </Row>
+                                            {item.extras && item.extras.length > 0 && (
+                                                <Row style={{ marginBottom: '10px' }}>
+                                                    <Column style={{ width: '40px' }}><Text style={{ margin: 0 }}>&nbsp;</Text></Column>
+                                                    <Column>
+                                                        <Text style={{
+                                                            margin: 0,
+                                                            fontFamily: "Arial, Helvetica, sans-serif",
+                                                            color: '#999',
+                                                            fontSize: '12px',
+                                                        }}>
+                                                            + {item.extras.map(e => e.name).join(', ')}
+                                                        </Text>
+                                                    </Column>
+                                                </Row>
+                                            )}
+                                        </React.Fragment>
+                                    );
+                                })}
                             </Section>
 
                             {/* Gold divider */}
@@ -241,20 +260,20 @@ export const OrderReceipt = ({
                                     <Column>
                                         <Text style={{
                                             margin: 0,
-                                            fontFamily: "'Oswald', sans-serif",
+                                            fontFamily: "Arial, Helvetica, sans-serif",
                                             fontWeight: 700,
                                             fontSize: '20px',
                                             color: '#2C2C2C',
                                             textTransform: 'uppercase' as const,
                                             letterSpacing: '1px',
                                         }}>
-                                            Totaal
+                                            Total
                                         </Text>
                                     </Column>
                                     <Column style={{ width: '100px' }}>
                                         <Text style={{
                                             margin: 0,
-                                            fontFamily: "'Montserrat', sans-serif",
+                                            fontFamily: "Arial, Helvetica, sans-serif",
                                             fontWeight: 700,
                                             fontSize: '20px',
                                             color: '#CE2029',
@@ -267,11 +286,11 @@ export const OrderReceipt = ({
                                     <Column>
                                         <Text style={{
                                             margin: 0,
-                                            fontFamily: "'Lato', sans-serif",
+                                            fontFamily: "Arial, Helvetica, sans-serif",
                                             color: '#aaa',
                                             fontSize: '11px',
                                         }}>
-                                            Inclusief BTW
+                                            VAT included
                                         </Text>
                                     </Column>
                                 </Row>
@@ -289,7 +308,7 @@ export const OrderReceipt = ({
                             textAlign: 'center' as const,
                         }}>
                             <Text style={{
-                                fontFamily: "'Oswald', sans-serif",
+                                fontFamily: "Arial, Helvetica, sans-serif",
                                 fontWeight: 700,
                                 color: '#D4A056',
                                 textTransform: 'uppercase' as const,
@@ -300,7 +319,7 @@ export const OrderReceipt = ({
                                 Wake &apos;n Bake
                             </Text>
                             <Text style={{
-                                fontFamily: "'Lato', sans-serif",
+                                fontFamily: "Arial, Helvetica, sans-serif",
                                 color: '#888',
                                 fontSize: '13px',
                                 margin: '0',
@@ -309,7 +328,7 @@ export const OrderReceipt = ({
                                 Vijzelstraat 93H
                             </Text>
                             <Text style={{
-                                fontFamily: "'Lato', sans-serif",
+                                fontFamily: "Arial, Helvetica, sans-serif",
                                 color: '#888',
                                 fontSize: '13px',
                                 margin: '0 0 16px',
@@ -321,13 +340,13 @@ export const OrderReceipt = ({
                             <div style={{ height: '1px', backgroundColor: '#D4A056', opacity: 0.2, margin: '0 40px 16px' }} />
 
                             <Text style={{
-                                fontFamily: "'Lato', sans-serif",
+                                fontFamily: "Arial, Helvetica, sans-serif",
                                 color: '#666',
                                 fontSize: '11px',
                                 margin: 0,
                                 fontStyle: 'italic',
                             }}>
-                                Laat deze email zien aan onze medewerker.
+                                Please show this email to our staff at pickup.
                             </Text>
                         </Section>
 

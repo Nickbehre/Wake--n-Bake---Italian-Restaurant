@@ -39,8 +39,8 @@ export default function OrderSuccessPage() {
         // Send confirmation email
         if (parsed.customerDetails?.email) {
           const pickupFormatted = parsed.pickupTime
-            ? format(new Date(parsed.pickupTime), "EEEE d MMMM 'om' HH:mm", { locale: nl })
-            : "Datum onbekend";
+            ? format(new Date(parsed.pickupTime), "EEEE d MMMM 'at' HH:mm", { locale: enUS })
+            : "Date unknown";
           fetch("/api/send-email", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -73,8 +73,8 @@ export default function OrderSuccessPage() {
 
       if (customerDetails?.email) {
         const pickupFormatted = pt
-          ? format(new Date(pt), "EEEE d MMMM 'om' HH:mm", { locale: nl })
-          : "Datum onbekend";
+          ? format(new Date(pt), "EEEE d MMMM 'at' HH:mm", { locale: enUS })
+          : "Date unknown";
         fetch("/api/send-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
