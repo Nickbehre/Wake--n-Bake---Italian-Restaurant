@@ -248,7 +248,7 @@ const translations: Record<Language, Record<string, string>> = {
     'checkout.namePlaceholder': 'Hoe mogen we je noemen?',
     'checkout.emailPlaceholder': 'naam@voorbeeld.nl',
     'checkout.phonePlaceholder': '6 12345678',
-    'checkout.pickupInfo': 'Winkel open: Ma-Vr 07:30-16:30, Za 08:00-18:00. Minimaal 30 min bereidingstijd.',
+    'checkout.pickupInfo': 'Winkel open: Ma-Vr 08:00-16:00, Za 09:00-17:00. Minimaal 15 min bereidingstijd.',
     'checkout.noSlots': 'Helaas, er zijn vandaag geen ophaalmomenten meer beschikbaar.',
     'checkout.selectTime': 'Selecteer een tijdstip om verder te gaan.',
     'checkout.inclBtw': 'Inclusief BTW',
@@ -382,7 +382,7 @@ const translations: Record<Language, Record<string, string>> = {
     'cart.items': 'artikelen',
     'cart.delivery': 'Bezorgen (Thuisbezorgd)',
     'cart.takeaway': 'Pick-up (Click & Collect)',
-    'cart.pickupNote': 'Pick-up kan binnen 30 minuten.',
+    'cart.pickupNote': 'Pick-up kan binnen 15 minuten.',
   },
   en: {
     // Navigation
@@ -621,7 +621,7 @@ const translations: Record<Language, Record<string, string>> = {
     'checkout.namePlaceholder': 'What should we call you?',
     'checkout.emailPlaceholder': 'name@example.com',
     'checkout.phonePlaceholder': '6 1234 5678',
-    'checkout.pickupInfo': 'Store open: Mon-Fri 07:30-16:30, Sat 08:00-18:00. Minimum 30 min preparation time.',
+    'checkout.pickupInfo': 'Store open: Mon-Fri 08:00-16:00, Sat 09:00-17:00. Minimum 15 min preparation time.',
     'checkout.noSlots': 'Unfortunately, there are no more pickup slots available today.',
     'checkout.selectTime': 'Select a time to continue.',
     'checkout.inclBtw': 'Including VAT',
@@ -755,7 +755,7 @@ const translations: Record<Language, Record<string, string>> = {
     'cart.items': 'items',
     'cart.delivery': 'Delivery (Thuisbezorgd)',
     'cart.takeaway': 'Pick-up (Click & Collect)',
-    'cart.pickupNote': 'Pickup available within 30 minutes.',
+    'cart.pickupNote': 'Pickup available within 15 minutes.',
   },
 }
 

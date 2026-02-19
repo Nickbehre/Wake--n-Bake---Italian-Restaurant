@@ -9,11 +9,15 @@ export interface TimeSlot {
 const SLOT_INTERVAL_MINUTES = 15;
 const PREP_BUFFER_MINUTES = 15;
 
+// In development, extend hours so you can test outside store hours
+const IS_DEV = process.env.NODE_ENV === 'development';
+
 function getStoreHours(): { openHour: number; openMinute: number; closeHour: number; closeMinute: number } | null {
     const day = getDay(new Date()); // 0 = Sunday
+    if (IS_DEV) return { openHour: 0, openMinute: 0, closeHour: 23, closeMinute: 59 }; // Dev: always open
     if (day === 0) return null; // Sunday - closed
-    if (day === 6) return { openHour: 8, openMinute: 0, closeHour: 18, closeMinute: 0 }; // Saturday
-    return { openHour: 7, openMinute: 30, closeHour: 16, closeMinute: 30 }; // Mon-Fri
+    if (day === 6) return { openHour: 9, openMinute: 0, closeHour: 17, closeMinute: 0 }; // Saturday
+    return { openHour: 8, openMinute: 0, closeHour: 16, closeMinute: 0 }; // Mon-Fri
 }
 
 export function generateAvailableTimeSlots(): TimeSlot[] {

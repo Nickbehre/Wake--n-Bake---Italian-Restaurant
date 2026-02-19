@@ -3,13 +3,20 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 export type ItemSize = 'regular' | 'large' | null;
 
+export interface SelectedExtra {
+    id: string;
+    name: string;
+    price: number;
+}
+
 export interface CartItem {
     id: string;          // Unique cart ID (e.g., "mortadella-original-large")
     productId: string;   // Original menu item ID
     name: string;
     size: ItemSize;      // null for items without sizes (drinks, desserts)
     sizeLabel?: string;  // "Klein" or "Groot"
-    price: number;
+    price: number;       // Base price (without extras)
+    extras?: SelectedExtra[];
     quantity: number;
     image?: string;
 }
@@ -107,7 +114,10 @@ export const useCartStore = create<CartState>()(
             calculateTotals: () => {
                 const { items } = get();
                 const total = items.reduce(
-                    (acc, item) => acc + item.price * item.quantity,
+                    (acc, item) => {
+                        const extrasTotal = item.extras?.reduce((sum, e) => sum + e.price, 0) || 0;
+                        return acc + (item.price + extrasTotal) * item.quantity;
+                    },
                     0
                 );
 

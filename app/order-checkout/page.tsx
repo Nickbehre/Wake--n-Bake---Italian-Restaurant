@@ -87,7 +87,7 @@ export default function OrderCheckoutPage() {
     const slots: string[] = [];
     const now = new Date();
     const startTime = new Date(now);
-    startTime.setMinutes(Math.ceil(now.getMinutes() / 15) * 15 + 30); // Start 30 mins from now
+    startTime.setMinutes(Math.ceil(now.getMinutes() / 15) * 15 + 15); // Start 15 mins from now
 
     for (let i = 0; i < 12; i++) {
       const time = new Date(startTime);

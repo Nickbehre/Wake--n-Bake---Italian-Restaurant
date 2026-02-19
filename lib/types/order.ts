@@ -6,6 +6,16 @@
 /**
  * Product from the menu
  */
+/**
+ * Extra/add-on option for a product
+ */
+export interface ProductExtra {
+  id: string;
+  name: string;
+  price: number;
+  description?: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -16,6 +26,7 @@ export interface Product {
   hasSizes?: boolean;
   priceRegular?: number;
   priceLarge?: number;
+  availableExtras?: ProductExtra[];
 }
 
 /**

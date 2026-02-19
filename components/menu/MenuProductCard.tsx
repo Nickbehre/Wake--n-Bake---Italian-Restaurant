@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Flame, Leaf, Nut, Plus, Minus, ShoppingBag, Check } from 'lucide-react';
-import type { Product } from '@/lib/types/order';
-import { useCartStore } from '@/lib/store/cart-store';
+import type { Product, ProductExtra } from '@/lib/types/order';
+import { useCartStore, type SelectedExtra } from '@/lib/store/cart-store';
 import { useLanguage } from '@/lib/context/LanguageContext';
 
 interface MenuProductCardProps {
@@ -50,6 +50,7 @@ function cleanDescription(description: string): string {
 export default function MenuProductCard({ product, index, onProductClick }: MenuProductCardProps) {
   const [isAdded, setIsAdded] = useState(false);
   const [selectedSize, setSelectedSize] = useState<'regular' | 'large'>('regular');
+  const [selectedExtras, setSelectedExtras] = useState<Set<string>>(new Set());
   const { addItem, updateQuantity, items } = useCartStore();
   const { t } = useLanguage();
 
@@ -57,28 +58,56 @@ export default function MenuProductCard({ product, index, onProductClick }: Menu
   const cleanedDescription = cleanDescription(product.description);
   const hasImage = !!product.image;
   const hasSizes = product.hasSizes && product.priceRegular && product.priceLarge;
+  const hasExtras = product.availableExtras && product.availableExtras.length > 0;
 
   // Get the current price based on selected size
-  const currentPrice = hasSizes
+  const basePrice = hasSizes
     ? (selectedSize === 'regular' ? product.priceRegular! : product.priceLarge!)
     : product.price;
 
-  // Cart item ID includes size for products with sizes
-  const cartItemId = hasSizes ? `${product.id}-${selectedSize}` : product.id;
+  // Calculate extras total
+  const extrasTotal = hasExtras
+    ? product.availableExtras!.filter(e => selectedExtras.has(e.id)).reduce((sum, e) => sum + e.price, 0)
+    : 0;
 
-  // Find this product in cart (match by size if applicable)
-  const cartItem = items.find((item) =>
-    hasSizes ? item.id === cartItemId : item.productId === product.id
-  );
+  const currentPrice = basePrice + extrasTotal;
+
+  // Cart item ID includes size and extras for unique identification
+  const extrasSuffix = selectedExtras.size > 0
+    ? '-' + Array.from(selectedExtras).sort().join('-')
+    : '';
+  const cartItemId = hasSizes
+    ? `${product.id}-${selectedSize}${extrasSuffix}`
+    : `${product.id}${extrasSuffix}`;
+
+  // Find this product in cart (exact match on ID including extras)
+  const cartItem = items.find((item) => item.id === cartItemId);
   const quantityInCart = cartItem?.quantity || 0;
 
+  const toggleExtra = (extraId: string) => {
+    setSelectedExtras(prev => {
+      const next = new Set(prev);
+      if (next.has(extraId)) {
+        next.delete(extraId);
+      } else {
+        next.add(extraId);
+      }
+      return next;
+    });
+  };
+
   const handleAddToCart = () => {
+    const extras: SelectedExtra[] = hasExtras
+      ? product.availableExtras!.filter(e => selectedExtras.has(e.id)).map(e => ({ id: e.id, name: e.name, price: e.price }))
+      : [];
+
     addItem({
       id: cartItemId,
       productId: product.id,
       name: hasSizes ? `${product.name} (${selectedSize === 'regular' ? 'Regular' : 'Large'})` : product.name,
       size: hasSizes ? selectedSize : null,
-      price: currentPrice,
+      price: basePrice,
+      extras: extras.length > 0 ? extras : undefined,
       quantity: 1,
       image: product.image,
     });
@@ -257,6 +286,30 @@ export default function MenuProductCard({ product, index, onProductClick }: Menu
           </div>
         )}
 
+        {/* Extras Selector */}
+        {hasExtras && (
+          <div className="mb-3">
+            <p className="font-oswald font-bold text-xs uppercase tracking-wider text-espresso/50 mb-2">
+              Extras
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {product.availableExtras!.map((extra) => (
+                <button
+                  key={extra.id}
+                  onClick={() => toggleExtra(extra.id)}
+                  className={`px-2.5 py-1 rounded-full text-xs font-oswald font-bold uppercase tracking-wide transition-all ${
+                    selectedExtras.has(extra.id)
+                      ? 'bg-crust text-white shadow-sm'
+                      : 'bg-espresso/5 text-espresso/60 hover:bg-espresso/10'
+                  }`}
+                >
+                  {extra.name} +€{extra.price.toFixed(2)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Add to Cart Button */}
         <div className="mt-auto pt-3 border-t border-espresso/10">
           {quantityInCart === 0 ? (
@@ -279,7 +332,7 @@ export default function MenuProductCard({ product, index, onProductClick }: Menu
               ) : (
                 <>
                   <ShoppingBag className="w-4 h-4" />
-                  {t('menuPage.addToOrder')}
+                  {t('menuPage.addToOrder')} {extrasTotal > 0 && `— €${currentPrice.toFixed(2)}`}
                 </>
               )}
             </motion.button>

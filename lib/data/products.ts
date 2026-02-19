@@ -4,7 +4,16 @@
 // and Wake n' Bake Menu (to go)
 // ============================================
 
-import type { Category, Product } from '@/lib/types/order';
+import type { Category, Product, ProductExtra } from '@/lib/types/order';
+
+// Shared extras available for coffee & cold drinks
+const coffeeExtras: ProductExtra[] = [
+  { id: 'extra-large', name: 'Large', price: 1.00, description: 'Upgrade your drink to large.' },
+  { id: 'extra-oat-milk', name: 'Oat Milk', price: 0.50 },
+  { id: 'extra-syrup', name: 'Syrups', price: 0.50, description: 'Vanilla, Caramel, or Hazelnut.' },
+  { id: 'extra-whipped-cream', name: 'Whipped Cream', price: 0.50 },
+  { id: 'extra-macchiato', name: 'Macchiato', price: 0.50 },
+];
 
 // ─────────────────────────────────────────────
 // SCHIACCIATA MENU — Made Fresh to Order
@@ -343,6 +352,7 @@ const coffeeHotCategory: Category = {
       description: '',
       price: 2.00,
       categoryId: 'coffee-hot',
+      availableExtras: coffeeExtras,
     },
     {
       id: 'doppio',
@@ -350,6 +360,7 @@ const coffeeHotCategory: Category = {
       description: '',
       price: 3.00,
       categoryId: 'coffee-hot',
+      availableExtras: coffeeExtras,
     },
     {
       id: 'americano',
@@ -357,6 +368,7 @@ const coffeeHotCategory: Category = {
       description: '',
       price: 3.00,
       categoryId: 'coffee-hot',
+      availableExtras: coffeeExtras,
     },
     {
       id: 'cappuccino',
@@ -364,6 +376,7 @@ const coffeeHotCategory: Category = {
       description: '',
       price: 3.50,
       categoryId: 'coffee-hot',
+      availableExtras: coffeeExtras,
     },
     {
       id: 'latte-macchiato',
@@ -371,6 +384,7 @@ const coffeeHotCategory: Category = {
       description: '',
       price: 3.50,
       categoryId: 'coffee-hot',
+      availableExtras: coffeeExtras,
     },
     {
       id: 'flat-white',
@@ -378,6 +392,7 @@ const coffeeHotCategory: Category = {
       description: '',
       price: 4.00,
       categoryId: 'coffee-hot',
+      availableExtras: coffeeExtras,
     },
     {
       id: 'chai-latte',
@@ -385,6 +400,7 @@ const coffeeHotCategory: Category = {
       description: '',
       price: 4.00,
       categoryId: 'coffee-hot',
+      availableExtras: coffeeExtras,
     },
     {
       id: 'hot-chocolate',
@@ -392,6 +408,7 @@ const coffeeHotCategory: Category = {
       description: '',
       price: 4.00,
       categoryId: 'coffee-hot',
+      availableExtras: coffeeExtras,
     },
   ],
 };
@@ -407,6 +424,7 @@ const coldDrinksCategory: Category = {
       description: '',
       price: 4.50,
       categoryId: 'cold-drinks',
+      availableExtras: coffeeExtras,
     },
     {
       id: 'iced-americano',
@@ -414,6 +432,7 @@ const coldDrinksCategory: Category = {
       description: '',
       price: 3.50,
       categoryId: 'cold-drinks',
+      availableExtras: coffeeExtras,
     },
     {
       id: 'milkshake',
@@ -421,6 +440,7 @@ const coldDrinksCategory: Category = {
       description: 'Nutella, Vanilla, Caramel, Black Cherry, or Pistachio.',
       price: 7.00,
       categoryId: 'cold-drinks',
+      availableExtras: coffeeExtras,
     },
   ],
 };
@@ -774,7 +794,6 @@ export const togoMenuCategories: Category[] = [
   drinksCategory,
   coffeeHotCategory,
   coldDrinksCategory,
-  coffeeExtrasCategory,
   dolciCategory,
 ];
 

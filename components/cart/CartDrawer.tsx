@@ -140,8 +140,13 @@ export default function CartDrawer() {
                             {item.sizeLabel}
                           </span>
                         )}
+                        {item.extras && item.extras.length > 0 && (
+                          <p className="text-xs text-espresso/50 font-lato mt-0.5">
+                            + {item.extras.map(e => e.name).join(', ')}
+                          </p>
+                        )}
                         <p className="font-oswald text-crust font-bold text-lg">
-                          €{item.price.toFixed(2)}
+                          €{(item.price + (item.extras?.reduce((sum, e) => sum + e.price, 0) || 0)).toFixed(2)}
                         </p>
 
                         {/* Quantity Controls */}

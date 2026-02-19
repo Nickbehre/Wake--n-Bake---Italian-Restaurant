@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { X, Minus, Plus, ShoppingBag, Check, Flame, Leaf, Nut } from 'lucide-react';
-import type { Product } from '@/lib/types/order';
-import { useCartStore } from '@/lib/store/cart-store';
+import type { Product, ProductExtra } from '@/lib/types/order';
+import { useCartStore, type SelectedExtra } from '@/lib/store/cart-store';
 import { useLanguage } from '@/lib/context/LanguageContext';
 
 interface ProductDetailModalProps {
@@ -39,6 +39,7 @@ function cleanDescription(description: string): string {
 
 export default function ProductDetailModal({ product, isOpen, onClose }: ProductDetailModalProps) {
   const [selectedSize, setSelectedSize] = useState<'regular' | 'large'>('regular');
+  const [selectedExtras, setSelectedExtras] = useState<Set<string>>(new Set());
   const [isAdded, setIsAdded] = useState(false);
   const { addItem, updateQuantity, items } = useCartStore();
   const { t } = useLanguage();
@@ -47,6 +48,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   useEffect(() => {
     if (isOpen) {
       setSelectedSize('regular');
+      setSelectedExtras(new Set());
       setIsAdded(false);
     }
   }, [isOpen, product?.id]);
@@ -74,23 +76,51 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   const tags = getProductTags(product.description);
   const cleanedDescription = cleanDescription(product.description);
   const hasSizes = product.hasSizes && product.priceRegular && product.priceLarge;
-  const currentPrice = hasSizes
+  const hasExtras = product.availableExtras && product.availableExtras.length > 0;
+
+  const basePrice = hasSizes
     ? (selectedSize === 'regular' ? product.priceRegular! : product.priceLarge!)
     : product.price;
 
-  const cartItemId = hasSizes ? `${product.id}-${selectedSize}` : product.id;
-  const cartItem = items.find((item) =>
-    hasSizes ? item.id === cartItemId : item.productId === product.id
-  );
+  const extrasTotal = hasExtras
+    ? product.availableExtras!.filter(e => selectedExtras.has(e.id)).reduce((sum, e) => sum + e.price, 0)
+    : 0;
+
+  const currentPrice = basePrice + extrasTotal;
+
+  const extrasSuffix = selectedExtras.size > 0
+    ? '-' + Array.from(selectedExtras).sort().join('-')
+    : '';
+  const cartItemId = hasSizes
+    ? `${product.id}-${selectedSize}${extrasSuffix}`
+    : `${product.id}${extrasSuffix}`;
+  const cartItem = items.find((item) => item.id === cartItemId);
   const quantityInCart = cartItem?.quantity || 0;
 
+  const toggleExtra = (extraId: string) => {
+    setSelectedExtras(prev => {
+      const next = new Set(prev);
+      if (next.has(extraId)) {
+        next.delete(extraId);
+      } else {
+        next.add(extraId);
+      }
+      return next;
+    });
+  };
+
   const handleAddToCart = () => {
+    const extras: SelectedExtra[] = hasExtras
+      ? product.availableExtras!.filter(e => selectedExtras.has(e.id)).map(e => ({ id: e.id, name: e.name, price: e.price }))
+      : [];
+
     addItem({
       id: cartItemId,
       productId: product.id,
       name: hasSizes ? `${product.name} (${selectedSize === 'regular' ? 'Regular' : 'Large'})` : product.name,
       size: hasSizes ? selectedSize : null,
-      price: currentPrice,
+      price: basePrice,
+      extras: extras.length > 0 ? extras : undefined,
       quantity: 1,
       image: product.image,
     });
@@ -243,6 +273,38 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                 </div>
               )}
 
+              {/* Extras selector */}
+              {hasExtras && (
+                <div className="mb-6">
+                  <p className="font-oswald font-bold text-sm uppercase tracking-wider text-espresso/60 mb-3">
+                    Extras
+                  </p>
+                  <div className="space-y-2">
+                    {product.availableExtras!.map((extra) => (
+                      <button
+                        key={extra.id}
+                        onClick={() => toggleExtra(extra.id)}
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl font-oswald text-sm uppercase tracking-wide transition-all border-2 ${
+                          selectedExtras.has(extra.id)
+                            ? 'bg-crust/5 text-espresso border-crust shadow-sm'
+                            : 'bg-white text-espresso/70 border-espresso/10 hover:border-crust/30'
+                        }`}
+                      >
+                        <span className="font-bold">{extra.name}</span>
+                        <span className={selectedExtras.has(extra.id) ? 'text-crust font-bold' : 'text-espresso/50'}>
+                          +&euro;{extra.price.toFixed(2)}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                  {extrasTotal > 0 && (
+                    <p className="font-oswald text-sm text-crust font-bold mt-2 text-right">
+                      Total: &euro;{currentPrice.toFixed(2)}
+                    </p>
+                  )}
+                </div>
+              )}
+
               {/* Add to cart */}
               <div className="pt-4 border-t border-espresso/10">
                 {quantityInCart === 0 ? (
@@ -265,7 +327,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
                     ) : (
                       <>
                         <ShoppingBag className="w-5 h-5" />
-                        {t('menuPage.addToOrder')} — &euro;{currentPrice.toFixed(2)}
+                        {t('menuPage.addToOrder')} — &euro;{currentPrice.toFixed(2)}{extrasTotal > 0 && ` (incl. extras)`}
                       </>
                     )}
                   </motion.button>
