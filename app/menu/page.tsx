@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { schiacciataMenuCategories, togoMenuCategories, additionalCategories } from '@/lib/data/products';
+import { schiacciataMenuCategories, togoMenuCategories } from '@/lib/data/products';
 import MenuCategorySection from '@/components/menu/MenuCategorySection';
 import MenuPDFButton from '@/components/menu/MenuPDFButton';
 import CartDrawer from '@/components/cart/CartDrawer';
@@ -180,17 +180,15 @@ export default function MenuPage() {
                     transition={{ duration: 0.15 }}
                     className="absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-xl border border-espresso/10 overflow-hidden min-w-[200px] z-50"
                   >
-                    {schiacciataMenuCategories.map((cat) =>
-                      cat.products.map((product) => (
-                        <button
-                          key={product.id}
-                          onClick={() => scrollTo(product.id)}
-                          className="block w-full text-left px-4 py-2.5 text-sm font-lato text-espresso hover:bg-crust/10 transition-colors"
-                        >
-                          {product.name}
-                        </button>
-                      ))
-                    )}
+                    {schiacciataMenuCategories.map((cat) => (
+                      <button
+                        key={cat.id}
+                        onClick={() => scrollTo(cat.id)}
+                        className="block w-full text-left px-4 py-2.5 text-sm font-lato text-espresso hover:bg-crust/10 transition-colors"
+                      >
+                        {cat.name}
+                      </button>
+                    ))}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -229,22 +227,6 @@ export default function MenuPage() {
               </AnimatePresence>
             </div>
 
-            <div className="w-px h-8 bg-espresso/20 mx-1 self-center hidden md:block" />
-
-            {/* Additional categories */}
-            {additionalCategories.map((category, index) => (
-              <motion.a
-                key={category.id}
-                href={`#${category.id}`}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 + index * 0.02 }}
-                onClick={(e) => { e.preventDefault(); scrollTo(category.id); }}
-                className="px-3 py-1.5 bg-white shadow-sm font-montserrat font-semibold text-xs text-espresso hover:bg-crust hover:text-white transition-all duration-200 rounded-full whitespace-nowrap"
-              >
-                {category.name}
-              </motion.a>
-            ))}
           </div>
         </motion.nav>
 
@@ -347,34 +329,6 @@ export default function MenuPage() {
           </div>
         </div>
 
-        {/* Divider */}
-        {additionalCategories.length > 0 && (
-          <>
-            <div className="my-24 flex items-center gap-6">
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-espresso/20 to-espresso/20" />
-              <span className="text-espresso/30 text-4xl">&#9830;</span>
-              <div className="flex-1 h-px bg-gradient-to-l from-transparent via-espresso/20 to-espresso/20" />
-            </div>
-
-            {/* Additional Categories */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-16"
-            >
-              <h2 className="font-comodo text-4xl md:text-5xl text-espresso">
-                {t('menuPage.alsoAvailable')}
-              </h2>
-            </motion.div>
-
-            <div className="space-y-24">
-              {additionalCategories.map((category) => (
-                <MenuCategorySection key={category.id} category={category} onProductClick={handleProductClick} />
-              ))}
-            </div>
-          </>
-        )}
 
         {/* Allergen Info */}
         <motion.div

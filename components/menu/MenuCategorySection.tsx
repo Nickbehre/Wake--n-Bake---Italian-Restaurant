@@ -12,7 +12,9 @@ interface MenuCategorySectionProps {
 }
 
 const categoryIcons: Record<string, string> = {
-  'our-signature-schiacciata': '\u{1F96A}',
+  'veggie-schiacciata': '\u{1F96C}',
+  'beef-fish-schiacciata': '\u{1F969}',
+  'pork-schiacciata': '\u{1F953}',
   'calzone': '\u{1F355}',
   'schiacciata-togo': '\u{1F96A}',
   'pizza-al-taglio': '\u{1F355}',
@@ -21,10 +23,6 @@ const categoryIcons: Record<string, string> = {
   'cold-drinks': '\u{1F964}',
   'coffee-extras': '\u2795',
   'dolci': '\u{1F370}',
-  'wake-n-bake-deals': '\u{1F381}',
-  'biscotti': '\u{1F36A}',
-  'italian-pantry': '\u{1FAD2}',
-  'pasta': '\u{1F35D}',
 };
 
 // Category subtitles
