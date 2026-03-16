@@ -15,10 +15,6 @@ function getStripe() {
     return new Stripe(process.env.STRIPE_SECRET_KEY);
 }
 
-// Stripe Connect configuration
-const CONNECTED_ACCOUNT_ID = process.env.STRIPE_CONNECTED_ACCOUNT_ID;
-const APPLICATION_FEE_PERCENT = parseFloat(process.env.APPLICATION_FEE_PERCENT || "3"); // Default 3%
-
 // Prices are already inclusive of BTW (VAT)
 
 interface CartItem {
@@ -105,13 +101,7 @@ export async function POST(request: Request) {
 
         const stripe = getStripe();
 
-        // Calculate application fee (platform commission)
-        const applicationFeeAmount = CONNECTED_ACCOUNT_ID
-            ? Math.round(amountInCents * (APPLICATION_FEE_PERCENT / 100))
-            : 0;
-
-        // Build payment intent options
-        const paymentIntentOptions: Stripe.PaymentIntentCreateParams = {
+        const paymentIntent = await stripe.paymentIntents.create({
             amount: amountInCents,
             currency: "eur",
             automatic_payment_methods: {
@@ -122,17 +112,7 @@ export async function POST(request: Request) {
                 total: total.toFixed(2),
                 items_count: String(items.reduce((acc, i) => acc + i.quantity, 0)),
             },
-        };
-
-        // Add Stripe Connect options if connected account is configured
-        if (CONNECTED_ACCOUNT_ID) {
-            paymentIntentOptions.application_fee_amount = applicationFeeAmount;
-            paymentIntentOptions.transfer_data = {
-                destination: CONNECTED_ACCOUNT_ID,
-            };
-        }
-
-        const paymentIntent = await stripe.paymentIntents.create(paymentIntentOptions);
+        });
 
         return NextResponse.json({
             clientSecret: paymentIntent.client_secret,

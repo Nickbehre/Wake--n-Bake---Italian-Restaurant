@@ -90,7 +90,7 @@ export default function HeroSection() {
       </div>
 
       {/* Image indicators */}
-      <div className="absolute bottom-32 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+      <div className="absolute bottom-20 md:bottom-32 left-1/2 -translate-x-1/2 z-20 flex gap-2">
         {heroImages.map((_, index) => (
           <button
             key={index}
@@ -120,7 +120,7 @@ export default function HeroSection() {
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] md:h-[400px] lg:h-[500px] w-auto drop-shadow-2xl pointer-events-none object-contain"
             />
           </div>
-          <p className="font-stamp text-3xl md:text-5xl mb-8 drop-shadow-lg relative z-10">
+          <p className="font-stamp text-2xl md:text-5xl mb-4 md:mb-8 drop-shadow-lg relative z-10">
             come taste the difference
           </p>
         </motion.div>
@@ -129,7 +129,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="text-xl md:text-2xl mb-12 max-w-3xl mx-auto font-lato font-light"
+          className="text-lg md:text-2xl mb-6 md:mb-12 max-w-3xl mx-auto font-lato font-light"
         >
           {t('hero.tagline')}
         </motion.p>
@@ -167,7 +167,7 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 1.2 }}
-        className="absolute bottom-[3%] left-1/2 transform -translate-x-1/2 z-20"
+        className="absolute bottom-[3%] md:bottom-[3%] left-1/2 transform -translate-x-1/2 z-20 hidden sm:flex"
       >
         <motion.div
           animate={{ y: [0, 10, 0] }}
