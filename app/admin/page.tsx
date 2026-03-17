@@ -98,7 +98,7 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       <div>
         <h1 className="font-oswald text-3xl uppercase tracking-wider text-espresso">Dashboard</h1>
-        <p className="text-gray-500 font-lato mt-1">Today's overview</p>
+        <p className="text-gray-500 font-lato mt-1">Today&apos;s overview</p>
       </div>
 
       {/* Stats Cards */}
