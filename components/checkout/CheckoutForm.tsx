@@ -8,7 +8,7 @@ import * as z from "zod";
 import { Loader2, CheckCircle2, Clock, ChevronDown } from "lucide-react";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useLanguage } from "@/lib/context/LanguageContext";
-import { generateAvailableTimeSlots, TimeSlot } from "@/lib/utils/time-slots";
+import type { TimeSlot } from "@/lib/utils/time-slots";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -31,7 +31,7 @@ const checkoutSchema = z.object({
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
-export default function CheckoutForm() {
+export default function CheckoutForm({ orderId }: { orderId?: string }) {
     const stripe = useStripe();
     const elements = useElements();
     const { t } = useLanguage();
@@ -41,6 +41,8 @@ export default function CheckoutForm() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
+    const [storePaused, setStorePaused] = useState(false);
+    const [pauseMessage, setPauseMessage] = useState('');
     const [countryCode, setCountryCode] = useState('+31');
 
     const {
@@ -58,11 +60,51 @@ export default function CheckoutForm() {
     });
 
     useEffect(() => {
-        setAvailableSlots(generateAvailableTimeSlots());
+        async function fetchSlots() {
+            try {
+                const res = await fetch('/api/time-slots');
+                const data = await res.json();
+
+                if (data.paused) {
+                    setStorePaused(true);
+                    setPauseMessage(data.message || '');
+                    setAvailableSlots([]);
+                    setPickupTime(null as any);
+                    return;
+                }
+
+                const slots: TimeSlot[] = (data.slots || [])
+                    .filter((s: any) => s.available)
+                    .map((s: any) => ({
+                        date: new Date(s.date),
+                        label: s.time,
+                        available: true,
+                    }));
+
+                setAvailableSlots(slots);
+
+                if (slots.length === 0) {
+                    setPickupTime(null as any);
+                } else if (pickupTime) {
+                    const pickupMs = pickupTime instanceof Date ? pickupTime.getTime() : new Date(pickupTime).getTime();
+                    const isStillValid = slots.some(slot => slot.date.getTime() === pickupMs);
+                    if (!isStillValid) {
+                        setPickupTime(null as any);
+                    }
+                }
+            } catch {
+                // Fallback: generate slots locally
+                const { generateAvailableTimeSlots } = await import('@/lib/utils/time-slots');
+                setAvailableSlots(generateAvailableTimeSlots());
+            }
+        }
+        fetchSlots();
     }, []);
 
+    const noSlotsAvailable = availableSlots.length === 0;
+
     const onSubmit = async (data: CheckoutFormData) => {
-        if (!pickupTime) {
+        if (!pickupTime || noSlotsAvailable) {
             toast.error(t('checkout.selectPickupError'));
             return;
         }
@@ -85,6 +127,22 @@ export default function CheckoutForm() {
         localStorage.setItem('wnb-last-order', JSON.stringify(orderSnapshot));
 
         try {
+            // Update order in DB with customer details and pickup time
+            if (orderId) {
+                const pickupTimeStr = pickupTime instanceof Date
+                    ? pickupTime.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
+                    : pickupTime;
+                await fetch('/api/update-order', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orderId,
+                        customer: { name: data.name, email: data.email, phone: fullPhone },
+                        pickupTime: pickupTimeStr,
+                    }),
+                });
+            }
+
             const { error: submitError } = await elements.submit();
             if (submitError) throw submitError;
 
@@ -196,6 +254,13 @@ export default function CheckoutForm() {
                         <h2 className="font-oswald text-2xl uppercase text-espresso tracking-wide">{t('checkout.step2')}</h2>
                     </div>
 
+                    {storePaused ? (
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 font-lato text-sm">
+                            <strong>De winkel accepteert momenteel geen bestellingen.</strong>
+                            {pauseMessage && <p className="mt-1">{pauseMessage}</p>}
+                        </div>
+                    ) : (
+                    <>
                     <p className="text-gray-600 mb-4 font-lato text-sm italic">
                         <Clock className="inline w-4 h-4 mr-1 text-crust" />
                         {t('checkout.pickupInfo')}
@@ -229,6 +294,8 @@ export default function CheckoutForm() {
                         )}
                     </div>
                     {!pickupTime && <p className="text-yellow-600 text-xs mt-2 font-medium">{t('checkout.selectTime')}</p>}
+                    </>
+                    )}
                 </section>
             </div>
 
@@ -278,7 +345,7 @@ export default function CheckoutForm() {
 
                     <button
                         onClick={handleSubmit(onSubmit)}
-                        disabled={!stripe || !elements || !pickupTime || isProcessing}
+                        disabled={!stripe || !elements || !pickupTime || noSlotsAvailable || isProcessing}
                         className={cn(
                             "w-full py-4 rounded font-oswald uppercase text-lg tracking-wider text-white transition-all duration-300 shadow-lg flex items-center justify-center gap-2",
                             (!stripe || !elements || !pickupTime || isProcessing)

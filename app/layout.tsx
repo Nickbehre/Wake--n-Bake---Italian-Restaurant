@@ -1,14 +1,6 @@
 import type { Metadata } from 'next'
 import { Montserrat, Lato, Playfair_Display, Oswald } from 'next/font/google'
 import './globals.css'
-import Header from '@/components/layout/Header'
-import Footer from '@/components/layout/Footer'
-import CookieBanner from '@/components/ui/CookieBanner'
-import CartDrawer from '@/components/cart/CartDrawer'
-import { ThemeProvider } from 'next-themes'
-import { Toaster } from 'sonner'
-import { LanguageProvider } from '@/lib/context/LanguageContext'
-import { CartProvider } from '@/lib/context/CartContext'
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -121,20 +113,9 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${montserrat.variable} ${lato.variable} ${playfair.variable} ${oswald.variable} font-lato antialiased bg-flour text-espresso`}
+        className={`${montserrat.variable} ${lato.variable} ${playfair.variable} ${oswald.variable} font-lato antialiased`}
       >
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <LanguageProvider>
-            <CartProvider>
-              <Header />
-              <main className="min-h-screen">{children}</main>
-              <Footer />
-              <CartDrawer />
-              <CookieBanner />
-              <Toaster position="bottom-right" />
-            </CartProvider>
-          </LanguageProvider>
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   )

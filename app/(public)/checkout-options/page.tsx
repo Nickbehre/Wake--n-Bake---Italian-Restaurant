@@ -7,6 +7,7 @@ import { ArrowLeft, Bike, Store, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import { useOrderStore } from '@/lib/store/order-store';
 import CartSummary from '@/components/order/CartSummary';
+import { StoreStatusGate } from '@/components/order/StoreClosedModal';
 import { useLanguage } from '@/lib/context/LanguageContext';
 
 const THUISBEZORGD_URL = 'https://www.thuisbezorgd.nl/menu/wake-n-bake-panificio';
@@ -41,6 +42,7 @@ export default function CheckoutOptionsPage() {
   }
 
   return (
+    <StoreStatusGate>
     <div className="min-h-screen bg-flour pt-36 md:pt-40 pb-20">
       <div className="container mx-auto px-4">
         {/* Back Link */}
@@ -202,5 +204,6 @@ export default function CheckoutOptionsPage() {
         </motion.div>
       </div>
     </div>
+    </StoreStatusGate>
   );
 }

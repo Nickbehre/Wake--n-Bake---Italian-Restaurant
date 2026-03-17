@@ -41,13 +41,17 @@ export default function ContactForm() {
     setIsSubmitting(true)
 
     try {
-      // Simulate API call - replace with actual form submission
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
 
-      console.log('Form data:', data)
+      if (!res.ok) throw new Error('Failed')
+
       toast.success(t('form.success'))
       reset()
-    } catch (error) {
+    } catch {
       toast.error(t('form.error'))
     } finally {
       setIsSubmitting(false)

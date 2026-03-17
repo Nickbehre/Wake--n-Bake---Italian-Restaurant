@@ -2,14 +2,25 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, X, Plus, Minus, Trash2, Bike, Store } from 'lucide-react';
+import { ShoppingBag, X, Plus, Minus, Trash2, Bike, Store, AlertTriangle, Clock, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useOrderStore } from '@/lib/store/order-store';
 import { useLanguage } from '@/lib/context/LanguageContext';
+
+function triggerHaptic() {
+  if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+    navigator.vibrate([100, 50, 100]);
+  }
+}
 
 export default function OrderCartDrawer() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [showClosedModal, setShowClosedModal] = useState(false);
+  const [closedMessage, setClosedMessage] = useState('');
+  const [checkingStore, setCheckingStore] = useState(false);
+  const router = useRouter();
   const { t } = useLanguage();
 
   const items = useOrderStore((state) => state.items);
@@ -22,6 +33,44 @@ export default function OrderCartDrawer() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  const handleCheckout = async () => {
+    setCheckingStore(true);
+    try {
+      const res = await fetch('/api/time-slots');
+      const data = await res.json();
+
+      if (data.paused) {
+        setClosedMessage(data.message || t('storeClosed.defaultMessage'));
+        setShowClosedModal(true);
+        triggerHaptic();
+        return;
+      }
+      if (!data.slots || data.slots.length === 0) {
+        setClosedMessage(data.message || t('storeClosed.noSlots'));
+        setShowClosedModal(true);
+        triggerHaptic();
+        return;
+      }
+      const hasAvailable = data.slots.some((s: any) => s.available);
+      if (!hasAvailable) {
+        setClosedMessage(t('storeClosed.allSlotsFull'));
+        setShowClosedModal(true);
+        triggerHaptic();
+        return;
+      }
+
+      // Store is open, proceed
+      setIsOpen(false);
+      router.push('/checkout-options');
+    } catch {
+      // If API fails, let them through
+      setIsOpen(false);
+      router.push('/checkout-options');
+    } finally {
+      setCheckingStore(false);
+    }
+  };
 
   if (!isMounted) {
     return null;
@@ -198,15 +247,19 @@ export default function OrderCartDrawer() {
 
                 {/* Checkout Options */}
                 <div className="space-y-3 pt-2">
-                  {/* Single Checkout Button - Goes to Options Page */}
-                  <Link
-                    href="/checkout-options"
-                    onClick={() => setIsOpen(false)}
-                    className="w-full flex items-center justify-center gap-3 bg-tomato text-white text-center py-4 rounded font-oswald text-lg font-bold uppercase tracking-wide hover:bg-red-700 transition-colors group shadow-md"
+                  {/* Single Checkout Button - Checks store status first */}
+                  <button
+                    onClick={handleCheckout}
+                    disabled={checkingStore}
+                    className="w-full flex items-center justify-center gap-3 bg-tomato text-white text-center py-4 rounded font-oswald text-lg font-bold uppercase tracking-wide hover:bg-red-700 transition-colors group shadow-md disabled:opacity-70"
                   >
-                    <ShoppingBag className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
+                    {checkingStore ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <ShoppingBag className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />
+                    )}
                     {t('checkoutOptions.continueCheckout')}
-                  </Link>
+                  </button>
                 </div>
 
                 <p className="text-center text-xs text-espresso/50 font-lato mt-2">
@@ -214,6 +267,56 @@ export default function OrderCartDrawer() {
                 </p>
               </div>
             )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Store Closed Modal */}
+      <AnimatePresence>
+        {showClosedModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            onClick={() => setShowClosedModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowClosedModal(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <div className="text-center">
+                <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                  <AlertTriangle className="w-8 h-8 text-tomato" />
+                </div>
+                <h2 className="font-oswald text-2xl font-bold text-espresso uppercase tracking-wide mb-2">
+                  {t('storeClosed.title')}
+                </h2>
+                <p className="text-espresso/70 font-lato mb-6">
+                  {closedMessage}
+                </p>
+                <div className="flex items-center justify-center gap-2 text-sm text-espresso/50 mb-6">
+                  <Clock className="w-4 h-4" />
+                  <span className="font-lato">{t('storeClosed.hint')}</span>
+                </div>
+                <button
+                  onClick={() => setShowClosedModal(false)}
+                  className="w-full bg-tomato text-white py-3 rounded-full font-oswald text-lg font-bold uppercase tracking-wide hover:bg-red-700 transition-colors"
+                >
+                  {t('storeClosed.button')}
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

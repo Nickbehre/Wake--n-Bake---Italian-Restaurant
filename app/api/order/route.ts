@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import type { OrderCartItem, CustomerInfo, Order } from '@/lib/types/order';
 import { sendOrderEmails } from '@/lib/email/send';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { getAllProducts } from '@/lib/data/products';
+import { menuData } from '@/lib/data/menu';
+
+const menuItems = menuData.categories.flatMap((c) => c.items);
+const productItems = getAllProducts();
 
 interface OrderRequestBody {
   items: OrderCartItem[];
@@ -67,19 +73,66 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create order object
+    // Verify prices server-side
+    let verifiedTotal = 0;
+    const verifiedItems = body.items.map((item) => {
+      const productId = (item as any).productId || item.id;
+      const size = (item as any).size;
+      const menuItem = menuItems.find((i) => i.id === productId);
+      const productItem = productItems.find((i) => i.id === productId);
+
+      let priceVal = item.price;
+
+      if (menuItem) {
+        if (menuItem.hasSizes && size) {
+          if (size === 'large' && menuItem.priceLarge) priceVal = menuItem.priceLarge;
+          else if (size === 'regular' && menuItem.priceRegular) priceVal = menuItem.priceRegular;
+          else priceVal = parseFloat(menuItem.price.replace('€', '').split('|')[0].trim());
+        } else {
+          priceVal = parseFloat(menuItem.price.replace('€', '').replace(',', '.').trim());
+        }
+      } else if (productItem) {
+        if (productItem.hasSizes && size) {
+          if (size === 'large' && productItem.priceLarge) priceVal = productItem.priceLarge;
+          else if (size === 'regular' && productItem.priceRegular) priceVal = productItem.priceRegular;
+          else priceVal = productItem.price;
+        } else {
+          priceVal = productItem.price;
+        }
+      }
+
+      if (!isNaN(priceVal)) verifiedTotal += priceVal * item.quantity;
+      return { ...item, price: priceVal };
+    });
+
+    // Create order object with verified prices
     const order: Order = {
       id: generateOrderId(),
-      items: body.items,
+      items: verifiedItems,
       customer: body.customer,
-      subtotal: body.subtotal,
-      total: body.total,
+      subtotal: verifiedTotal,
+      total: verifiedTotal,
       pickupTime: body.pickupTime,
       createdAt: new Date().toISOString(),
       status: 'pending',
     };
 
     console.log('New order received:', order);
+
+    // Save order to Supabase
+    const supabase = createAdminClient();
+    await supabase.from('orders').insert({
+      id: order.id,
+      items: order.items,
+      customer_name: order.customer.name,
+      customer_email: order.customer.email,
+      customer_phone: order.customer.phone,
+      subtotal: order.subtotal,
+      total: order.total,
+      pickup_time: order.pickupTime,
+      status: 'pending',
+      payment_method: 'cash',
+    });
 
     // Send confirmation emails
     const emailResults = await sendOrderEmails({
@@ -126,11 +179,19 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // In production, fetch from database
-  // For now, return a placeholder response
-  return NextResponse.json({
-    success: true,
-    message: 'Order lookup not implemented in demo mode',
-    orderId,
-  });
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*')
+    .eq('id', orderId)
+    .single();
+
+  if (error || !data) {
+    return NextResponse.json(
+      { success: false, error: 'Order not found' },
+      { status: 404 }
+    );
+  }
+
+  return NextResponse.json({ success: true, order: data });
 }

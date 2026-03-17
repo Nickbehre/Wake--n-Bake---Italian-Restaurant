@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factuur 2026-001 | Behrens Cerveca Horeca</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #2c2c2c;
+            background: #fff;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 50px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #2c2c2c;
+        }
+        .company-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c2c2c;
+        }
+        .company-subtitle {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
+        .invoice-title {
+            text-align: right;
+        }
+        .invoice-title h1 {
+            font-size: 32px;
+            font-weight: 300;
+            color: #2c2c2c;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        .invoice-number {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* Addresses */
+        .addresses {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        .address-block { max-width: 45%; }
+        .address-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #999;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .address-block p {
+            font-size: 13px;
+            line-height: 1.7;
+        }
+        .address-block strong {
+            font-size: 14px;
+        }
+
+        /* Meta info */
+        .meta-info {
+            display: flex;
+            gap: 60px;
+            margin-bottom: 40px;
+            padding: 15px 20px;
+            background: #f8f8f8;
+            border-radius: 4px;
+        }
+        .meta-item {}
+        .meta-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #999;
+            font-weight: 600;
+        }
+        .meta-value {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        thead th {
+            text-align: left;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #999;
+            font-weight: 600;
+            padding: 10px 0;
+            border-bottom: 2px solid #eee;
+        }
+        thead th:last-child,
+        thead th:nth-child(3),
+        thead th:nth-child(4) {
+            text-align: right;
+        }
+        tbody td {
+            padding: 14px 0;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+        }
+        tbody td:last-child,
+        tbody td:nth-child(3),
+        tbody td:nth-child(4) {
+            text-align: right;
+        }
+        .item-name {
+            font-weight: 600;
+        }
+        .item-desc {
+            font-size: 12px;
+            color: #888;
+            margin-top: 3px;
+        }
+
+        /* Totals */
+        .totals {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 40px;
+        }
+        .totals-table {
+            width: 280px;
+        }
+        .totals-table .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+        }
+        .totals-table .row.subtotal {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 6px;
+        }
+        .totals-table .row.total {
+            border-top: 2px solid #2c2c2c;
+            padding-top: 10px;
+            margin-top: 6px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* Commission note */
+        .commission-section {
+            background: #f8f8f8;
+            border-left: 4px solid #2c2c2c;
+            padding: 20px 24px;
+            margin-bottom: 40px;
+            border-radius: 0 4px 4px 0;
+        }
+        .commission-section h3 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+        .commission-section p {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        /* Payment */
+        .payment-section {
+            margin-bottom: 40px;
+        }
+        .payment-section h3 {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #999;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .payment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 13px;
+        }
+        .payment-label { color: #888; }
+        .payment-value { font-weight: 500; }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            font-size: 11px;
+            color: #999;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        /* Print styles */
+        @media print {
+            body { padding: 20px; }
+            .header { margin-bottom: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div>
+            <div class="company-name">Behrens Cerveca Horeca</div>
+            <div class="company-subtitle">Handelsnaam: Enembe</div>
+        </div>
+        <div class="invoice-title">
+            <h1>Factuur</h1>
+            <div class="invoice-number">Nr. 2026-001</div>
+        </div>
+    </div>
+
+    <!-- Addresses -->
+    <div class="addresses">
+        <div class="address-block">
+            <div class="address-label">Van</div>
+            <p>
+                <strong>Nick Behrens</strong><br>
+                Behrens Cerveca Horeca (Enembe)<br>
+                Breedveldsingel 74<br>
+                3055 PL Rotterdam<br><br>
+                KVK: 97530328<br>
+                BTW: NL005275857B24<br>
+                E-mail: contact@enembe.dev
+            </p>
+        </div>
+        <div class="address-block">
+            <div class="address-label">Aan</div>
+            <p>
+                <strong>T.a.v. Ruben</strong><br>
+                Wake N' Bake Panificio<br>
+                Vijzelstraat 93H<br>
+                1017 HH Amsterdam
+            </p>
+        </div>
+    </div>
+
+    <!-- Meta -->
+    <div class="meta-info">
+        <div class="meta-item">
+            <div class="meta-label">Factuurdatum</div>
+            <div class="meta-value">12 februari 2026</div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-label">Vervaldatum</div>
+            <div class="meta-value">12 maart 2026</div>
+        </div>
+        <div class="meta-item">
+            <div class="meta-label">Betalingstermijn</div>
+            <div class="meta-value">30 dagen</div>
+        </div>
+    </div>
+
+    <!-- Line Items -->
+    <table>
+        <thead>
+            <tr>
+                <th style="width:50%">Omschrijving</th>
+                <th style="width:10%">Aantal</th>
+                <th style="width:20%">Prijs excl. BTW</th>
+                <th style="width:20%">Bedrag</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="item-name">Website ontwikkeling & design</div>
+                    <div class="item-desc">
+                        Volledig maatwerk website voor Wake N' Bake Panificio.
+                        Inclusief: responsive design, meertalig (NL/EN), online menu
+                        met bestelsysteem, Stripe betalingsintegratie, click & collect
+                        functionaliteit, e-mailbevestigingen, SEO-optimalisatie,
+                        Google Maps integratie, fotogalerij en contactformulier.
+                    </div>
+                </td>
+                <td>1</td>
+                <td>&euro; 1.200,00</td>
+                <td>&euro; 1.200,00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Totals -->
+    <div class="totals">
+        <div class="totals-table">
+            <div class="row subtotal">
+                <span>Subtotaal</span>
+                <span>&euro; 1.200,00</span>
+            </div>
+            <div class="row">
+                <span>BTW 21%</span>
+                <span>&euro; 252,00</span>
+            </div>
+            <div class="row total">
+                <span>Totaal</span>
+                <span>&euro; 1.452,00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Commission Agreement -->
+    <div class="commission-section">
+        <h3>Doorlopende commissieafspraak</h3>
+        <p>
+            Naast bovenstaand bedrag wordt een commissie van <strong>1% over de totale orderwaarde</strong>
+            in rekening gebracht voor alle pick-up bestellingen die via de website (click & collect)
+            worden geplaatst en betaald. Deze commissie wordt maandelijks gefactureerd op basis van
+            de gerealiseerde omzet via het online bestelsysteem. De eerste commissiefactuur volgt
+            na de eerste volledige kalendermaand na livegang van het bestelsysteem.
+        </p>
+    </div>
+
+    <!-- Payment Details -->
+    <div class="payment-section">
+        <h3>Betalingsgegevens</h3>
+        <div class="payment-grid">
+            <span class="payment-label">Rekeninghouder:</span>
+            <span class="payment-value">N. Behrens</span>
+            <span class="payment-label">IBAN:</span>
+            <span class="payment-value">NL84 REVO 4735 0012 12</span>
+            <span class="payment-label">Onder vermelding van:</span>
+            <span class="payment-value">Factuur 2026-001</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        Behrens Cerveca Horeca (Enembe) &middot; KVK 97530328 &middot; BTW NL005275857B24<br>
+        Breedveldsingel 74, 3055 PL Rotterdam &middot; contact@enembe.dev
+    </div>
+
+</body>
+</html>

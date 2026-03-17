@@ -294,6 +294,14 @@ const translations: Record<Language, Record<string, string>> = {
     'checkoutOptions.continueCheckout': 'Verder naar Afrekenen',
     'checkoutOptions.chooseDelivery': 'Kies tussen bezorging of ophalen bij checkout',
 
+    // Store Closed Modal
+    'storeClosed.title': 'Even niet beschikbaar',
+    'storeClosed.defaultMessage': 'We nemen momenteel geen bestellingen aan. Probeer het later opnieuw.',
+    'storeClosed.noSlots': 'Er zijn vandaag geen ophaalmomenten meer beschikbaar.',
+    'storeClosed.allSlotsFull': 'Alle tijdsloten voor vandaag zijn vol. Probeer het morgen opnieuw!',
+    'storeClosed.hint': 'Bekijk onze openingstijden op de contactpagina',
+    'storeClosed.button': 'Begrepen',
+
     // Order Success Page
     'success.orderNumber': 'Bestelnummer',
     'success.pickupTime': 'Ophaaltijd',
@@ -666,6 +674,14 @@ const translations: Record<Language, Record<string, string>> = {
     'checkoutOptions.backToMenu': 'Back to Menu',
     'checkoutOptions.continueCheckout': 'Continue to Checkout',
     'checkoutOptions.chooseDelivery': 'Choose between delivery or pick-up at checkout',
+
+    // Store Closed Modal
+    'storeClosed.title': 'Currently Unavailable',
+    'storeClosed.defaultMessage': 'We are not accepting orders at the moment. Please try again later.',
+    'storeClosed.noSlots': 'There are no more pickup slots available today.',
+    'storeClosed.allSlotsFull': 'All time slots for today are full. Try again tomorrow!',
+    'storeClosed.hint': 'Check our opening hours on the contact page',
+    'storeClosed.button': 'Got it',
 
     // Order Success Page
     'success.orderNumber': 'Order Number',

@@ -7,6 +7,7 @@ import { ArrowLeft, User, Mail, Phone, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { useOrderStore } from '@/lib/store/order-store';
 import CartSummary from '@/components/order/CartSummary';
+import { StoreStatusGate } from '@/components/order/StoreClosedModal';
 
 export default function OrderCheckoutPage() {
   const router = useRouter();
@@ -125,6 +126,7 @@ export default function OrderCheckoutPage() {
   }
 
   return (
+    <StoreStatusGate>
     <div className="min-h-screen bg-flour pt-36 md:pt-40 pb-20">
       <div className="container mx-auto px-4">
         {/* Back Link */}
@@ -296,5 +298,6 @@ export default function OrderCheckoutPage() {
         </div>
       </div>
     </div>
+    </StoreStatusGate>
   );
 }

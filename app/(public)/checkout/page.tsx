@@ -6,6 +6,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "@/components/checkout/CheckoutForm";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useLanguage } from "@/lib/context/LanguageContext";
+import { StoreStatusGate } from "@/components/order/StoreClosedModal";
 import { Loader2, ShoppingBag, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -15,6 +16,7 @@ export default function CheckoutPage() {
   const { t } = useLanguage();
   const { totals, items } = useCartStore();
   const [clientSecret, setClientSecret] = useState("");
+  const [orderId, setOrderId] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,6 +35,7 @@ export default function CheckoutPage() {
       .then((data) => {
         if (data.clientSecret) {
           setClientSecret(data.clientSecret);
+          setOrderId(data.orderId);
         } else {
           console.error("No client secret returned", data);
           setError(data.error || t('checkout.errorPreparing'));
@@ -64,6 +67,7 @@ export default function CheckoutPage() {
   };
 
   return (
+    <StoreStatusGate>
     <main className="min-h-screen bg-flour pt-28 md:pt-36 pb-12">
       <div className="container mx-auto px-4">
         {/* Back to menu */}
@@ -113,10 +117,11 @@ export default function CheckoutPage() {
           </div>
         ) : (
           <Elements options={options} stripe={stripePromise}>
-            <CheckoutForm />
+            <CheckoutForm orderId={orderId} />
           </Elements>
         )}
       </div>
     </main>
+    </StoreStatusGate>
   );
 }
