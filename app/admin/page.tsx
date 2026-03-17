@@ -3,8 +3,54 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
-import { ShoppingBag, Euro, Clock, TrendingUp, ChevronRight, AlertCircle } from 'lucide-react'
+import { ShoppingBag, Euro, Clock, TrendingUp, ChevronRight, AlertCircle, Flame } from 'lucide-react'
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge'
+
+function getUrgency(order: OrderRow): { level: 'critical' | 'high' | 'medium' | 'low'; label: string; color: string; bg: string } {
+  const now = new Date()
+  const created = new Date(order.created_at)
+  const minutesSinceCreated = Math.floor((now.getTime() - created.getTime()) / 60000)
+
+  if (order.status === 'ready' || order.status === 'picked_up' || order.status === 'cancelled') {
+    return { level: 'low', label: '', color: '', bg: '' }
+  }
+
+  // If pending for more than 10 min → critical
+  if (order.status === 'pending' && minutesSinceCreated > 10) {
+    return { level: 'critical', label: `${minutesSinceCreated}m waiting`, color: 'text-red-700', bg: 'bg-red-100' }
+  }
+  // If pending for more than 3 min → high
+  if (order.status === 'pending' && minutesSinceCreated > 3) {
+    return { level: 'high', label: `${minutesSinceCreated}m waiting`, color: 'text-orange-700', bg: 'bg-orange-100' }
+  }
+  // If pending less than 3 min → medium
+  if (order.status === 'pending') {
+    return { level: 'medium', label: 'New', color: 'text-yellow-700', bg: 'bg-yellow-100' }
+  }
+  // If preparing for more than 15 min
+  if (order.status === 'preparing' && minutesSinceCreated > 15) {
+    return { level: 'high', label: `${minutesSinceCreated}m in prep`, color: 'text-orange-700', bg: 'bg-orange-100' }
+  }
+  if (order.status === 'confirmed' && minutesSinceCreated > 5) {
+    return { level: 'medium', label: 'Start prep', color: 'text-yellow-700', bg: 'bg-yellow-100' }
+  }
+  return { level: 'low', label: '', color: '', bg: '' }
+}
+
+function formatTime(dateStr: string): string {
+  const d = new Date(dateStr)
+  return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+}
+
+function timeAgo(dateStr: string): string {
+  const now = new Date()
+  const d = new Date(dateStr)
+  const mins = Math.floor((now.getTime() - d.getTime()) / 60000)
+  if (mins < 1) return 'just now'
+  if (mins < 60) return `${mins}m ago`
+  const hrs = Math.floor(mins / 60)
+  return `${hrs}h ${mins % 60}m ago`
+}
 
 interface OrderRow {
   id: string
@@ -65,17 +111,22 @@ export default function AdminDashboard() {
       .gte('created_at', startOfDay)
       .lte('created_at', endOfDay)
 
-    // Fetch recent orders
+    // Fetch today's recent orders
     const { data: recent } = await supabase
       .from('orders')
       .select('*')
+      .gte('created_at', startOfDay)
+      .lte('created_at', endOfDay)
       .order('created_at', { ascending: false })
       .limit(10)
 
     if (todayOrders) {
+      const paidStatuses = ['confirmed', 'preparing', 'ready', 'picked_up']
       setStats({
-        todayOrders: todayOrders.length,
-        todayRevenue: todayOrders.reduce((sum, o) => sum + Number(o.total), 0),
+        todayOrders: todayOrders.filter((o) => o.status !== 'cancelled').length,
+        todayRevenue: todayOrders
+          .filter((o) => paidStatuses.includes(o.status))
+          .reduce((sum, o) => sum + Number(o.total), 0),
         pendingCount: todayOrders.filter((o) => o.status === 'pending').length,
         preparingCount: todayOrders.filter((o) => o.status === 'preparing').length,
         readyCount: todayOrders.filter((o) => o.status === 'ready').length,
@@ -191,31 +242,56 @@ export default function AdminDashboard() {
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
+                  <th className="text-left px-6 py-3 font-oswald uppercase text-xs text-gray-500 tracking-wider">Urgency</th>
                   <th className="text-left px-6 py-3 font-oswald uppercase text-xs text-gray-500 tracking-wider">Order</th>
                   <th className="text-left px-6 py-3 font-oswald uppercase text-xs text-gray-500 tracking-wider">Customer</th>
+                  <th className="text-left px-6 py-3 font-oswald uppercase text-xs text-gray-500 tracking-wider">Items</th>
                   <th className="text-left px-6 py-3 font-oswald uppercase text-xs text-gray-500 tracking-wider">Total</th>
                   <th className="text-left px-6 py-3 font-oswald uppercase text-xs text-gray-500 tracking-wider">Pickup</th>
+                  <th className="text-left px-6 py-3 font-oswald uppercase text-xs text-gray-500 tracking-wider">Received</th>
                   <th className="text-left px-6 py-3 font-oswald uppercase text-xs text-gray-500 tracking-wider">Status</th>
                   <th className="text-left px-6 py-3 font-oswald uppercase text-xs text-gray-500 tracking-wider">Payment</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {recentOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-50 transition">
-                    <td className="px-6 py-4">
-                      <Link href={`/admin/orders/${order.id}`} className="text-tomato hover:underline font-mono text-sm">
-                        {order.id}
-                      </Link>
-                    </td>
-                    <td className="px-6 py-4 font-lato text-sm">{order.customer_name || '-'}</td>
-                    <td className="px-6 py-4 font-lato text-sm font-bold">&euro;{Number(order.total).toFixed(2)}</td>
-                    <td className="px-6 py-4 font-lato text-sm">{order.pickup_time || '-'}</td>
-                    <td className="px-6 py-4">
-                      <OrderStatusBadge status={order.status} />
-                    </td>
-                    <td className="px-6 py-4 font-lato text-sm capitalize">{order.payment_method}</td>
-                  </tr>
-                ))}
+                {recentOrders.map((order) => {
+                  const urgency = getUrgency(order)
+                  const itemCount = Array.isArray(order.items) ? order.items.reduce((sum: number, i: any) => sum + (i.quantity || 1), 0) : 0
+                  return (
+                    <tr
+                      key={order.id}
+                      className={`hover:bg-gray-50 transition ${urgency.level === 'critical' ? 'bg-red-50/50' : urgency.level === 'high' ? 'bg-orange-50/30' : ''}`}
+                    >
+                      <td className="px-6 py-4">
+                        {urgency.label ? (
+                          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${urgency.color} ${urgency.bg}`}>
+                            {urgency.level === 'critical' && <Flame className="w-3 h-3" />}
+                            {urgency.label}
+                          </span>
+                        ) : (
+                          <span className="text-gray-300 text-xs">—</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <Link href={`/admin/orders/${order.id}`} className="text-tomato hover:underline font-mono text-sm">
+                          {order.id}
+                        </Link>
+                      </td>
+                      <td className="px-6 py-4 font-lato text-sm">{order.customer_name || '-'}</td>
+                      <td className="px-6 py-4 font-lato text-sm text-gray-600">{itemCount} item{itemCount !== 1 ? 's' : ''}</td>
+                      <td className="px-6 py-4 font-lato text-sm font-bold">&euro;{Number(order.total).toFixed(2)}</td>
+                      <td className="px-6 py-4 font-lato text-sm">{order.pickup_time || '-'}</td>
+                      <td className="px-6 py-4 font-lato text-sm">
+                        <div className="text-espresso">{formatTime(order.created_at)}</div>
+                        <div className="text-gray-400 text-xs">{timeAgo(order.created_at)}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <OrderStatusBadge status={order.status} />
+                      </td>
+                      <td className="px-6 py-4 font-lato text-sm capitalize">{order.payment_method}</td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>

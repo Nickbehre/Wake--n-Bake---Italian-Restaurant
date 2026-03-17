@@ -59,7 +59,7 @@ export default function AdminLoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded focus:border-tomato focus:ring-1 focus:ring-tomato outline-none transition font-lato"
-              placeholder="ruben@wakenbake.nl"
+              placeholder="info@wakenbake.nl"
               required
             />
           </div>

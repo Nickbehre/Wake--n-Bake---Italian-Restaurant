@@ -1,22 +1,63 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, ClipboardList, Settings, LogOut, ChefHat, UtensilsCrossed } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
-const navItems = [
-  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/orders', label: 'Orders', icon: ClipboardList },
-  { href: '/admin/catering', label: 'Catering', icon: UtensilsCrossed },
-  { href: '/admin/settings', label: 'Settings', icon: Settings },
-]
+interface NavBadges {
+  orders: number
+  catering: number
+}
 
 export default function AdminSidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+  const [badges, setBadges] = useState<NavBadges>({ orders: 0, catering: 0 })
+
+  useEffect(() => {
+    fetchBadges()
+
+    const channel = supabase
+      .channel('sidebar-badges')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => fetchBadges())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'contact_requests' }, () => fetchBadges())
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
+  }, [])
+
+  async function fetchBadges() {
+    const today = new Date().toISOString().split('T')[0]
+    const startOfDay = `${today}T00:00:00.000Z`
+
+    const [ordersRes, cateringRes] = await Promise.all([
+      supabase
+        .from('orders')
+        .select('id', { count: 'exact', head: true })
+        .in('status', ['pending', 'confirmed', 'preparing'])
+        .gte('created_at', startOfDay),
+      supabase
+        .from('contact_requests')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'new'),
+    ])
+
+    setBadges({
+      orders: ordersRes.count || 0,
+      catering: cateringRes.count || 0,
+    })
+  }
+
+  const navItems = [
+    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, badge: 0 },
+    { href: '/admin/orders', label: 'Orders', icon: ClipboardList, badge: badges.orders },
+    { href: '/admin/catering', label: 'Catering', icon: UtensilsCrossed, badge: badges.catering },
+    { href: '/admin/settings', label: 'Settings', icon: Settings, badge: 0 },
+  ]
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -60,6 +101,11 @@ export default function AdminSidebar() {
             >
               <Icon className="w-5 h-5" />
               {item.label}
+              {item.badge > 0 && (
+                <span className="ml-auto bg-tomato text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {item.badge > 9 ? '9+' : item.badge}
+                </span>
+              )}
             </Link>
           )
         })}

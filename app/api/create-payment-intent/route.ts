@@ -109,8 +109,10 @@ export async function POST(request: Request) {
 
         const amountInCents = Math.round(total * 100);
 
-        // Generate a short order ID
-        const orderId = `WNB-${Math.floor(1000 + Math.random() * 9000)}`;
+        // Generate a unique order ID
+        const timestamp = Date.now().toString(36);
+        const random = Math.random().toString(36).substring(2, 8);
+        const orderId = `WNB-${timestamp}-${random}`.toUpperCase();
 
         const stripe = getStripe();
 
