@@ -166,7 +166,7 @@ export async function POST(request: NextRequest) {
 
 /**
  * GET /api/order
- * Get order by ID (query param)
+ * Get order by ID (query param) - only returns limited public fields
  */
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -179,10 +179,18 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  // Validate order ID format to prevent enumeration
+  if (!/^WNB-[A-Z0-9]+-[A-Z0-9]+$/i.test(orderId)) {
+    return NextResponse.json(
+      { success: false, error: 'Invalid order ID format' },
+      { status: 400 }
+    );
+  }
+
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from('orders')
-    .select('*')
+    .select('id, status, total, pickup_time, created_at, items')
     .eq('id', orderId)
     .single();
 
@@ -193,5 +201,16 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  return NextResponse.json({ success: true, order: data });
+  // Only return non-sensitive fields (no customer PII)
+  return NextResponse.json({
+    success: true,
+    order: {
+      id: data.id,
+      status: data.status,
+      total: data.total,
+      pickup_time: data.pickup_time,
+      created_at: data.created_at,
+      items: data.items,
+    },
+  });
 }

@@ -31,8 +31,12 @@ export default function AdminSidebar() {
   }, [])
 
   async function fetchBadges() {
-    const today = new Date().toISOString().split('T')[0]
-    const startOfDay = `${today}T00:00:00.000Z`
+    // Use Dutch timezone for correct "today" filter
+    const dutchDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Amsterdam' }).format(new Date())
+    const ref = new Date(`${dutchDate}T12:00:00Z`)
+    const amsterdamHour = parseInt(new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Amsterdam', hour: 'numeric', hour12: false }).format(ref))
+    const offsetHours = amsterdamHour - 12
+    const startOfDay = new Date(new Date(`${dutchDate}T00:00:00Z`).getTime() - offsetHours * 3600000).toISOString()
 
     const [ordersRes, cateringRes] = await Promise.all([
       supabase
@@ -102,7 +106,9 @@ export default function AdminSidebar() {
               <Icon className="w-5 h-5" />
               {item.label}
               {item.badge > 0 && (
-                <span className="ml-auto bg-tomato text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                <span className={`ml-auto text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center ${
+                  isActive ? 'bg-white text-tomato' : 'bg-tomato text-white'
+                }`}>
                   {item.badge > 9 ? '9+' : item.badge}
                 </span>
               )}

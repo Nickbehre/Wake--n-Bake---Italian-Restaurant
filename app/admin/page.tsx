@@ -100,9 +100,15 @@ export default function AdminDashboard() {
   }, [])
 
   async function fetchData() {
-    const today = new Date().toISOString().split('T')[0]
-    const startOfDay = `${today}T00:00:00.000Z`
-    const endOfDay = `${today}T23:59:59.999Z`
+    // Get today's date in Dutch timezone (handles CET/CEST automatically)
+    const dutchDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Amsterdam' }).format(new Date())
+    // Calculate Amsterdam's UTC offset dynamically
+    const ref = new Date(`${dutchDate}T12:00:00Z`)
+    const amsterdamHour = parseInt(new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Amsterdam', hour: 'numeric', hour12: false }).format(ref))
+    const offsetHours = amsterdamHour - 12 // 1 for CET, 2 for CEST
+    // Convert Amsterdam midnight/end-of-day to UTC
+    const startOfDay = new Date(new Date(`${dutchDate}T00:00:00Z`).getTime() - offsetHours * 3600000).toISOString()
+    const endOfDay = new Date(new Date(`${dutchDate}T23:59:59.999Z`).getTime() - offsetHours * 3600000).toISOString()
 
     // Fetch today's orders for stats
     const { data: todayOrders } = await supabase

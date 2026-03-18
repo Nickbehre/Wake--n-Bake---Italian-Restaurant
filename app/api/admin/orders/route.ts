@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { verifyAdmin } from '@/lib/auth/admin'
 
 export async function GET(request: NextRequest) {
-  // Verify auth
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await verifyAdmin()
+  if (auth.error) return auth.error
 
   const searchParams = request.nextUrl.searchParams
   const status = searchParams.get('status')
@@ -29,7 +25,11 @@ export async function GET(request: NextRequest) {
   }
 
   if (search) {
-    query = query.or(`id.ilike.%${search}%,customer_name.ilike.%${search}%,customer_email.ilike.%${search}%`)
+    // Sanitize search input: limit length and escape special characters
+    const sanitized = search.slice(0, 100).replace(/[%_\\'"()]/g, '')
+    if (sanitized) {
+      query = query.or(`id.ilike.%${sanitized}%,customer_name.ilike.%${sanitized}%,customer_email.ilike.%${sanitized}%`)
+    }
   }
 
   if (date) {
@@ -49,12 +49,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  // Verify auth
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  const auth = await verifyAdmin()
+  if (auth.error) return auth.error
 
   const { id, status, notes } = await request.json()
 
