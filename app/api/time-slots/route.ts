@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { addMinutes, setHours, setMinutes, isBefore, isAfter, startOfToday, format, getDay } from 'date-fns'
+import { addMinutes, isBefore, isAfter, format } from 'date-fns'
+import { toZonedTime } from 'date-fns-tz'
 
 const SLOT_INTERVAL_MINUTES = 15
 const PREP_BUFFER_MINUTES = 15
-const IS_DEV = process.env.NODE_ENV === 'development'
+const TIMEZONE = 'Europe/Amsterdam'
 
 const DAY_MAP: Record<number, string> = {
   0: 'sunday',
@@ -41,15 +42,17 @@ export async function GET() {
     })
   }
 
-  // Determine store hours for today
-  const dayNum = getDay(new Date())
+  // Get current time in Amsterdam timezone
+  const nowUtc = new Date()
+  const nowAmsterdam = toZonedTime(nowUtc, TIMEZONE)
+
+  // Determine store hours for today (based on Amsterdam day)
+  const dayNum = nowAmsterdam.getDay()
   const dayKey = DAY_MAP[dayNum]
 
   let openHour: number, openMinute: number, closeHour: number, closeMinute: number
 
-  if (IS_DEV) {
-    openHour = 0; openMinute = 0; closeHour = 23; closeMinute = 59
-  } else if (openingHours && openingHours[dayKey]) {
+  if (openingHours && openingHours[dayKey]) {
     const dayConfig = openingHours[dayKey]
     if (dayConfig.closed) {
       return NextResponse.json({ slots: [], paused: false, message: 'Closed today' })
@@ -70,12 +73,12 @@ export async function GET() {
   }
 
   // Fetch today's orders to check capacity
-  const today = new Date().toISOString().split('T')[0]
+  const todayStr = format(nowAmsterdam, 'yyyy-MM-dd')
   const { data: todayOrders } = await supabase
     .from('orders')
     .select('pickup_time, items')
-    .gte('created_at', `${today}T00:00:00.000Z`)
-    .lte('created_at', `${today}T23:59:59.999Z`)
+    .gte('created_at', `${todayStr}T00:00:00.000Z`)
+    .lte('created_at', `${todayStr}T23:59:59.999Z`)
     .not('status', 'eq', 'cancelled')
 
   // Count items per time slot and total for the day
@@ -101,14 +104,19 @@ export async function GET() {
     })
   }
 
-  // Generate slots
-  const now = new Date()
-  const todayStart = startOfToday()
+  // Generate slots using Amsterdam local time
+  const todayAmsterdamStart = new Date(nowAmsterdam)
+  todayAmsterdamStart.setHours(0, 0, 0, 0)
+
   const slots: Array<{ time: string; date: string; available: boolean; remaining: number }> = []
 
-  let currentSlot = setMinutes(setHours(todayStart, openHour), openMinute)
-  const closingTime = setMinutes(setHours(todayStart, closeHour), closeMinute)
-  const minimumPickupTime = addMinutes(now, PREP_BUFFER_MINUTES)
+  let currentSlot = new Date(todayAmsterdamStart)
+  currentSlot.setHours(openHour, openMinute, 0, 0)
+
+  const closingTime = new Date(todayAmsterdamStart)
+  closingTime.setHours(closeHour, closeMinute, 0, 0)
+
+  const minimumPickupTime = addMinutes(nowAmsterdam, PREP_BUFFER_MINUTES)
 
   while (isBefore(currentSlot, closingTime)) {
     if (isAfter(currentSlot, minimumPickupTime)) {
