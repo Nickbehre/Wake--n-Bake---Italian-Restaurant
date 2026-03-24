@@ -76,7 +76,7 @@ export default function CheckoutForm({ orderId }: { orderId?: string }) {
                 const slots: TimeSlot[] = (data.slots || [])
                     .filter((s: any) => s.available)
                     .map((s: any) => ({
-                        date: new Date(s.date),
+                        date: new Date(),
                         label: s.time,
                         available: true,
                     }));

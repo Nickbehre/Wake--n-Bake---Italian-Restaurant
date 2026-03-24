@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { addMinutes, isBefore, isAfter, format } from 'date-fns'
-import { toZonedTime } from 'date-fns-tz'
+import { getTimezoneOffset, formatInTimeZone } from 'date-fns-tz'
 
 const SLOT_INTERVAL_MINUTES = 15
 const PREP_BUFFER_MINUTES = 15
@@ -15,6 +14,11 @@ const DAY_MAP: Record<number, string> = {
   4: 'thursday',
   5: 'friday',
   6: 'saturday',
+}
+
+/** Convert hours + minutes to total minutes for easy comparison */
+function toMinutes(h: number, m: number): number {
+  return h * 60 + m
 }
 
 export async function GET() {
@@ -42,12 +46,14 @@ export async function GET() {
     })
   }
 
-  // Get current time in Amsterdam timezone
-  const nowUtc = new Date()
-  const nowAmsterdam = toZonedTime(nowUtc, TIMEZONE)
-
-  // Determine store hours for today (based on Amsterdam day)
-  const dayNum = nowAmsterdam.getDay()
+  // Get current Amsterdam time using timezone offset (avoids fake Date issues)
+  const now = new Date()
+  const offsetMs = getTimezoneOffset(TIMEZONE, now)
+  const amsterdamMs = now.getTime() + offsetMs
+  const amsterdamDate = new Date(amsterdamMs)
+  const amsterdamHour = amsterdamDate.getUTCHours()
+  const amsterdamMinute = amsterdamDate.getUTCMinutes()
+  const dayNum = amsterdamDate.getUTCDay()
   const dayKey = DAY_MAP[dayNum]
 
   let openHour: number, openMinute: number, closeHour: number, closeMinute: number
@@ -73,7 +79,7 @@ export async function GET() {
   }
 
   // Fetch today's orders to check capacity
-  const todayStr = format(nowAmsterdam, 'yyyy-MM-dd')
+  const todayStr = formatInTimeZone(now, TIMEZONE, 'yyyy-MM-dd')
   const { data: todayOrders } = await supabase
     .from('orders')
     .select('pickup_time, items')
@@ -104,35 +110,29 @@ export async function GET() {
     })
   }
 
-  // Generate slots using Amsterdam local time
-  const todayAmsterdamStart = new Date(nowAmsterdam)
-  todayAmsterdamStart.setHours(0, 0, 0, 0)
+  // Generate slots using pure minutes arithmetic (no fake Date objects)
+  const nowMinutes = toMinutes(amsterdamHour, amsterdamMinute)
+  const minimumPickupMinutes = nowMinutes + PREP_BUFFER_MINUTES
+  const openMinutes = toMinutes(openHour, openMinute)
+  const closeMinutes = toMinutes(closeHour, closeMinute)
 
   const slots: Array<{ time: string; date: string; available: boolean; remaining: number }> = []
 
-  let currentSlot = new Date(todayAmsterdamStart)
-  currentSlot.setHours(openHour, openMinute, 0, 0)
-
-  const closingTime = new Date(todayAmsterdamStart)
-  closingTime.setHours(closeHour, closeMinute, 0, 0)
-
-  const minimumPickupTime = addMinutes(nowAmsterdam, PREP_BUFFER_MINUTES)
-
-  while (isBefore(currentSlot, closingTime)) {
-    if (isAfter(currentSlot, minimumPickupTime)) {
-      const label = format(currentSlot, 'HH:mm')
+  for (let slotMin = openMinutes; slotMin < closeMinutes; slotMin += SLOT_INTERVAL_MINUTES) {
+    if (slotMin > minimumPickupMinutes) {
+      const h = Math.floor(slotMin / 60)
+      const m = slotMin % 60
+      const label = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`
       const used = slotCounts[label] || 0
       const remaining = Math.max(0, maxPerSlot - used)
 
       slots.push({
         time: label,
-        date: currentSlot.toISOString(),
+        date: label,
         available: remaining > 0,
         remaining,
       })
     }
-
-    currentSlot = addMinutes(currentSlot, SLOT_INTERVAL_MINUTES)
   }
 
   return NextResponse.json({ slots, paused: false })
