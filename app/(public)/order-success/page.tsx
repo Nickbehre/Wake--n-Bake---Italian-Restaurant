@@ -38,8 +38,11 @@ export default function OrderSuccessPage() {
 
         // Send confirmation email
         if (parsed.customerDetails?.email) {
+          const isTimeOnly = parsed.pickupTime && /^\d{2}:\d{2}$/.test(parsed.pickupTime);
           const pickupFormatted = parsed.pickupTime
-            ? format(new Date(parsed.pickupTime), "EEEE d MMMM 'at' HH:mm", { locale: enUS })
+            ? (isTimeOnly
+              ? `${format(new Date(), "EEEE d MMMM", { locale: enUS })} at ${parsed.pickupTime}`
+              : format(new Date(parsed.pickupTime), "EEEE d MMMM 'at' HH:mm", { locale: enUS }))
             : "Date unknown";
           fetch("/api/send-email", {
             method: "POST",
@@ -63,7 +66,7 @@ export default function OrderSuccessPage() {
 
     // Fallback: read from zustand cart store
     if (items.length > 0) {
-      const pt = pickupTime instanceof Date ? pickupTime.toISOString() : pickupTime as string | null;
+      const pt = typeof pickupTime === 'string' ? pickupTime : pickupTime instanceof Date ? pickupTime.toISOString() : null;
       setOrderData({
         items,
         totals,
@@ -72,8 +75,11 @@ export default function OrderSuccessPage() {
       });
 
       if (customerDetails?.email) {
+        const isTimeOnlyFb = pt && /^\d{2}:\d{2}$/.test(pt);
         const pickupFormatted = pt
-          ? format(new Date(pt), "EEEE d MMMM 'at' HH:mm", { locale: enUS })
+          ? (isTimeOnlyFb
+            ? `${format(new Date(), "EEEE d MMMM", { locale: enUS })} at ${pt}`
+            : format(new Date(pt), "EEEE d MMMM 'at' HH:mm", { locale: enUS }))
           : "Date unknown";
         fetch("/api/send-email", {
           method: "POST",
@@ -95,8 +101,11 @@ export default function OrderSuccessPage() {
 
   const dateLocale = language === 'nl' ? nl : enUS;
   const pickupTimeStr = orderData?.pickupTime;
+  const isTimeOnlyDisplay = pickupTimeStr && /^\d{2}:\d{2}$/.test(pickupTimeStr);
   const formattedPickup = pickupTimeStr
-    ? format(new Date(pickupTimeStr), "EEEE d MMMM 'om' HH:mm", { locale: dateLocale })
+    ? (isTimeOnlyDisplay
+      ? `${format(new Date(), "EEEE d MMMM", { locale: dateLocale })} om ${pickupTimeStr}`
+      : format(new Date(pickupTimeStr), "EEEE d MMMM 'om' HH:mm", { locale: dateLocale }))
     : null;
 
   return (

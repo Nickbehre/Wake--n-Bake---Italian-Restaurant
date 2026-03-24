@@ -34,7 +34,7 @@ interface CartState {
         tax: number;
         total: number;
     };
-    pickupTime: Date | null;
+    pickupTime: Date | string | null;
     customerDetails: CustomerDetails | null;
 
     // Actions
@@ -42,7 +42,7 @@ interface CartState {
     removeItem: (itemId: string) => void;
     updateQuantity: (itemId: string, quantity: number) => void;
     clearCart: () => void;
-    setPickupTime: (date: Date | null) => void;
+    setPickupTime: (date: Date | string | null) => void;
     setCustomerDetails: (details: CustomerDetails) => void;
     calculateTotals: () => void;
 }

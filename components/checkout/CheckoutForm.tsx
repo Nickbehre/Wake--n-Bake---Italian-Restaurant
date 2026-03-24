@@ -86,8 +86,7 @@ export default function CheckoutForm({ orderId }: { orderId?: string }) {
                 if (slots.length === 0) {
                     setPickupTime(null as any);
                 } else if (pickupTime) {
-                    const pickupMs = pickupTime instanceof Date ? pickupTime.getTime() : new Date(pickupTime).getTime();
-                    const isStillValid = slots.some(slot => slot.date.getTime() === pickupMs);
+                    const isStillValid = slots.some(slot => slot.label === pickupTime);
                     if (!isStillValid) {
                         setPickupTime(null as any);
                     }
@@ -121,7 +120,7 @@ export default function CheckoutForm({ orderId }: { orderId?: string }) {
         const orderSnapshot = {
             items,
             totals,
-            pickupTime: pickupTime instanceof Date ? pickupTime.toISOString() : pickupTime,
+            pickupTime: typeof pickupTime === 'string' ? pickupTime : pickupTime instanceof Date ? pickupTime.toISOString() : null,
             customerDetails: { ...data, phone: fullPhone },
         };
         localStorage.setItem('wnb-last-order', JSON.stringify(orderSnapshot));
@@ -129,9 +128,11 @@ export default function CheckoutForm({ orderId }: { orderId?: string }) {
         try {
             // Update order in DB with customer details and pickup time
             if (orderId) {
-                const pickupTimeStr = pickupTime instanceof Date
-                    ? pickupTime.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
-                    : pickupTime;
+                const pickupTimeStr = typeof pickupTime === 'string'
+                    ? pickupTime
+                    : pickupTime instanceof Date
+                        ? pickupTime.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
+                        : '';
                 await fetch('/api/update-order', {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
@@ -273,13 +274,12 @@ export default function CheckoutForm({ orderId }: { orderId?: string }) {
                             </div>
                         ) : (
                             availableSlots.map((slot, idx) => {
-                                const pickupMs = pickupTime instanceof Date ? pickupTime.getTime() : pickupTime ? new Date(pickupTime).getTime() : null;
-                                const isSelected = pickupMs === slot.date.getTime();
+                                const isSelected = pickupTime === slot.label;
                                 return (
                                     <button
                                         key={idx}
                                         type="button"
-                                        onClick={() => setPickupTime(slot.date)}
+                                        onClick={() => setPickupTime(slot.label)}
                                         className={cn(
                                             "py-2 px-1 text-sm font-oswald rounded border transition-all duration-200 hover:border-crust cursor-pointer",
                                             isSelected
