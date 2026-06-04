@@ -8,17 +8,24 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Instagram, Phone, Bike, Store } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import LanguageToggle from '@/components/ui/LanguageToggle'
+import ExpressToggle from '@/components/ui/ExpressToggle'
 import { useLanguage } from '@/lib/context/LanguageContext'
+import { useExpress } from '@/lib/context/ExpressContext'
 
 // Thuisbezorgd order link
 const THUISBEZORGD_URL = 'https://www.thuisbezorgd.nl/menu/wake-n-bake-panificio'
 
-const navItems = [
+const classicNavItems = [
   { key: 'nav.home', href: '/' },
   { key: 'nav.menu', href: '/menu' },
   { key: 'nav.about', href: '/over-ons' },
   { key: 'nav.gallery', href: '/gallerij' },
   { key: 'nav.contact', href: '/contact' },
+]
+
+const expressNavItems = [
+  { key: 'nav.home', href: '/' },
+  { key: 'nav.menu', href: '/menu' },
 ]
 
 export default function Header() {
@@ -27,6 +34,8 @@ export default function Header() {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false)
   const pathname = usePathname()
   const { t } = useLanguage()
+  const { isExpress } = useExpress()
+  const navItems = isExpress ? expressNavItems : classicNavItems
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,7 +67,7 @@ export default function Header() {
       <div className={`container mx-auto transition-all duration-500 ${
         isHomePage && !isScrolled && !isMobileMenuOpen
           ? 'bg-transparent px-4 py-2'
-          : 'bg-[#f7f1e1]/95 backdrop-blur-md shadow-lg px-4 py-1 rounded-2xl'
+          : 'bg-flour/95 backdrop-blur-md shadow-lg px-4 py-1 rounded-2xl'
       }`}>
         <div className="flex items-center justify-between">
           {/* Logo - LARGE brand stamp, image only, NO TEXT */}
@@ -105,6 +114,9 @@ export default function Header() {
 
           {/* CTA, Language Toggle & Social */}
           <div className="hidden lg:flex items-center gap-3">
+            {/* Express / Classic Toggle */}
+            <ExpressToggle variant={isHomePage && !isScrolled ? 'light' : 'dark'} />
+
             {/* Language Toggle */}
             <LanguageToggle variant={isHomePage && !isScrolled ? 'light' : 'dark'} />
 
@@ -167,7 +179,7 @@ export default function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="lg:hidden absolute right-3 md:right-6 top-full mt-2 w-56 bg-[#f7f1e1]/95 backdrop-blur-md shadow-xl rounded-2xl overflow-hidden"
+            className="lg:hidden absolute right-3 md:right-6 top-full mt-2 w-56 bg-flour/95 backdrop-blur-md shadow-xl rounded-2xl overflow-hidden"
           >
             <nav className="px-5 py-4 flex flex-col gap-1">
               {navItems.map((item) => (
@@ -181,6 +193,9 @@ export default function Header() {
                   {t(item.key)}
                 </Link>
               ))}
+              <div className="flex justify-center pt-3 mt-1 border-t border-espresso/10">
+                <ExpressToggle variant="dark" />
+              </div>
               <div className="flex items-center gap-3 pt-2 mt-1 border-t border-espresso/10">
                 <a
                   href="https://www.instagram.com/wakenbake.nl/"
@@ -232,7 +247,7 @@ export default function Header() {
                 transition={{ duration: 0.25, ease: 'easeOut' }}
                 className="fixed inset-0 z-[101] flex items-center justify-center pointer-events-none"
               >
-                <div className="bg-[#f7f1e1] rounded-2xl shadow-2xl p-8 relative w-[90vw] max-w-md pointer-events-auto">
+                <div className="bg-flour rounded-2xl shadow-2xl p-8 relative w-[90vw] max-w-md pointer-events-auto">
                   <button
                     onClick={() => setIsOrderModalOpen(false)}
                     className="absolute top-4 right-4 text-espresso/50 hover:text-espresso transition-colors cursor-pointer"

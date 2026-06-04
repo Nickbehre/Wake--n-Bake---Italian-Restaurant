@@ -41,6 +41,37 @@
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-crust/80;
   }
+
+  /* ───────────────────────────────────────────────
+     Theme tokens — Classic (default).
+     Stored as space-separated RGB channels so Tailwind's
+     rgb(var(--c-x) / <alpha-value>) keeps /opacity modifiers working.
+     ─────────────────────────────────────────────── */
+  :root {
+    --c-crust: 212 160 86;
+    --c-espresso: 44 44 44;
+    --c-flour: 249 247 242;
+    --c-pistachio: 147 197 114;
+    --c-tomato: 206 32 41;
+    --c-mortadella: 239 189 189;
+  }
+
+  /* Wake n' Bake Express — same light Classic look, but the brand red becomes
+     a dark, chic green. Only the accent/CTA token changes; the cream canvas,
+     espresso ink and gold crust stay exactly as Classic (not inverted). */
+  [data-express='true'] {
+    --c-tomato: 27 77 62; /* #1B4D3E — dark emerald replaces the brand red */
+  }
+
+  /* Smooth morph between Classic and Express.
+     In @layer base so Tailwind transition utilities still win where present
+     (Classic hover timings stay identical); bare elements get the morph. */
+  html,
+  body,
+  body * {
+    transition: background-color 450ms ease, color 450ms ease,
+      border-color 450ms ease, fill 450ms ease, border-radius 450ms ease;
+  }
 }
 
 @layer components {
@@ -146,5 +177,23 @@
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Express: softer, rounder boxes. In @layer utilities so the
+     [data-express] selector beats bare .rounded-* by specificity. */
+  [data-express='true'] .rounded-lg {
+    border-radius: 1.25rem;
+  }
+  [data-express='true'] .rounded-xl {
+    border-radius: 1.5rem;
+  }
+  [data-express='true'] .rounded-2xl {
+    border-radius: 2rem;
+  }
+
+  /* Buttons that hover to the brand red (hover:bg-red-700) should hover to the
+     Express green instead — keeps Classic untouched, no per-button edits. */
+  [data-express='true'] .hover\:bg-red-700:hover {
+    background-color: rgb(var(--c-tomato));
   }
 }

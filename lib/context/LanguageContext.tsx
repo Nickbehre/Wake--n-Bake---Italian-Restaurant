@@ -19,9 +19,12 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.gallery': 'Gallerij',
     'nav.contact': 'Contact',
     'nav.order': 'BESTEL NU',
+    'nav.classic': 'Classic',
+    'nav.express': 'Express',
 
     // Hero
     'hero.tagline': "De knapperigste Schiacciata van Amsterdam. Rijkelijk belegd, vers uit de oven.",
+    'hero.expressSlogan': 'all your favourites to-go',
     'hero.cta.menu': 'BEKIJK MENU',
     'hero.cta.order': 'BESTEL NU',
     'hero.cta.delivery': 'BEZORGEN',
@@ -89,7 +92,6 @@ const translations: Record<Language, Record<string, string>> = {
     'menuPage.togoMenuTag': 'Klaar om mee te nemen',
     'menuPage.schiacciatMenuTag': 'Vers op bestelling',
     'menuPage.alsoAvailable': 'Ook Verkrijgbaar',
-    'menuPage.calzoneSubtitle': 'Folded Pizza',
     'menuPage.byTheSlice': 'By The Slice',
 
     // Location Section
@@ -400,9 +402,12 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.gallery': 'Gallery',
     'nav.contact': 'Contact',
     'nav.order': 'ORDER NOW',
+    'nav.classic': 'Classic',
+    'nav.express': 'Express',
 
     // Hero
     'hero.tagline': "The crispiest Schiacciata in Amsterdam. Generously topped, fresh from the oven.",
+    'hero.expressSlogan': 'all your favourites to-go',
     'hero.cta.menu': 'VIEW MENU',
     'hero.cta.order': 'ORDER NOW',
     'hero.cta.delivery': 'DELIVERY',
@@ -470,7 +475,6 @@ const translations: Record<Language, Record<string, string>> = {
     'menuPage.togoMenuTag': 'Ready to go',
     'menuPage.schiacciatMenuTag': 'Made to order',
     'menuPage.alsoAvailable': 'Also Available',
-    'menuPage.calzoneSubtitle': 'Folded Pizza',
     'menuPage.byTheSlice': 'By The Slice',
 
     // Location Section

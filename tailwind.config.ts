@@ -9,12 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        crust: '#D4A056',
-        espresso: '#2C2C2C',
-        flour: '#F9F7F2',
-        pistachio: '#93C572',
-        tomato: '#CE2029',
-        mortadella: '#EFBDBD',
+        crust: 'rgb(var(--c-crust) / <alpha-value>)',
+        espresso: 'rgb(var(--c-espresso) / <alpha-value>)',
+        flour: 'rgb(var(--c-flour) / <alpha-value>)',
+        pistachio: 'rgb(var(--c-pistachio) / <alpha-value>)',
+        tomato: 'rgb(var(--c-tomato) / <alpha-value>)',
+        mortadella: 'rgb(var(--c-mortadella) / <alpha-value>)',
       },
       fontFamily: {
         montserrat: ['var(--font-montserrat)', 'sans-serif'],

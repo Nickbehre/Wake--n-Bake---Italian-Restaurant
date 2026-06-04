@@ -4,8 +4,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ChevronDown, Bike, Store } from 'lucide-react'
+import { ChevronDown, Bike, Store, MapPin } from 'lucide-react'
 import { useLanguage } from '@/lib/context/LanguageContext'
+import { useExpress } from '@/lib/context/ExpressContext'
 
 const THUISBEZORGD_URL = 'https://www.thuisbezorgd.nl/menu/wake-n-bake-panificio'
 
@@ -32,6 +33,7 @@ const heroImages = [
 
 export default function HeroSection() {
   const { t } = useLanguage()
+  const { isExpress } = useExpress()
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   const nextImage = useCallback(() => {
@@ -89,6 +91,18 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-b from-espresso/60 via-espresso/40 to-espresso/70 z-10" />
       </div>
 
+      {/* Soft blurred glow behind the hero content — brightest in the centre,
+          fading to transparent toward the edges. Uses the accent token so it
+          themes (gold in Classic, emerald in Express). */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-1/2 z-[15] -translate-x-1/2 -translate-y-1/2 w-[70vw] max-w-[760px] aspect-square rounded-full blur-[120px]"
+        style={{
+          background:
+            'radial-gradient(circle, rgb(var(--c-crust) / 0.6) 0%, rgb(var(--c-crust) / 0.3) 45%, transparent 72%)',
+        }}
+      />
+
       {/* Image indicators */}
       <div className="absolute bottom-20 md:bottom-32 left-1/2 -translate-x-1/2 z-20 flex gap-2">
         {heroImages.map((_, index) => (
@@ -121,18 +135,26 @@ export default function HeroSection() {
             />
           </div>
           <p className="font-stamp text-2xl md:text-5xl mb-4 md:mb-8 drop-shadow-lg relative z-10">
-            come taste the difference
+            {isExpress ? t('hero.expressSlogan') : 'come taste the difference'}
           </p>
+          {isExpress && (
+            <p className="flex items-center justify-center gap-2 text-base md:text-2xl mb-4 md:mb-8 font-lato font-light drop-shadow-lg relative z-10">
+              <MapPin className="w-5 h-5 md:w-6 md:h-6 flex-shrink-0" />
+              Vijzelstraat 93h &middot; 1017 HH Amsterdam
+            </p>
+          )}
         </motion.div>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="text-lg md:text-2xl mb-6 md:mb-12 max-w-3xl mx-auto font-lato font-light"
-        >
-          {t('hero.tagline')}
-        </motion.p>
+        {!isExpress && (
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="text-lg md:text-2xl mb-6 md:mb-12 max-w-3xl mx-auto font-lato font-light"
+          >
+            {t('hero.tagline')}
+          </motion.p>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

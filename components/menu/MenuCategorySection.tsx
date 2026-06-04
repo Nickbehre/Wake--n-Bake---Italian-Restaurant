@@ -15,7 +15,6 @@ const categoryIcons: Record<string, string> = {
   'veggie-schiacciata': '\u{1F96C}',
   'beef-fish-schiacciata': '\u{1F969}',
   'pork-schiacciata': '\u{1F953}',
-  'calzone': '\u{1F355}',
   'schiacciata-togo': '\u{1F96A}',
   'pizza-al-taglio': '\u{1F355}',
   'drinks': '\u{1F379}',
@@ -27,7 +26,6 @@ const categoryIcons: Record<string, string> = {
 
 // Category subtitles
 const categorySubtitles: Record<string, string> = {
-  'calzone': 'Folded Pizza',
   'pizza-al-taglio': 'By The Slice',
   'schiacciata-togo': 'To Go',
   'coffee-hot': 'Hot Drinks',

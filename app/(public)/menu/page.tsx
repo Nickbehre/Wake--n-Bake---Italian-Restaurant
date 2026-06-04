@@ -3,13 +3,14 @@
 import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { schiacciataMenuCategories, togoMenuCategories } from '@/lib/data/products';
+import { schiacciataMenuCategories, togoMenuCategories, expressMenuCategories } from '@/lib/data/products';
 import MenuCategorySection from '@/components/menu/MenuCategorySection';
 import MenuPDFButton from '@/components/menu/MenuPDFButton';
 import CartDrawer from '@/components/cart/CartDrawer';
 import MenuPhotoOverlay, { type MenuPhoto } from '@/components/menu/MenuPhotoOverlay';
 import ProductDetailModal from '@/components/menu/ProductDetailModal';
 import { useLanguage } from '@/lib/context/LanguageContext';
+import { useExpress } from '@/lib/context/ExpressContext';
 import { ChefHat, ShoppingBag, ChevronDown } from 'lucide-react';
 import type { Product } from '@/lib/types/order';
 
@@ -26,6 +27,7 @@ const togoMenuPhotos: MenuPhoto[] = [
 
 export default function MenuPage() {
   const { t } = useLanguage();
+  const { isExpress } = useExpress();
   const [schiacciatOverlayOpen, setSchiacciatOverlayOpen] = useState(false);
   const [schiacciatOverlayIndex, setSchiacciatOverlayIndex] = useState(0);
   const [togoOverlayOpen, setTogoOverlayOpen] = useState(false);
@@ -81,7 +83,7 @@ export default function MenuPage() {
     <div className="min-h-screen bg-flour pt-36 md:pt-40 pb-20">
       {/* Floating Menu Navigation Buttons — appear on scroll */}
       <AnimatePresence>
-        {showFloatingButtons && (
+        {showFloatingButtons && !isExpress && (
           <>
             {/* Desktop */}
             <div className="fixed left-3 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-3">
@@ -153,6 +155,42 @@ export default function MenuPage() {
           </p>
         </motion.div>
 
+        {/* ═══════════════════════════════════════════ */}
+        {/* EXPRESS MENU — smaller to-go selection      */}
+        {/* ═══════════════════════════════════════════ */}
+        {isExpress && (
+          <div id="express-menu" className="scroll-mt-40">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <span className="inline-flex items-center gap-2 bg-tomato text-white font-oswald text-xs md:text-sm uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
+                <ShoppingBag className="w-4 h-4" />
+                {t('menuPage.togoMenuTag')}
+              </span>
+              <h2 className="font-comodo text-4xl md:text-6xl text-espresso mb-2">
+                Wake n&apos; Bake Express
+              </h2>
+              <p className="font-lato text-espresso/70 text-base md:text-lg italic">
+                {t('hero.expressSlogan')}
+              </p>
+            </motion.div>
+
+            <div className="space-y-24">
+              {expressMenuCategories.map((category) => (
+                <MenuCategorySection key={category.id} category={category} onProductClick={handleProductClick} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ═══════════════════════════════════════════ */}
+        {/* CLASSIC MENU                                */}
+        {/* ═══════════════════════════════════════════ */}
+        {!isExpress && (
+        <>
         {/* Sticky Category Navigation */}
         <motion.nav
           initial={{ opacity: 0, y: -10 }}
@@ -328,6 +366,8 @@ export default function MenuPage() {
             ))}
           </div>
         </div>
+        </>
+        )}
 
 
         {/* Allergen Info */}

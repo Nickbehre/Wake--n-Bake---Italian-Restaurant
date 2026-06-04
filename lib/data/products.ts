@@ -338,55 +338,6 @@ const porkSchiacciata: Category = {
 // WAKE N' BAKE MENU — Ready to Go
 // ─────────────────────────────────────────────
 
-const calzoneCategory: Category = {
-  id: 'calzone',
-  name: 'Calzone',
-  menu: 'togo',
-  products: [
-    {
-      id: 'calzone-hot-salami',
-      name: 'Calzone Hot Salami',
-      description: 'Tomato sauce, mozzarella, hot salami, caramelised onions, peppers.',
-      price: 9.00,
-      categoryId: 'calzone',
-    },
-    {
-      id: 'calzone-ham-mushrooms',
-      name: 'Calzone Ham & Mushrooms',
-      description: 'Tomato sauce, mozzarella, ham, mushrooms.',
-      price: 9.00,
-      categoryId: 'calzone',
-    },
-    {
-      id: 'calzone-speck-potatoes',
-      name: 'Calzone Speck & Potatoes',
-      description: 'Tomato sauce, mozzarella, speck, potatoes.',
-      price: 9.00,
-      categoryId: 'calzone',
-    },
-    {
-      id: 'calzone-nduja-mushrooms',
-      name: "Calzone N'duja & Mushrooms",
-      description: "Tomato sauce, mozzarella, n'duja, mushrooms, black olives.",
-      price: 9.00,
-      categoryId: 'calzone',
-    },
-    {
-      id: 'calzone-parmigiana',
-      name: 'Calzone Parmigiana',
-      description: 'Tomato sauce, mozzarella, eggplants, grana padano, basil.',
-      price: 9.00,
-      categoryId: 'calzone',
-    },
-    {
-      id: 'calzone-veggie-deluxe',
-      name: 'Calzone Veggie Deluxe',
-      description: 'Tomato sauce, mozzarella, mushrooms, peppers, caramelised onions, black olives.',
-      price: 9.00,
-      categoryId: 'calzone',
-    },
-  ],
-};
 
 const schiacciataTogo: Category = {
   id: 'schiacciata-togo',
@@ -745,12 +696,24 @@ export const schiacciataMenuCategories: Category[] = [
  * Wake n' Bake Menu categories (to go)
  */
 export const togoMenuCategories: Category[] = [
-  calzoneCategory,
   schiacciataTogo,
   pizzaAlTaglioCategory,
   drinksCategory,
   coffeeHotCategory,
   coldDrinksCategory,
+  dolciCategory,
+];
+
+/**
+ * Wake n' Bake EXPRESS menu — smaller to-go focused selection.
+ * TODO: finalize the exact Express menu items with Ruben. For now this is a
+ * placeholder that reuses the existing to-go categories so the Express menu
+ * page has a stable data source. Replace/curate the categories below.
+ */
+export const expressMenuCategories: Category[] = [
+  schiacciataTogo,
+  pizzaAlTaglioCategory,
+  coffeeHotCategory,
   dolciCategory,
 ];
 

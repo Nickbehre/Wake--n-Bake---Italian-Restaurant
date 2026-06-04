@@ -230,38 +230,6 @@
         }
       }
     ],
-    "calzone": [
-      {
-        "name": "HOT SALAMI",
-        "ingredients": "TOMATO SAUCE, MOZZARELLA, HOT SALAMI, CARAMELISED ONIONS, PEPPERS",
-        "price": 9
-      },
-      {
-        "name": "HAM & MUSHROOMS",
-        "ingredients": "TOMATO SAUCE, MOZZARELLA, HAM, MUSHROOMS",
-        "price": 9
-      },
-      {
-        "name": "SPECK & POTATOES",
-        "ingredients": "TOMATO SAUCE, MOZZARELLA, SPECK, POTATOES",
-        "price": 9
-      },
-      {
-        "name": "N'DUJA & MUSHROOMS",
-        "ingredients": "TOMATO SAUCE, MOZZARELLA, N'DUJA, MUSHROOMS, BLACK OLIVES",
-        "price": 9
-      },
-      {
-        "name": "PARMIGIANA",
-        "ingredients": "TOMATO SAUCE, MOZZARELLA, EGGPLANTS, GRANA PADANO, BASIL",
-        "price": 9
-      },
-      {
-        "name": "VEGGIE DELUXE",
-        "ingredients": "TOMATO SAUCE, MOZZARELLA, MUSHROOMS, PEPPERS, CARAMELISED ONIONS, BLACK OLIVES",
-        "price": 9
-      }
-    ],
     "schiacciata_to_go": [
       {
         "name": "TOSCANINA",
