@@ -391,6 +391,31 @@ const translations: Record<Language, Record<string, string>> = {
     'cart.delivery': 'Bezorgen (Thuisbezorgd)',
     'cart.takeaway': 'Pick-up (Click & Collect)',
     'cart.pickupNote': 'Pick-up kan binnen 15 minuten.',
+
+    // Locaties & toggle
+    'loc.original.label': 'Origineel',
+    'loc.express.label': 'Express',
+    'loc.badge.new': 'NIEUW',
+    'loc.badge.otherLocation': 'Andere locatie',
+    'loc.switch': 'Wissel van locatie',
+    'loc.switchTo': 'Wissel naar',
+    'loc.youAreHere': 'Je bekijkt nu',
+    'loc.comingSoon': 'Binnenkort',
+    'loc.placeholderNote': 'Definitieve gegevens volgen binnenkort',
+    'loc.discoverExpress': "NIEUW: ontdek Wake N' Bake Express",
+    'loc.transition.welcome': 'Welkom bij',
+    'loc.transition.subtitle': 'Je wisselt van locatie',
+    'loc.ourLocations': 'Onze Locaties',
+    'loc.twoLocations': 'Twee locaties, één passie',
+    'loc.visitOther': 'Bekijk andere locatie',
+    'loc.deliverySoon': 'Bezorgen binnenkort beschikbaar',
+    'express.announce.label': 'Nieuwe Locatie',
+    'express.announce.headline': 'Zelfde liefde. Nieuwe plek.',
+    'express.announce.text':
+      "Wake N' Bake opent een tweede thuis: Wake N' Bake Express in De Pijp. Dezelfde knapperige schiacciata, hetzelfde verse deeg — nu ook aan de andere kant van de stad, met ruimere openingstijden.",
+    'express.announce.cta': 'Ontdek Express',
+    'express.announce.original.cta': 'Terug naar het origineel',
+    'express.hero.badge': 'Nieuw in De Pijp',
   },
   en: {
     // Navigation
@@ -772,6 +797,31 @@ const translations: Record<Language, Record<string, string>> = {
     'cart.delivery': 'Delivery (Thuisbezorgd)',
     'cart.takeaway': 'Pick-up (Click & Collect)',
     'cart.pickupNote': 'Pickup available within 15 minutes.',
+
+    // Locations & toggle
+    'loc.original.label': 'Original',
+    'loc.express.label': 'Express',
+    'loc.badge.new': 'NEW',
+    'loc.badge.otherLocation': 'Different location',
+    'loc.switch': 'Switch location',
+    'loc.switchTo': 'Switch to',
+    'loc.youAreHere': "You're viewing",
+    'loc.comingSoon': 'Coming soon',
+    'loc.placeholderNote': 'Final details coming soon',
+    'loc.discoverExpress': "NEW: discover Wake N' Bake Express",
+    'loc.transition.welcome': 'Welcome to',
+    'loc.transition.subtitle': "You're switching location",
+    'loc.ourLocations': 'Our Locations',
+    'loc.twoLocations': 'Two locations, one passion',
+    'loc.visitOther': 'View other location',
+    'loc.deliverySoon': 'Delivery available soon',
+    'express.announce.label': 'New Location',
+    'express.announce.headline': 'Same love. New place.',
+    'express.announce.text':
+      "Wake N' Bake is opening a second home: Wake N' Bake Express in De Pijp. The same crispy schiacciata, the same fresh dough — now on the other side of town, with extended opening hours.",
+    'express.announce.cta': 'Discover Express',
+    'express.announce.original.cta': 'Back to the original',
+    'express.hero.badge': 'New in De Pijp',
   },
 }
 

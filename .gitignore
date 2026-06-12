@@ -51,6 +51,10 @@ next-env.d.ts
 *.swp
 *.swo
 
+# Claude Code (machine-lokaal)
+.claude/settings.local.json
+tmpclaude-*
+
 # OS
 Thumbs.db
 

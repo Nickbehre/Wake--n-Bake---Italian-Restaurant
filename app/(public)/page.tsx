@@ -1,6 +1,7 @@
 import HeroSection from '@/components/home/HeroSection'
 import USPSection from '@/components/home/USPSection'
 import StorySection from '@/components/home/StorySection'
+import ExpressSection from '@/components/home/ExpressSection'
 import MenuSection from '@/components/home/MenuSection'
 import ReviewsSection from '@/components/home/ReviewsSection'
 import LocationSection from '@/components/home/LocationSection'
@@ -11,6 +12,7 @@ export default function HomePage() {
     <div className="bg-flour">
       <HeroSection />
       <StorySection />
+      <ExpressSection />
       <USPSection />
       <MenuSection />
       <ReviewsSection />

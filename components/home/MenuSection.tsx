@@ -1,57 +1,16 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { motion, AnimatePresence, useInView } from 'framer-motion'
-import { useLanguage } from '@/lib/context/LanguageContext'
-import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, Leaf, Fish, ChefHat, ShoppingBag, Coffee, Pizza } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowRight, Coffee, Leaf, Fish, Pizza, UtensilsCrossed } from 'lucide-react'
+import { useGSAP } from '@gsap/react'
+import { useLanguage } from '@/lib/context/LanguageContext'
+import { gsap } from '@/lib/animation/gsap'
+import SplitTextReveal from '@/components/animation/SplitTextReveal'
+import Reveal from '@/components/animation/Reveal'
+import Magnetic from '@/components/animation/Magnetic'
 import MenuPhotoOverlay, { type MenuPhoto } from '@/components/menu/MenuPhotoOverlay'
-
-type MenuType = 'schiacciata' | 'togo'
-
-interface SubTab {
-  id: string
-  label: string
-  icon: React.ReactNode
-  image: string
-}
-
-const schiacciataTabs: SubTab[] = [
-  {
-    id: 'pork',
-    label: 'menu.category.pork',
-    icon: <span className="text-lg">🐷</span>,
-    image: '/assets/menu/menu-pork.jpg',
-  },
-  {
-    id: 'beef',
-    label: 'menu.category.beef',
-    icon: <Fish className="w-5 h-5" />,
-    image: '/assets/menu/menu-beef-fish.jpg',
-  },
-  {
-    id: 'vegetarian',
-    label: 'menu.category.vegetarian',
-    icon: <Leaf className="w-5 h-5" />,
-    image: '/assets/menu/menu-veggie.jpg',
-  },
-]
-
-const togoTabs: SubTab[] = [
-  {
-    id: 'schiacciata-pizza',
-    label: 'Schiacciata & Pizza',
-    icon: <Pizza className="w-5 h-5" />,
-    image: '/assets/menu/schiacciatamenutogo.jpg',
-  },
-  {
-    id: 'coffee-sweets',
-    label: 'Coffee & Sweet Treats',
-    icon: <Coffee className="w-5 h-5" />,
-    image: '/assets/menu/coffeeandsweetsmenu.jpg',
-  },
-]
 
 const schiacciatMenuPhotos: MenuPhoto[] = [
   { src: '/assets/menu/menu-pork.jpg', alt: 'Schiacciata Pork Menu', label: 'Schiacciata — Pork', color: 'bg-crust' },
@@ -64,199 +23,271 @@ const togoMenuPhotos: MenuPhoto[] = [
   { src: '/assets/menu/coffeeandsweetsmenu.jpg', alt: 'Coffee & Sweet Treats Menu', label: 'Coffee & Sweet Treats', color: 'bg-pistachio' },
 ]
 
+interface MenuCard {
+  id: string
+  image: string
+  /** vertaal-key óf letterlijke tekst */
+  label: string
+  sub: string
+  icon: React.ReactNode
+  group: 'schiacciata' | 'togo'
+  groupIndex: number
+}
+
+const menuCards: MenuCard[] = [
+  {
+    id: 'pork',
+    image: '/assets/menu/menu-pork.jpg',
+    label: 'menu.category.pork',
+    sub: 'menuPage.schiacciatMenuTag',
+    icon: <UtensilsCrossed className="w-4 h-4" />,
+    group: 'schiacciata',
+    groupIndex: 0,
+  },
+  {
+    id: 'beef',
+    image: '/assets/menu/menu-beef-fish.jpg',
+    label: 'menu.category.beef',
+    sub: 'menuPage.schiacciatMenuTag',
+    icon: <Fish className="w-4 h-4" />,
+    group: 'schiacciata',
+    groupIndex: 1,
+  },
+  {
+    id: 'vegetarian',
+    image: '/assets/menu/menu-veggie.jpg',
+    label: 'menu.category.vegetarian',
+    sub: 'menuPage.schiacciatMenuTag',
+    icon: <Leaf className="w-4 h-4" />,
+    group: 'schiacciata',
+    groupIndex: 2,
+  },
+  {
+    id: 'togo',
+    image: '/assets/menu/schiacciatamenutogo.jpg',
+    label: 'Schiacciata & Pizza',
+    sub: 'menuPage.togoMenuTag',
+    icon: <Pizza className="w-4 h-4" />,
+    group: 'togo',
+    groupIndex: 0,
+  },
+  {
+    id: 'coffee',
+    image: '/assets/menu/coffeeandsweetsmenu.jpg',
+    label: 'Coffee & Sweet Treats',
+    sub: 'menuPage.togoMenuTag',
+    icon: <Coffee className="w-4 h-4" />,
+    group: 'togo',
+    groupIndex: 1,
+  },
+]
+
+/**
+ * Menu-showpiece: op desktop een gepinde horizontale scroll-galerij
+ * met container-parallax per kaart; op mobiel een native snap-carousel.
+ * Klikken opent de bestaande MenuPhotoOverlay op de juiste foto.
+ */
 export default function MenuSection() {
   const { t } = useLanguage()
-  const [activeMenu, setActiveMenu] = useState<MenuType>('schiacciata')
-  const [activeSubTab, setActiveSubTab] = useState('pork')
+  const sectionRef = useRef<HTMLElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const progressRef = useRef<HTMLDivElement>(null)
   const [overlayOpen, setOverlayOpen] = useState(false)
   const [overlayPhotos, setOverlayPhotos] = useState<MenuPhoto[]>(schiacciatMenuPhotos)
   const [overlayIndex, setOverlayIndex] = useState(0)
-  const sectionRef = useRef<HTMLDivElement>(null)
-  const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
 
-  const currentTabs = activeMenu === 'schiacciata' ? schiacciataTabs : togoTabs
-  const activeTab = currentTabs.find((tab) => tab.id === activeSubTab) || currentTabs[0]
-
-  const switchMenu = (menu: MenuType) => {
-    setActiveMenu(menu)
-    // Reset sub-tab to first option of new menu
-    const firstTab = menu === 'schiacciata' ? schiacciataTabs[0] : togoTabs[0]
-    setActiveSubTab(firstTab.id)
-  }
-
-  const openOverlay = () => {
-    const photos = activeMenu === 'schiacciata' ? schiacciatMenuPhotos : togoMenuPhotos
-    const index = currentTabs.findIndex((tab) => tab.id === activeSubTab)
-    setOverlayPhotos(photos)
-    setOverlayIndex(Math.max(0, index))
+  const openCard = (card: MenuCard) => {
+    setOverlayPhotos(card.group === 'schiacciata' ? schiacciatMenuPhotos : togoMenuPhotos)
+    setOverlayIndex(card.groupIndex)
     setOverlayOpen(true)
   }
 
+  useGSAP(
+    () => {
+      const section = sectionRef.current
+      const track = trackRef.current
+      if (!section || !track) return
+
+      const mm = gsap.matchMedia()
+      mm.add(
+        '(min-width: 1024px) and (prefers-reduced-motion: no-preference)',
+        () => {
+          const getDistance = () => track.scrollWidth - window.innerWidth
+
+          const tween = gsap.to(track, {
+            x: () => -getDistance(),
+            ease: 'none',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top top',
+              end: () => `+=${getDistance()}`,
+              scrub: 1,
+              pin: true,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+              onUpdate: (self) => {
+                if (progressRef.current) {
+                  progressRef.current.style.transform = `scaleX(${self.progress})`
+                }
+              },
+            },
+          })
+
+          // Parallax binnen elke kaart terwijl de track schuift
+          gsap.utils.toArray<HTMLElement>('[data-menu-card] img').forEach((img) => {
+            gsap.fromTo(
+              img,
+              { xPercent: -6 },
+              {
+                xPercent: 6,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: img,
+                  containerAnimation: tween,
+                  start: 'left right',
+                  end: 'right left',
+                  scrub: true,
+                },
+              }
+            )
+          })
+        }
+      )
+    },
+    { scope: sectionRef }
+  )
+
   return (
-    <section ref={sectionRef} className="py-24 bg-flour relative overflow-hidden">
-      {/* Textured paper background */}
-      <div className="absolute inset-0">
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          }}
-        />
-      </div>
+    <>
+      <section
+        ref={sectionRef}
+        className="relative bg-flour overflow-hidden lg:h-[100svh] lg:flex lg:flex-col lg:justify-center py-20 lg:py-0"
+      >
+        {/* Papier-textuur */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div
+            className="absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            }}
+          />
+        </div>
 
-      <div className="container mx-auto px-4 relative z-10">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <span className="inline-block font-stamp text-2xl md:text-3xl mb-4">
+        <div className="container mx-auto px-4 relative z-10 text-center mb-10 lg:mb-12">
+          <Reveal as="span" y={20} className="inline-block font-stamp text-2xl md:text-3xl mb-4">
             {t('menu.label')}
-          </span>
-          <h2 className="font-brand-dark text-5xl md:text-6xl lg:text-7xl mb-6">
+          </Reveal>
+          <SplitTextReveal
+            as="h2"
+            type="lines"
+            className="font-brand-dark text-5xl md:text-6xl lg:text-7xl mb-4"
+          >
             {t('menu.headline')}
-          </h2>
-          <p className="font-lato text-xl text-espresso/70 max-w-2xl mx-auto">
+          </SplitTextReveal>
+          <Reveal as="p" delay={0.1} className="font-lato text-lg md:text-xl text-espresso/70">
             {t('menu.subheadline')}
-          </p>
-        </motion.div>
+          </Reveal>
+        </div>
 
-        {/* Main Menu Toggle — Schiacciata / To Go */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="flex justify-center mb-8"
-        >
-          <div className="inline-flex bg-espresso/10 rounded-full p-1.5 gap-1">
-            <button
-              onClick={() => switchMenu('schiacciata')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full font-oswald font-bold uppercase tracking-wider text-sm transition-all duration-300 ${
-                activeMenu === 'schiacciata'
-                  ? 'bg-crust text-white shadow-lg'
-                  : 'text-espresso/70 hover:text-espresso'
-              }`}
-            >
-              <ChefHat className="w-4 h-4" />
-              Made to Order
-            </button>
-            <button
-              onClick={() => switchMenu('togo')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full font-oswald font-bold uppercase tracking-wider text-sm transition-all duration-300 ${
-                activeMenu === 'togo'
-                  ? 'bg-pistachio text-white shadow-lg'
-                  : 'text-espresso/70 hover:text-espresso'
-              }`}
-            >
-              <ShoppingBag className="w-4 h-4" />
-              To Go
-            </button>
-          </div>
-        </motion.div>
-
-        {/* Menu type subtitle */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          className="text-center font-lato text-sm text-espresso/50 uppercase tracking-widest mb-8"
-        >
-          {activeMenu === 'schiacciata' ? t('menuPage.schiacciatMenuTitle') : t('menuPage.togoMenuTitle')}
-        </motion.p>
-
-        {/* Sub-tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.25 }}
-          className="flex flex-wrap justify-center gap-3 mb-10"
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeMenu}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
-              className="flex flex-wrap justify-center gap-3"
-            >
-              {currentTabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveSubTab(tab.id)}
-                  className={`flex items-center gap-2.5 px-5 py-2.5 rounded-full font-oswald font-bold uppercase tracking-wider text-sm transition-all duration-300 ${
-                    activeSubTab === tab.id
-                      ? 'bg-espresso text-white shadow-md scale-105'
-                      : 'bg-white text-espresso hover:bg-espresso/10 shadow-sm'
-                  }`}
-                >
-                  {tab.icon}
-                  <span>{tab.label.startsWith('menu.') ? t(tab.label) : tab.label}</span>
-                </button>
-              ))}
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
-
-        {/* Menu Image — single view */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={isInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="max-w-2xl mx-auto"
-        >
-          <button
-            onClick={openOverlay}
-            className="relative rounded-2xl overflow-hidden shadow-2xl w-full cursor-pointer group"
+        {/* Horizontale track (desktop) / snap-carousel (mobiel) */}
+        <div className="relative z-10">
+          <div
+            ref={trackRef}
+            className="flex gap-5 md:gap-8 px-4 md:px-8 lg:px-[8vw] overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none scrollbar-hide will-change-transform"
           >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeSubTab}
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.96 }}
-                transition={{ duration: 0.3 }}
-                className="relative aspect-[1890/2646]"
+            {menuCards.map((card, i) => (
+              <button
+                key={card.id}
+                data-menu-card
+                onClick={() => openCard(card)}
+                data-cursor="link"
+                className="group relative flex-shrink-0 w-[75vw] sm:w-[46vw] lg:w-[26vw] snap-center text-left cursor-pointer"
+                aria-label={`${t(card.label)} — ${t('story.clickToEnlarge')}`}
               >
-                <Image
-                  src={activeTab.image}
-                  alt={activeTab.label.startsWith('menu.') ? t(activeTab.label) : activeTab.label}
-                  fill
-                  className="object-contain group-hover:scale-[1.02] transition-transform duration-300"
-                  sizes="(max-width: 768px) 100vw, 672px"
-                  priority
-                />
-              </motion.div>
-            </AnimatePresence>
-          </button>
-        </motion.div>
+                <Reveal
+                  clip
+                  delay={i * 0.08}
+                  className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-xl"
+                >
+                  <Image
+                    src={card.image}
+                    alt={t(card.label)}
+                    fill
+                    sizes="(max-width: 1024px) 75vw, 26vw"
+                    className="object-cover scale-110 transition-transform duration-700 ease-out group-hover:scale-[1.18]"
+                  />
+                  {/* gradient + label */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-espresso/85 via-espresso/10 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-white font-oswald uppercase tracking-widest text-[10px] mb-3">
+                      {card.icon}
+                      {t(card.sub)}
+                    </span>
+                    <h3 className="font-stamp text-2xl md:text-3xl text-white drop-shadow-md">
+                      {t(card.label)}
+                    </h3>
+                    <span className="mt-2 inline-flex items-center gap-1.5 text-crust font-oswald uppercase tracking-wider text-xs opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                      {t('story.clickToEnlarge')}
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </span>
+                  </div>
+                </Reveal>
+              </button>
+            ))}
 
-        {/* View Full Menu CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-center mt-12"
-        >
-          <Link
-            href="/menu"
-            className="inline-flex items-center gap-2 bg-tomato hover:bg-tomato/90 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 group"
-          >
-            {t('menu.viewFull')}
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </motion.div>
-      </div>
+            {/* Slotkaart: CTA naar volledig menu */}
+            <div
+              data-menu-card
+              className="relative flex-shrink-0 w-[75vw] sm:w-[46vw] lg:w-[26vw] snap-center"
+            >
+              <Reveal
+                clip
+                delay={menuCards.length * 0.08}
+                className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-xl bg-espresso flex items-center justify-center"
+              >
+                <span
+                  aria-hidden
+                  className="absolute inset-0 flex items-center justify-center font-brand-sm text-[9rem] leading-none opacity-[0.06] select-none rotate-[-12deg] pointer-events-none"
+                >
+                  Menu
+                </span>
+                <div className="relative text-center px-8 py-24">
+                  <p className="font-stamp text-2xl text-crust mb-6">
+                    {t('menuPage.togoMenuSubtitle')}
+                  </p>
+                  <Magnetic>
+                    <Link
+                      href="/menu"
+                      data-cursor="link"
+                      className="inline-flex items-center gap-3 bg-accent text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 rounded-full transition-all duration-300 hover:shadow-2xl group"
+                    >
+                      {t('menu.viewFull')}
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </Magnetic>
+                </div>
+              </Reveal>
+            </div>
+          </div>
 
-      {/* Menu Photo Overlay */}
+          {/* Voortgangsbalk (desktop pin) */}
+          <div className="hidden lg:block mx-auto mt-10 w-48 h-[3px] bg-espresso/10 rounded-full overflow-hidden">
+            <div
+              ref={progressRef}
+              className="h-full bg-accent rounded-full origin-left"
+              style={{ transform: 'scaleX(0)' }}
+            />
+          </div>
+        </div>
+      </section>
+
       <MenuPhotoOverlay
         isOpen={overlayOpen}
         onClose={() => setOverlayOpen(false)}
         photos={overlayPhotos}
         initialIndex={overlayIndex}
       />
-    </section>
+    </>
   )
 }

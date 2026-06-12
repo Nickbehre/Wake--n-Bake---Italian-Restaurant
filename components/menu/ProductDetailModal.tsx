@@ -162,7 +162,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
             exit={{ opacity: 0, scale: 0.9, y: 30 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto z-10"
+            className="relative bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto z-10" data-lenis-prevent
           >
             {/* Close button */}
             <button

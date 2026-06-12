@@ -1,71 +1,88 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { MapPin, Clock, Phone } from 'lucide-react'
 import { useLanguage } from '@/lib/context/LanguageContext'
+import { useLocation } from '@/lib/context/LocationContext'
+import SplitTextReveal from '@/components/animation/SplitTextReveal'
+import Reveal from '@/components/animation/Reveal'
+import Magnetic from '@/components/animation/Magnetic'
 
 export default function CTASection() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
+  const { location } = useLocation()
 
   return (
-    <section className="py-20 bg-crust rounded-[3rem] mx-4 md:mx-8 lg:mx-16 shadow-2xl">
+    <section className="py-20 bg-crust rounded-[3rem] mx-4 md:mx-8 lg:mx-16 shadow-2xl overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left: CTA */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="font-brand-dark text-5xl md:text-6xl lg:text-7xl mb-6">
+          {/* Links: CTA */}
+          <div>
+            <SplitTextReveal
+              as="h2"
+              type="lines"
+              className="font-brand-dark text-5xl md:text-6xl lg:text-7xl mb-6"
+            >
               {t('cta.headline')}
-            </h2>
-            <p className="text-espresso/80 text-xl mb-8 leading-relaxed">
+            </SplitTextReveal>
+            <SplitTextReveal
+              as="p"
+              type="lines"
+              delay={0.1}
+              className="text-espresso/80 text-xl mb-8 leading-relaxed"
+            >
               {t('cta.description')}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link
-                href="/contact"
-                className="bg-tomato hover:bg-tomato/90 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-center rounded-full transition-all duration-300 transform hover:scale-105"
-              >
-                {t('cta.visit')}
-              </Link>
-              <a
-                href="tel:+31201234567"
-                className="bg-espresso hover:bg-espresso/90 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-center rounded-full transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
-              >
-                <Phone className="w-5 h-5" />
-                {t('cta.call')}
-              </a>
-            </div>
-          </motion.div>
+            </SplitTextReveal>
+            <Reveal staggerChildren stagger={0.1} y={30} className="flex flex-col sm:flex-row gap-4">
+              <Magnetic>
+                <Link
+                  href="/contact"
+                  data-cursor="link"
+                  className="block bg-accent hover:opacity-90 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-center rounded-full transition-all duration-300"
+                >
+                  {t('cta.visit')}
+                </Link>
+              </Magnetic>
+              <Magnetic>
+                <a
+                  href={location.phoneHref}
+                  data-cursor="link"
+                  className="bg-espresso hover:bg-espresso/90 text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 text-center rounded-full transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  <Phone className="w-5 h-5" />
+                  {t('cta.call')}
+                </a>
+              </Magnetic>
+            </Reveal>
+          </div>
 
-          {/* Right: Info Cards */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-6"
-          >
+          {/* Rechts: info-kaarten met actieve locatie */}
+          <Reveal staggerChildren stagger={0.12} y={40} className="space-y-6">
             <div className="bg-flour p-6 flex items-start gap-4 rounded-2xl">
-              <div className="p-3 bg-crust/20 rounded-full">
+              <div className="p-3 bg-accent/15 rounded-full">
                 <MapPin className="w-6 h-6 text-espresso" />
               </div>
               <div>
                 <h3 className="font-oswald font-bold text-lg mb-1 text-espresso uppercase tracking-wide">
                   {t('cta.location')}
+                  {location.isNew && (
+                    <span className="ml-2 px-2 py-0.5 rounded-full bg-accent text-white text-[10px] tracking-widest align-middle">
+                      {t('loc.badge.new')}
+                    </span>
+                  )}
                 </h3>
                 <p className="text-espresso/80">
-                  Vijzelstraat 93h
+                  {location.name}
                   <br />
-                  1017 HH Amsterdam
+                  {location.address.street}
+                  <br />
+                  {location.address.postalCode} {location.address.city}
                 </p>
               </div>
             </div>
 
             <div className="bg-flour p-6 flex items-start gap-4 rounded-2xl">
-              <div className="p-3 bg-crust/20 rounded-full">
+              <div className="p-3 bg-accent/15 rounded-full">
                 <Clock className="w-6 h-6 text-espresso" />
               </div>
               <div>
@@ -73,17 +90,17 @@ export default function CTASection() {
                   {t('cta.hours')}
                 </h3>
                 <p className="text-espresso/80">
-                  {t('location.weekdays')}
-                  <br />
-                  {t('location.saturday')}
-                  <br />
-                  {t('location.sunday')}
+                  {location.hoursDisplay[language].map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
                 </p>
               </div>
             </div>
 
             <div className="bg-flour p-6 flex items-start gap-4 rounded-2xl">
-              <div className="p-3 bg-crust/20 rounded-full">
+              <div className="p-3 bg-accent/15 rounded-full">
                 <Phone className="w-6 h-6 text-espresso" />
               </div>
               <div>
@@ -92,22 +109,24 @@ export default function CTASection() {
                 </h3>
                 <p className="text-espresso/80">
                   <a
-                    href="tel:+31201234567"
-                    className="hover:text-tomato transition-colors"
+                    href={location.phoneHref}
+                    data-cursor="link"
+                    className="hover:text-accent transition-colors"
                   >
-                    +31 20 123 4567
+                    {location.phone}
                   </a>
                   <br />
                   <a
-                    href="mailto:info@wakenbake.nl"
-                    className="hover:text-tomato transition-colors"
+                    href={`mailto:${location.email}`}
+                    data-cursor="link"
+                    className="hover:text-accent transition-colors"
                   >
-                    info@wakenbake.nl
+                    {location.email}
                   </a>
                 </p>
               </div>
             </div>
-          </motion.div>
+          </Reveal>
         </div>
       </div>
     </section>

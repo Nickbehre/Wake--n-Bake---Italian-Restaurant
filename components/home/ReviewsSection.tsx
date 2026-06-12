@@ -1,10 +1,11 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { Star, Quote, ExternalLink } from 'lucide-react'
 import { useLanguage } from '@/lib/context/LanguageContext'
-import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react'
-import { useState } from 'react'
+import { useLocation } from '@/lib/context/LocationContext'
+import SplitTextReveal from '@/components/animation/SplitTextReveal'
+import Reveal from '@/components/animation/Reveal'
+import Marquee from '@/components/animation/Marquee'
 
 interface Review {
   name: string
@@ -52,34 +53,40 @@ const reviews: Review[] = [
   },
 ]
 
+function ReviewCard({ review }: { review: Review }) {
+  return (
+    <article className="w-[320px] md:w-[380px] flex-shrink-0 mx-3 bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:bg-white/10 transition-colors duration-300">
+      <Quote className="w-7 h-7 text-crust/60 mb-3" aria-hidden />
+      <div className="flex items-center gap-1 mb-3" aria-label={`${review.rating} sterren`}>
+        {[...Array(review.rating)].map((_, i) => (
+          <Star key={i} className="w-4 h-4 fill-crust text-crust" />
+        ))}
+      </div>
+      <p className="font-lato text-white/85 leading-relaxed mb-4 text-[15px]">
+        {review.text}
+      </p>
+      <footer className="flex items-center justify-between">
+        <span className="font-oswald font-semibold uppercase tracking-wide text-white">
+          {review.name}
+        </span>
+        <span className="text-white/50 text-xs font-oswald uppercase tracking-widest">
+          {review.source}
+        </span>
+      </footer>
+    </article>
+  )
+}
+
 export default function ReviewsSection() {
   const { t } = useLanguage()
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const [canScrollLeft, setCanScrollLeft] = useState(false)
-  const [canScrollRight, setCanScrollRight] = useState(true)
+  const { location } = useLocation()
 
-  const checkScroll = () => {
-    if (scrollRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
-      setCanScrollLeft(scrollLeft > 0)
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10)
-    }
-  }
-
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      const scrollAmount = 380
-      scrollRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth',
-      })
-      setTimeout(checkScroll, 300)
-    }
-  }
+  const firstRow = reviews.slice(0, 3)
+  const secondRow = reviews.slice(3)
 
   return (
     <section className="py-24 bg-espresso relative overflow-hidden rounded-[3rem] mx-4 md:mx-8 lg:mx-16 shadow-2xl">
-      {/* Background Pattern */}
+      {/* Achtergrondpatroon */}
       <div className="absolute inset-0 opacity-5">
         <div
           className="absolute inset-0"
@@ -89,153 +96,60 @@ export default function ReviewsSection() {
         />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="relative z-10">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <span className="inline-block font-stamp text-2xl md:text-3xl mb-4">
+        <div className="container mx-auto px-4 text-center mb-14">
+          <Reveal as="span" y={20} className="inline-block font-stamp text-2xl md:text-3xl mb-4">
             {t('reviews.label')}
-          </span>
-          <h2 className="font-brand text-5xl md:text-6xl lg:text-7xl mb-6">
+          </Reveal>
+          <SplitTextReveal
+            as="h2"
+            type="lines"
+            className="font-brand text-5xl md:text-6xl lg:text-7xl mb-6"
+          >
             {t('reviews.headline')}
-          </h2>
-          <p className="font-lato text-xl text-white/70 max-w-2xl mx-auto mb-6">
+          </SplitTextReveal>
+          <Reveal as="p" delay={0.1} className="font-lato text-xl text-white/70 max-w-2xl mx-auto mb-6">
             {t('reviews.subheadline')}
-          </p>
+          </Reveal>
 
-          {/* Rating Summary */}
-          <div className="flex items-center justify-center gap-2">
+          <Reveal y={20} delay={0.2} className="flex items-center justify-center gap-2">
             <div className="flex items-center gap-1">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-6 h-6 fill-crust text-crust" />
               ))}
             </div>
-            <span className="text-white/80 font-oswald ml-2">
-              {t('reviews.rating')}
-            </span>
-          </div>
-        </motion.div>
-
-        {/* Reviews Carousel */}
-        <div className="relative">
-          {/* Scroll Buttons */}
-          <button
-            onClick={() => scroll('left')}
-            className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-crust rounded-full shadow-lg transition-all duration-300 hidden md:flex ${
-              canScrollLeft
-                ? 'opacity-100 hover:scale-110'
-                : 'opacity-0 pointer-events-none'
-            }`}
-            aria-label="Scroll left"
-          >
-            <ChevronLeft className="w-6 h-6 text-espresso" />
-          </button>
-          <button
-            onClick={() => scroll('right')}
-            className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-crust rounded-full shadow-lg transition-all duration-300 hidden md:flex ${
-              canScrollRight
-                ? 'opacity-100 hover:scale-110'
-                : 'opacity-0 pointer-events-none'
-            }`}
-            aria-label="Scroll right"
-          >
-            <ChevronRight className="w-6 h-6 text-espresso" />
-          </button>
-
-          {/* Gradient Overlays */}
-          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-espresso to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-espresso to-transparent z-10 pointer-events-none" />
-
-          {/* Reviews Container */}
-          <div
-            ref={scrollRef}
-            onScroll={checkScroll}
-            className="flex gap-6 overflow-x-auto scrollbar-hide px-4 md:px-12 py-4 snap-x snap-mandatory"
-          >
-            {reviews.map((review, index) => (
-              <motion.div
-                key={review.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="flex-shrink-0 w-[340px] snap-center"
-              >
-                <div className="bg-flour p-8 h-full relative group hover:shadow-2xl transition-shadow duration-300 rounded-2xl">
-                  {/* Quote Icon */}
-                  <Quote className="absolute top-4 right-4 w-10 h-10 text-crust/20 group-hover:text-crust/40 transition-colors" />
-
-                  {/* Stars */}
-                  <div className="flex items-center gap-1 mb-4">
-                    {[...Array(review.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-5 h-5 fill-crust text-crust"
-                      />
-                    ))}
-                  </div>
-
-                  {/* Review Text */}
-                  <p className="text-espresso/80 font-lato text-lg leading-relaxed mb-6 italic">
-                    &ldquo;{review.text}&rdquo;
-                  </p>
-
-                  {/* Author */}
-                  <div className="flex items-center justify-between mt-auto">
-                    <div>
-                      <p className="font-oswald font-bold text-espresso uppercase tracking-wide">
-                        {review.name}
-                      </p>
-                      <p className="text-sm text-espresso/60">{review.source}</p>
-                    </div>
-                    {/* Google Icon */}
-                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow">
-                      <svg viewBox="0 0 24 24" className="w-5 h-5">
-                        <path
-                          fill="#4285F4"
-                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                        />
-                        <path
-                          fill="#34A853"
-                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                        />
-                        <path
-                          fill="#FBBC05"
-                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                        />
-                        <path
-                          fill="#EA4335"
-                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+            <span className="text-white/80 font-oswald ml-2">{t('reviews.rating')}</span>
+          </Reveal>
         </div>
 
+        {/* Marquee-rijen — tegengestelde richtingen, vertragen bij hover */}
+        <Reveal y={40} className="space-y-6">
+          <Marquee speed={45} direction={1}>
+            {firstRow.map((review) => (
+              <ReviewCard key={review.name} review={review} />
+            ))}
+          </Marquee>
+          <Marquee speed={38} direction={-1}>
+            {secondRow.map((review) => (
+              <ReviewCard key={review.name} review={review} />
+            ))}
+          </Marquee>
+        </Reveal>
+
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-center mt-12"
-        >
+        <Reveal y={20} delay={0.1} className="text-center mt-12">
           <a
-            href="https://www.google.com/maps/place/Wake+N+Bake+Panificio"
+            href={location.googleMapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-crust hover:text-white font-oswald font-semibold uppercase tracking-wider transition-colors underline underline-offset-4"
+            data-cursor="link"
+            className="inline-flex items-center gap-2 text-crust hover:text-white font-oswald font-semibold uppercase tracking-wider transition-colors link-underline"
           >
             {t('reviews.cta')}
+            <ExternalLink className="w-4 h-4" />
           </a>
-        </motion.div>
+        </Reveal>
       </div>
     </section>
   )

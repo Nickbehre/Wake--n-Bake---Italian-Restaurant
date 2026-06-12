@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Montserrat, Lato, Playfair_Display, Oswald } from 'next/font/google'
+import { LOCATIONS, toOpeningHoursSchema } from '@/lib/data/locations'
 import './globals.css'
 
 const montserrat = Montserrat({
@@ -30,9 +31,9 @@ const oswald = Oswald({
 export const metadata: Metadata = {
   title: "Wake N' Bake Panificio | Authentieke Italiaanse Bakkerij in Amsterdam",
   description:
-    'Geniet van vers gebakken focaccia, schiacciata en Italiaanse specialiteiten. De beste Italiaanse bakkerij in Amsterdam op Vijzelstraat 93h.',
+    "Geniet van vers gebakken focaccia, schiacciata en Italiaanse specialiteiten. Twee locaties in Amsterdam: Vijzelstraat 93h (Centrum) en Wake N' Bake Express in De Pijp.",
   keywords:
-    'italiaans brood amsterdam, focaccia amsterdam, schiacciata, panificio, bakkerij vijzelstraat',
+    'italiaans brood amsterdam, focaccia amsterdam, schiacciata, panificio, bakkerij vijzelstraat, wake n bake express, de pijp',
   openGraph: {
     title: "Wake N' Bake Panificio | Vers Italiaans Brood",
     description: 'Authentieke Italiaanse bakkerij in Amsterdam',
@@ -60,55 +61,49 @@ export default function RootLayout({
   return (
     <html lang="nl" suppressHydrationWarning>
       <head>
+        {/* LocalBusiness-schema voor BEIDE filialen, gegenereerd uit lib/data/locations.ts */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Bakery',
-              name: "Wake N' Bake Panificio",
-              description: 'Authentieke Italiaanse bakkerij in Amsterdam',
-              address: {
-                '@type': 'PostalAddress',
-                streetAddress: 'Vijzelstraat 93h',
-                addressLocality: 'Amsterdam',
-                postalCode: '1017 HH',
-                addressCountry: 'NL',
-              },
-              geo: {
-                '@type': 'GeoCoordinates',
-                latitude: 52.36383074070107,
-                longitude: 4.891507396929842,
-              },
-              telephone: '+31 6 53764546',
-              url: 'https://www.wakenbakepanificio.nl',
-              servesCuisine: 'Italian',
-              priceRange: '€€',
-              openingHoursSpecification: [
-                {
-                  '@type': 'OpeningHoursSpecification',
-                  dayOfWeek: [
-                    'Monday',
-                    'Tuesday',
-                    'Wednesday',
-                    'Thursday',
-                    'Friday',
+            __html: JSON.stringify(
+              (['original', 'express'] as const).map((id) => {
+                const loc = LOCATIONS[id]
+                return {
+                  '@context': 'https://schema.org',
+                  '@type': 'Bakery',
+                  '@id': `https://www.wakenbakepanificio.nl/#${id}`,
+                  name: loc.name,
+                  description:
+                    id === 'express'
+                      ? "Wake N' Bake Express — de nieuwe tweede locatie van de authentieke Italiaanse bakkerij, in De Pijp Amsterdam"
+                      : 'Authentieke Italiaanse bakkerij in Amsterdam',
+                  address: {
+                    '@type': 'PostalAddress',
+                    streetAddress: loc.address.street,
+                    addressLocality: loc.address.city,
+                    postalCode: loc.address.postalCode,
+                    addressCountry: 'NL',
+                  },
+                  geo: {
+                    '@type': 'GeoCoordinates',
+                    latitude: loc.geo.lat,
+                    longitude: loc.geo.lng,
+                  },
+                  telephone: loc.phone,
+                  url:
+                    id === 'express'
+                      ? 'https://www.wakenbakepanificio.nl/?loc=express'
+                      : 'https://www.wakenbakepanificio.nl',
+                  servesCuisine: 'Italian',
+                  priceRange: '€€',
+                  openingHoursSpecification: toOpeningHoursSchema(loc),
+                  sameAs: [
+                    'https://www.instagram.com/wakenbake.nl/',
+                    'https://www.tripadvisor.com/wakenbakepanificio',
                   ],
-                  opens: '07:30',
-                  closes: '16:30',
-                },
-                {
-                  '@type': 'OpeningHoursSpecification',
-                  dayOfWeek: ['Saturday'],
-                  opens: '08:00',
-                  closes: '18:00',
-                },
-              ],
-              sameAs: [
-                'https://www.instagram.com/wakenbake.nl/',
-                'https://www.tripadvisor.com/wakenbakepanificio',
-              ],
-            }),
+                }
+              })
+            ),
           }}
         />
       </head>

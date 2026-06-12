@@ -11,6 +11,7 @@ import MenuPhotoOverlay, { type MenuPhoto } from '@/components/menu/MenuPhotoOve
 import ProductDetailModal from '@/components/menu/ProductDetailModal';
 import { useLanguage } from '@/lib/context/LanguageContext';
 import { ChefHat, ShoppingBag, ChevronDown } from 'lucide-react';
+import SplitTextReveal from '@/components/animation/SplitTextReveal';
 import type { Product } from '@/lib/types/order';
 
 const schiacciatMenuPhotos: MenuPhoto[] = [
@@ -145,12 +146,23 @@ export default function MenuPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16 mt-4 md:mt-8"
         >
-          <h1 className="font-comodo text-5xl md:text-7xl mb-6 text-espresso">
+          <SplitTextReveal
+            as="h1"
+            type="chars"
+            immediate
+            className="font-comodo text-5xl md:text-7xl mb-6 text-espresso"
+          >
             {t('menuPage.title')}
-          </h1>
-          <p className="text-xl text-espresso/80 max-w-2xl mx-auto font-lato">
+          </SplitTextReveal>
+          <SplitTextReveal
+            as="p"
+            type="lines"
+            immediate
+            delay={0.3}
+            className="text-xl text-espresso/80 max-w-2xl mx-auto font-lato"
+          >
             {t('menuPage.subtitle')}
-          </p>
+          </SplitTextReveal>
         </motion.div>
 
         {/* Sticky Category Navigation */}

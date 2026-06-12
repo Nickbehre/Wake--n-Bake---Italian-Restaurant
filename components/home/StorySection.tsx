@@ -4,6 +4,7 @@ import { useRef, useState, useCallback } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { useLanguage } from '@/lib/context/LanguageContext'
 import { Play, X, Instagram, Volume2, VolumeX } from 'lucide-react'
+import SplitTextReveal from '@/components/animation/SplitTextReveal'
 
 // Real video content - story videos from public/assets/videos folder
 const instagramReels = [
@@ -297,9 +298,13 @@ export default function StorySection() {
             {t('story.label')}
           </motion.span>
 
-          <h2 className="font-brand-dark text-5xl md:text-6xl lg:text-7xl mb-6">
+          <SplitTextReveal
+            as="h2"
+            type="lines"
+            className="font-brand-dark text-5xl md:text-6xl lg:text-7xl mb-6"
+          >
             {t('story.headline')}
-          </h2>
+          </SplitTextReveal>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -334,9 +339,13 @@ export default function StorySection() {
           >
             <blockquote className="relative inline-block">
               <span className="absolute -top-6 -left-4 text-6xl text-crust/20 font-playfair">&ldquo;</span>
-              <p className="font-playfair italic text-2xl md:text-3xl lg:text-4xl text-espresso/90 max-w-4xl mx-auto leading-relaxed px-8">
+              <SplitTextReveal
+                as="p"
+                type="lines"
+                className="font-playfair italic text-2xl md:text-3xl lg:text-4xl text-espresso/90 max-w-4xl mx-auto leading-relaxed px-8"
+              >
                 {t('story.subtext2')}
-              </p>
+              </SplitTextReveal>
               <span className="absolute -bottom-10 -right-4 text-6xl text-crust/20 font-playfair">&rdquo;</span>
             </blockquote>
           </motion.div>

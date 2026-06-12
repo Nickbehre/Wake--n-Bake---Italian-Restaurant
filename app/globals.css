@@ -14,6 +14,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Locatie-theming ─────────────────────────────
+   Accentkleur per filiaal via CSS custom properties.
+   data-location wordt door LocationContext op <html> gezet. */
+:root {
+  --accent: #ce2029; /* tomato — Wake N' Bake origineel */
+  --accent-rgb: 206 32 41;
+  --accent-soft: #f9e4e5;
+}
+
+html[data-location='express'] {
+  --accent: #5e9c42; /* pistachio — Wake N' Bake Express */
+  --accent-rgb: 94 156 66;
+  --accent-soft: #eaf3e4;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -118,6 +133,30 @@
     color: #CE2029;
     text-shadow:
       2px 2px 0 #2C2C2C;
+  }
+}
+
+@layer components {
+  /* Animated underline voor links */
+  .link-underline {
+    position: relative;
+  }
+  .link-underline::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 0.45s cubic-bezier(0.83, 0, 0.17, 1);
+  }
+  .link-underline:hover::after,
+  .link-underline:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left center;
   }
 }
 

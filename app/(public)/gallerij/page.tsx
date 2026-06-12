@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import GalleryGrid from '@/components/gallery/GalleryGrid'
 import { useLanguage } from '@/lib/context/LanguageContext'
 import { Instagram } from 'lucide-react'
+import SplitTextReveal from '@/components/animation/SplitTextReveal'
 
 const galleryImages = [
   { src: '/assets/gallery/2025-10-06-WakenBake-002.jpg', alt: 'Wake N\' Bake Panificio', title: 'Wake N\' Bake', width: 1200, height: 800 },
@@ -39,12 +40,23 @@ export default function GalleryPage() {
             transition={{ duration: 0.8 }}
             className="text-center mt-4 md:mt-8"
           >
-            <h1 className="font-stamp text-5xl md:text-6xl lg:text-7xl mb-6">
+            <SplitTextReveal
+              as="h1"
+              type="chars"
+              immediate
+              className="font-stamp text-5xl md:text-6xl lg:text-7xl mb-6"
+            >
               {t('gallery.title')}
-            </h1>
-            <p className="font-lato text-xl text-white/80 max-w-2xl mx-auto">
+            </SplitTextReveal>
+            <SplitTextReveal
+              as="p"
+              type="lines"
+              immediate
+              delay={0.3}
+              className="font-lato text-xl text-white/80 max-w-2xl mx-auto"
+            >
               {t('gallery.subtitle')}
-            </p>
+            </SplitTextReveal>
           </motion.div>
         </div>
       </section>

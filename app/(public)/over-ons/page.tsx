@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, Heart, Wheat, Award, Users, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useLanguage } from '@/lib/context/LanguageContext'
+import SplitTextReveal from '@/components/animation/SplitTextReveal'
 
 // Gallery images for the story slideshow
 const storyImages = [
@@ -77,9 +78,15 @@ export default function AboutPage() {
             <span className="inline-block font-stamp text-2xl md:text-3xl mb-4">
               {t('about.heroTitle')}
             </span>
-            <p className="font-lato text-xl md:text-2xl text-white/80 leading-relaxed">
+            <SplitTextReveal
+              as="p"
+              type="lines"
+              immediate
+              delay={0.25}
+              className="font-lato text-xl md:text-2xl text-white/80 leading-relaxed"
+            >
               {t('about.heroSubtitle')}
-            </p>
+            </SplitTextReveal>
           </motion.div>
         </div>
       </section>

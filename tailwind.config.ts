@@ -15,6 +15,9 @@ const config: Config = {
         pistachio: '#93C572',
         tomato: '#CE2029',
         mortadella: '#EFBDBD',
+        // Locatie-accent — wisselt per filiaal via CSS custom properties
+        accent: 'rgb(var(--accent-rgb) / <alpha-value>)',
+        'accent-soft': 'var(--accent-soft)',
       },
       fontFamily: {
         montserrat: ['var(--font-montserrat)', 'sans-serif'],
