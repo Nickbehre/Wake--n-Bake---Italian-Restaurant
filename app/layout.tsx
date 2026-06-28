@@ -31,9 +31,9 @@ const oswald = Oswald({
 export const metadata: Metadata = {
   title: "Wake N' Bake Panificio | Authentieke Italiaanse Bakkerij in Amsterdam",
   description:
-    "Geniet van vers gebakken focaccia, schiacciata en Italiaanse specialiteiten. Twee locaties in Amsterdam: Vijzelstraat 93h (Centrum) en Wake N' Bake Express in De Pijp.",
+    "Geniet van vers gebakken focaccia, schiacciata en Italiaanse specialiteiten. Twee locaties in hartje Amsterdam: Vijzelstraat 93h en Wake N' Bake Xpress aan de Heisteeg (bij het Spui).",
   keywords:
-    'italiaans brood amsterdam, focaccia amsterdam, schiacciata, panificio, bakkerij vijzelstraat, wake n bake express, de pijp',
+    'italiaans brood amsterdam, focaccia amsterdam, schiacciata, panificio, bakkerij vijzelstraat, wake n bake xpress, heisteeg, centrum amsterdam',
   openGraph: {
     title: "Wake N' Bake Panificio | Vers Italiaans Brood",
     description: 'Authentieke Italiaanse bakkerij in Amsterdam',
@@ -75,7 +75,7 @@ export default function RootLayout({
                   name: loc.name,
                   description:
                     id === 'express'
-                      ? "Wake N' Bake Express — de nieuwe tweede locatie van de authentieke Italiaanse bakkerij, in De Pijp Amsterdam"
+                      ? "Wake N' Bake Xpress — de nieuwe tweede locatie van de authentieke Italiaanse bakkerij, in het centrum van Amsterdam (Heisteeg, bij het Spui)"
                       : 'Authentieke Italiaanse bakkerij in Amsterdam',
                   address: {
                     '@type': 'PostalAddress',

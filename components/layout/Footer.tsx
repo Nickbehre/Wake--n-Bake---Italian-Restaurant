@@ -25,7 +25,7 @@ function FooterLocation({
       }`}
     >
       <h4 className="font-montserrat font-bold text-lg mb-1 flex items-center gap-2">
-        {loc.id === 'express' ? 'Express' : 'Panificio'}
+        {loc.id === 'express' ? 'Xpress' : 'Panificio'}
         {loc.isNew && (
           <span className="px-2 py-0.5 rounded-full bg-crust text-espresso text-[10px] font-oswald font-bold uppercase tracking-widest rotate-2">
             {t('loc.badge.new')}

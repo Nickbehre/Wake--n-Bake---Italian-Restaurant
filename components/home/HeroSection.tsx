@@ -204,7 +204,7 @@ export default function HeroSection() {
           />
           {isExpress && (
             <span className="absolute left-1/2 -translate-x-1/2 bottom-1 font-street text-lg md:text-2xl tracking-[0.5em] text-crust drop-shadow-lg">
-              EXPRESS
+              XPRESS
             </span>
           )}
         </div>

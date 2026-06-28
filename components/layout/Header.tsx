@@ -67,7 +67,7 @@ function LocationBar() {
               <MapPin className="w-3.5 h-3.5 text-accent flex-shrink-0" />
               <span className="truncate">
                 <span className="text-accent font-bold">
-                  {isExpress ? 'Express' : 'Panificio'}
+                  {isExpress ? 'Xpress' : 'Panificio'}
                 </span>
                 <span className="hidden sm:inline">
                   {' '}
@@ -97,7 +97,7 @@ function LocationBar() {
               <>
                 <Sparkles className="w-3 h-3 text-crust" />
                 <span className="hidden sm:inline">{t('loc.discoverExpress')}</span>
-                <span className="sm:hidden">{t('loc.badge.new')}: Express</span>
+                <span className="sm:hidden">{t('loc.badge.new')}: Xpress</span>
               </>
             )}
             {!otherLocation.isNew && (

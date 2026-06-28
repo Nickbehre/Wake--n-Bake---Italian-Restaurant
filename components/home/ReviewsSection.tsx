@@ -1,6 +1,8 @@
 'use client'
 
 import { Star, Quote, ExternalLink } from 'lucide-react'
+import { ReactGoogleReviews, type ReactGoogleReview } from 'react-google-reviews'
+import 'react-google-reviews/dist/index.css'
 import { useLanguage } from '@/lib/context/LanguageContext'
 import { useLocation } from '@/lib/context/LocationContext'
 import SplitTextReveal from '@/components/animation/SplitTextReveal'
@@ -14,7 +16,9 @@ interface Review {
   source: string
 }
 
-const reviews: Review[] = [
+// Statische fallback-reviews — getoond zolang Featurable nog niet gekoppeld is
+// (env NEXT_PUBLIC_FEATURABLE_WIDGET_ID ontbreekt) of als de API niets teruggeeft.
+const fallbackReviews: Review[] = [
   {
     name: 'Gianluigi V.',
     rating: 5,
@@ -53,6 +57,19 @@ const reviews: Review[] = [
   },
 ]
 
+/** Live Google-review → ons kaartformaat. Alleen reviews met tekst en 4+ sterren, max 12. */
+function mapGoogleReviews(reviews: ReactGoogleReview[]): Review[] {
+  return reviews
+    .filter((r) => r.starRating >= 4 && r.comment?.trim())
+    .map((r) => ({
+      name: r.reviewer?.displayName?.trim() || 'Google',
+      rating: Math.round(r.starRating),
+      text: r.comment.trim(),
+      source: 'Google',
+    }))
+    .slice(0, 12)
+}
+
 function ReviewCard({ review }: { review: Review }) {
   return (
     <article className="w-[320px] md:w-[380px] flex-shrink-0 mx-3 bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:bg-white/10 transition-colors duration-300">
@@ -77,12 +94,35 @@ function ReviewCard({ review }: { review: Review }) {
   )
 }
 
+/** Twee tegengestelde marquee-rijen met de meegegeven reviews. */
+function ReviewMarquee({ items }: { items: Review[] }) {
+  const half = Math.ceil(items.length / 2)
+  const firstRow = items.slice(0, half)
+  const secondRow = items.slice(half)
+
+  return (
+    <Reveal y={40} className="space-y-6">
+      <Marquee speed={45} direction={1}>
+        {firstRow.map((review, i) => (
+          <ReviewCard key={`a-${i}-${review.name}`} review={review} />
+        ))}
+      </Marquee>
+      {secondRow.length > 0 && (
+        <Marquee speed={38} direction={-1}>
+          {secondRow.map((review, i) => (
+            <ReviewCard key={`b-${i}-${review.name}`} review={review} />
+          ))}
+        </Marquee>
+      )}
+    </Reveal>
+  )
+}
+
 export default function ReviewsSection() {
   const { t } = useLanguage()
   const { location } = useLocation()
-
-  const firstRow = reviews.slice(0, 3)
-  const secondRow = reviews.slice(3)
+  // Publieke Featurable widget-ID (geen secret). Leeg = statische fallback tonen.
+  const featurableId = process.env.NEXT_PUBLIC_FEATURABLE_WIDGET_ID
 
   return (
     <section className="py-24 bg-espresso relative overflow-hidden rounded-[3rem] mx-4 md:mx-8 lg:mx-16 shadow-2xl">
@@ -123,19 +163,19 @@ export default function ReviewsSection() {
           </Reveal>
         </div>
 
-        {/* Marquee-rijen — tegengestelde richtingen, vertragen bij hover */}
-        <Reveal y={40} className="space-y-6">
-          <Marquee speed={45} direction={1}>
-            {firstRow.map((review) => (
-              <ReviewCard key={review.name} review={review} />
-            ))}
-          </Marquee>
-          <Marquee speed={38} direction={-1}>
-            {secondRow.map((review) => (
-              <ReviewCard key={review.name} review={review} />
-            ))}
-          </Marquee>
-        </Reveal>
+        {/* Reviews — live via Featurable (Google), met statische fallback */}
+        {featurableId ? (
+          <ReactGoogleReviews
+            layout="custom"
+            featurableId={featurableId}
+            renderer={(googleReviews) => {
+              const mapped = mapGoogleReviews(googleReviews)
+              return <ReviewMarquee items={mapped.length ? mapped : fallbackReviews} />
+            }}
+          />
+        ) : (
+          <ReviewMarquee items={fallbackReviews} />
+        )}
 
         {/* CTA */}
         <Reveal y={20} delay={0.1} className="text-center mt-12">

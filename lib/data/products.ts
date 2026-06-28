@@ -5,6 +5,7 @@
 // ============================================
 
 import type { Category, Product, ProductExtra } from '@/lib/types/order';
+import type { LocationId } from '@/lib/data/locations';
 
 // Shared extras available for coffee & cold drinks
 const coffeeExtras: ProductExtra[] = [
@@ -23,6 +24,7 @@ const veggieSchiacciata: Category = {
   id: 'veggie-schiacciata',
   name: 'Veggie Schiacciata',
   menu: 'schiacciata',
+  availableAt: ['original'], // Xpress voert standaard alleen het to-go menu; verwijder dit om hier ook te tonen
   products: [
     {
       id: 'schiacciata-caprese',
@@ -114,6 +116,7 @@ const beefFishSchiacciata: Category = {
   id: 'beef-fish-schiacciata',
   name: 'Beef & Fish Schiacciata',
   menu: 'schiacciata',
+  availableAt: ['original'], // Xpress voert standaard alleen het to-go menu; verwijder dit om hier ook te tonen
   products: [
     {
       id: 'schiacciata-vitello-tonnato',
@@ -215,6 +218,7 @@ const porkSchiacciata: Category = {
   id: 'pork-schiacciata',
   name: 'Pork Schiacciata',
   menu: 'schiacciata',
+  availableAt: ['original'], // Xpress voert standaard alleen het to-go menu; verwijder dit om hier ook te tonen
   products: [
     {
       id: 'schiacciata-mortadella-original',
@@ -767,6 +771,27 @@ export const productCategories: Category[] = [
  */
 export function getAllProducts(): Product[] {
   return productCategories.flatMap((category) => category.products);
+}
+
+/**
+ * Filter menu categories for a specific location (DISPLAY ONLY — the API/cart/
+ * payment layers keep using the full arrays for price validation).
+ * A category or product without `availableAt` is shown at every location.
+ * Categories left with no visible products are dropped.
+ */
+export function getMenuForLocation(
+  categories: Category[],
+  locationId: LocationId
+): Category[] {
+  return categories
+    .filter((cat) => !cat.availableAt || cat.availableAt.includes(locationId))
+    .map((cat) => ({
+      ...cat,
+      products: cat.products.filter(
+        (p) => !p.availableAt || p.availableAt.includes(locationId)
+      ),
+    }))
+    .filter((cat) => cat.products.length > 0);
 }
 
 /**

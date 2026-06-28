@@ -1,12 +1,9 @@
 // ============================================
 // LOCATION DATA — single source of truth
-// Two filialen: Wake N' Bake (origineel) en
-// Wake N' Bake Express (nieuw filiaal)
-//
-// ⚠️  EXPRESS BEVAT PLACEHOLDER-GEGEVENS — vervang
-//     adres / tijden / telefoon / links zodra bekend.
-//     Alles staat in dít bestand; de rest van de
-//     site leest uitsluitend hieruit.
+// Twee filialen: Wake N' Bake (origineel) en
+// Wake N' Bake Xpress (centrum, Heisteeg).
+// Alles staat in dít bestand; de rest van de
+// site leest uitsluitend hieruit.
 // ============================================
 
 export type LocationId = 'original' | 'express'
@@ -22,7 +19,7 @@ export interface RestaurantLocation {
   id: LocationId
   name: string
   shortName: string
-  /** Badge-tekst zoals 'NIEUW' — alleen voor Express */
+  /** Badge-tekst zoals 'NIEUW' — alleen voor Xpress */
   isNew: boolean
   /** Gegevens nog niet definitief? Dan tonen we 'binnenkort'-hints */
   isPlaceholder: boolean
@@ -30,7 +27,7 @@ export interface RestaurantLocation {
     street: string
     postalCode: string
     city: string
-    area: string // buurt, bv. 'Centrum' / 'De Pijp'
+    area: string // buurt, bv. 'Centrum'
   }
   geo: { lat: number; lng: number }
   phone: string
@@ -90,37 +87,37 @@ export const LOCATIONS: Record<LocationId, RestaurantLocation> = {
   },
 
   // ──────────────────────────────────────────
-  // ⚠️ PLACEHOLDER — vervang zodra de echte
-  //    Express-gegevens bekend zijn
+  // Wake N' Bake Xpress — tweede filiaal in het
+  // centrum (Heisteeg, bij het Spui).
   // ──────────────────────────────────────────
   express: {
     id: 'express',
-    name: "Wake N' Bake Express",
-    shortName: 'Express · De Pijp',
+    name: "Wake N' Bake Xpress",
+    shortName: 'Xpress · Centrum',
     isNew: true,
-    isPlaceholder: true,
+    isPlaceholder: false,
     address: {
-      street: 'Ferdinand Bolstraat 24', // ⚠️ PLACEHOLDER
-      postalCode: '1072 LK', // ⚠️ PLACEHOLDER
+      street: 'Heisteeg 8',
+      postalCode: '1012 WC',
       city: 'Amsterdam',
-      area: 'De Pijp',
+      area: 'Centrum',
     },
-    geo: { lat: 52.35586, lng: 4.89175 }, // ⚠️ PLACEHOLDER
-    phone: '+31 6 53764546', // ⚠️ PLACEHOLDER (zelfde nummer)
+    geo: { lat: 52.368839, lng: 4.88832 }, // BAG/PDOK: Heisteeg 8, 1012 WC
+    phone: '+31 6 53764546', // gedeeld nummer met Vijzelstraat
     phoneHref: 'tel:+31653764546',
-    email: 'express@wakenbake.nl', // ⚠️ PLACEHOLDER
-    thuisbezorgdUrl: null, // ⚠️ nog geen Thuisbezorgd-link
+    email: 'info@wakenbake.nl', // pas aan als Xpress een eigen mailbox krijgt
+    thuisbezorgdUrl: null,
     googleMapsUrl:
-      'https://www.google.com/maps/search/?api=1&query=Ferdinand+Bolstraat+24+Amsterdam', // ⚠️ PLACEHOLDER
+      'https://www.google.com/maps/search/?api=1&query=Wake+N%27+Bake+Xpress+Heisteeg+8+Amsterdam',
     mapEmbedSrc:
-      'https://www.google.com/maps?q=Ferdinand+Bolstraat+24,+1072+LK+Amsterdam&z=16&output=embed', // ⚠️ PLACEHOLDER
+      'https://www.google.com/maps?q=Heisteeg+8,+1012+WC+Amsterdam&z=16&output=embed',
     hours: [
-      { days: [1, 2, 3, 4, 5], opens: '08:00', closes: '20:00' }, // ⚠️ PLACEHOLDER
-      { days: [6, 0], opens: '09:00', closes: '20:00' }, // ⚠️ PLACEHOLDER
+      { days: [1, 2, 3, 4, 5], opens: '10:00', closes: '17:00' },
+      { days: [6, 0], opens: '10:30', closes: '18:00' },
     ],
     hoursDisplay: {
-      nl: ['Ma – Vr: 08:00 – 20:00', 'Za – Zo: 09:00 – 20:00', '7 dagen per week'],
-      en: ['Mon – Fri: 08:00 – 20:00', 'Sat – Sun: 09:00 – 20:00', '7 days a week'],
+      nl: ['Ma – Vr: 10:00 – 17:00', 'Za – Zo: 10:30 – 18:00', '7 dagen per week'],
+      en: ['Mon – Fri: 10:00 – 17:00', 'Sat – Sun: 10:30 – 18:00', '7 days a week'],
     },
     accent: {
       hex: '#5E9C42', // pistachio, iets dieper voor contrast (WCAG op flour)

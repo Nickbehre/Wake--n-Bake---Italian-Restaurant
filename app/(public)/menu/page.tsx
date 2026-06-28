@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { schiacciataMenuCategories, togoMenuCategories } from '@/lib/data/products';
+import { schiacciataMenuCategories, togoMenuCategories, getMenuForLocation } from '@/lib/data/products';
 import MenuCategorySection from '@/components/menu/MenuCategorySection';
 import MenuPDFButton from '@/components/menu/MenuPDFButton';
 import CartDrawer from '@/components/cart/CartDrawer';
 import MenuPhotoOverlay, { type MenuPhoto } from '@/components/menu/MenuPhotoOverlay';
 import ProductDetailModal from '@/components/menu/ProductDetailModal';
 import { useLanguage } from '@/lib/context/LanguageContext';
+import { useLocation } from '@/lib/context/LocationContext';
 import { ChefHat, ShoppingBag, ChevronDown } from 'lucide-react';
 import SplitTextReveal from '@/components/animation/SplitTextReveal';
 import type { Product } from '@/lib/types/order';
@@ -27,6 +28,20 @@ const togoMenuPhotos: MenuPhoto[] = [
 
 export default function MenuPage() {
   const { t } = useLanguage();
+  const { locationId } = useLocation();
+
+  // Per-filiaal menu (display only): Xpress toont standaard alleen het to-go menu.
+  const visibleSchiacciata = useMemo(
+    () => getMenuForLocation(schiacciataMenuCategories, locationId),
+    [locationId]
+  );
+  const visibleTogo = useMemo(
+    () => getMenuForLocation(togoMenuCategories, locationId),
+    [locationId]
+  );
+  const hasSchiacciata = visibleSchiacciata.length > 0;
+  const hasTogo = visibleTogo.length > 0;
+
   const [schiacciatOverlayOpen, setSchiacciatOverlayOpen] = useState(false);
   const [schiacciatOverlayIndex, setSchiacciatOverlayIndex] = useState(0);
   const [togoOverlayOpen, setTogoOverlayOpen] = useState(false);
@@ -86,54 +101,62 @@ export default function MenuPage() {
           <>
             {/* Desktop */}
             <div className="fixed left-3 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-3">
-              <motion.button
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                onClick={() => scrollTo('schiacciata-menu')}
-                className="group w-14 h-14 bg-crust text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110 hover:bg-crust/90"
-                title={t('menuPage.schiacciatMenuTitle')}
-              >
-                <ChefHat className="w-6 h-6" />
-              </motion.button>
-              <motion.button
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.05 }}
-                onClick={() => scrollTo('togo-menu')}
-                className="group w-14 h-14 bg-pistachio text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110 hover:bg-pistachio/90"
-                title={t('menuPage.togoMenuTitle')}
-              >
-                <ShoppingBag className="w-6 h-6" />
-              </motion.button>
+              {hasSchiacciata && (
+                <motion.button
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -30 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  onClick={() => scrollTo('schiacciata-menu')}
+                  className="group w-14 h-14 bg-crust text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110 hover:bg-crust/90"
+                  title={t('menuPage.schiacciatMenuTitle')}
+                >
+                  <ChefHat className="w-6 h-6" />
+                </motion.button>
+              )}
+              {hasTogo && (
+                <motion.button
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -30 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.05 }}
+                  onClick={() => scrollTo('togo-menu')}
+                  className="group w-14 h-14 bg-pistachio text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110 hover:bg-pistachio/90"
+                  title={t('menuPage.togoMenuTitle')}
+                >
+                  <ShoppingBag className="w-6 h-6" />
+                </motion.button>
+              )}
             </div>
 
             {/* Mobile */}
             <div className="fixed bottom-24 right-4 z-40 md:hidden flex flex-col gap-2">
-              <motion.button
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                onClick={() => scrollTo('schiacciata-menu')}
-                className="w-12 h-12 bg-crust text-white rounded-full shadow-lg flex items-center justify-center"
-                title={t('menuPage.schiacciatMenuTitle')}
-              >
-                <ChefHat className="w-5 h-5" />
-              </motion.button>
-              <motion.button
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.05 }}
-                onClick={() => scrollTo('togo-menu')}
-                className="w-12 h-12 bg-pistachio text-white rounded-full shadow-lg flex items-center justify-center"
-                title={t('menuPage.togoMenuTitle')}
-              >
-                <ShoppingBag className="w-5 h-5" />
-              </motion.button>
+              {hasSchiacciata && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  onClick={() => scrollTo('schiacciata-menu')}
+                  className="w-12 h-12 bg-crust text-white rounded-full shadow-lg flex items-center justify-center"
+                  title={t('menuPage.schiacciatMenuTitle')}
+                >
+                  <ChefHat className="w-5 h-5" />
+                </motion.button>
+              )}
+              {hasTogo && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.05 }}
+                  onClick={() => scrollTo('togo-menu')}
+                  className="w-12 h-12 bg-pistachio text-white rounded-full shadow-lg flex items-center justify-center"
+                  title={t('menuPage.togoMenuTitle')}
+                >
+                  <ShoppingBag className="w-5 h-5" />
+                </motion.button>
+              )}
             </div>
           </>
         )}
@@ -174,6 +197,7 @@ export default function MenuPage() {
         >
           <div className="flex flex-wrap justify-center gap-2 md:gap-3 max-w-5xl mx-auto">
             {/* Schiacciata dropdown */}
+            {hasSchiacciata && (
             <div className="relative">
               <button
                 onClick={(e) => toggleDropdown('schiacciata', e)}
@@ -192,7 +216,7 @@ export default function MenuPage() {
                     transition={{ duration: 0.15 }}
                     className="absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-xl border border-espresso/10 overflow-hidden min-w-[200px] z-50"
                   >
-                    {schiacciataMenuCategories.map((cat) => (
+                    {visibleSchiacciata.map((cat) => (
                       <button
                         key={cat.id}
                         onClick={() => scrollTo(cat.id)}
@@ -205,8 +229,10 @@ export default function MenuPage() {
                 )}
               </AnimatePresence>
             </div>
+            )}
 
             {/* To-Go dropdown */}
+            {hasTogo && (
             <div className="relative">
               <button
                 onClick={(e) => toggleDropdown('togo', e)}
@@ -225,7 +251,7 @@ export default function MenuPage() {
                     transition={{ duration: 0.15 }}
                     className="absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-xl border border-espresso/10 overflow-hidden min-w-[200px] z-50"
                   >
-                    {togoMenuCategories.map((cat) => (
+                    {visibleTogo.map((cat) => (
                       <button
                         key={cat.id}
                         onClick={() => scrollTo(cat.id)}
@@ -238,6 +264,7 @@ export default function MenuPage() {
                 )}
               </AnimatePresence>
             </div>
+            )}
 
           </div>
         </motion.nav>
@@ -245,6 +272,7 @@ export default function MenuPage() {
         {/* ═══════════════════════════════════════════ */}
         {/* SCHIACCIATA MENU — Made to Order           */}
         {/* ═══════════════════════════════════════════ */}
+        {hasSchiacciata && (
         <div id="schiacciata-menu" className="scroll-mt-40">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -282,22 +310,26 @@ export default function MenuPage() {
           </motion.div>
 
           <div className="space-y-24">
-            {schiacciataMenuCategories.map((category) => (
+            {visibleSchiacciata.map((category) => (
               <MenuCategorySection key={category.id} category={category} onProductClick={handleProductClick} />
             ))}
           </div>
         </div>
+        )}
 
         {/* Divider */}
+        {hasSchiacciata && hasTogo && (
         <div className="my-24 flex items-center gap-6">
           <div className="flex-1 h-px bg-gradient-to-r from-transparent via-espresso/20 to-espresso/20" />
           <span className="text-espresso/30 text-4xl">&#9830;</span>
           <div className="flex-1 h-px bg-gradient-to-l from-transparent via-espresso/20 to-espresso/20" />
         </div>
+        )}
 
         {/* ═══════════════════════════════════════════ */}
         {/* WAKE N' BAKE MENU — To Go                  */}
         {/* ═══════════════════════════════════════════ */}
+        {hasTogo && (
         <div id="togo-menu" className="scroll-mt-40">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -335,11 +367,12 @@ export default function MenuPage() {
           </motion.div>
 
           <div className="space-y-24">
-            {togoMenuCategories.map((category) => (
+            {visibleTogo.map((category) => (
               <MenuCategorySection key={category.id} category={category} onProductClick={handleProductClick} />
             ))}
           </div>
         </div>
+        )}
 
 
         {/* Allergen Info */}

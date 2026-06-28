@@ -394,7 +394,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Locaties & toggle
     'loc.original.label': 'Origineel',
-    'loc.express.label': 'Express',
+    'loc.express.label': 'Xpress',
     'loc.badge.new': 'NIEUW',
     'loc.badge.otherLocation': 'Andere locatie',
     'loc.switch': 'Wissel van locatie',
@@ -402,7 +402,7 @@ const translations: Record<Language, Record<string, string>> = {
     'loc.youAreHere': 'Je bekijkt nu',
     'loc.comingSoon': 'Binnenkort',
     'loc.placeholderNote': 'Definitieve gegevens volgen binnenkort',
-    'loc.discoverExpress': "NIEUW: ontdek Wake N' Bake Express",
+    'loc.discoverExpress': "NIEUW: ontdek Wake N' Bake Xpress",
     'loc.transition.welcome': 'Welkom bij',
     'loc.transition.subtitle': 'Je wisselt van locatie',
     'loc.ourLocations': 'Onze Locaties',
@@ -412,10 +412,10 @@ const translations: Record<Language, Record<string, string>> = {
     'express.announce.label': 'Nieuwe Locatie',
     'express.announce.headline': 'Zelfde liefde. Nieuwe plek.',
     'express.announce.text':
-      "Wake N' Bake opent een tweede thuis: Wake N' Bake Express in De Pijp. Dezelfde knapperige schiacciata, hetzelfde verse deeg — nu ook aan de andere kant van de stad, met ruimere openingstijden.",
-    'express.announce.cta': 'Ontdek Express',
+      "Wake N' Bake opent een tweede thuis: Wake N' Bake Xpress in hartje centrum, aan de Heisteeg bij het Spui. Dezelfde knapperige schiacciata, hetzelfde verse deeg — nu zeven dagen per week, óók in het weekend.",
+    'express.announce.cta': 'Ontdek Xpress',
     'express.announce.original.cta': 'Terug naar het origineel',
-    'express.hero.badge': 'Nieuw in De Pijp',
+    'express.hero.badge': 'Nieuw in het centrum',
   },
   en: {
     // Navigation
@@ -800,7 +800,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Locations & toggle
     'loc.original.label': 'Original',
-    'loc.express.label': 'Express',
+    'loc.express.label': 'Xpress',
     'loc.badge.new': 'NEW',
     'loc.badge.otherLocation': 'Different location',
     'loc.switch': 'Switch location',
@@ -808,7 +808,7 @@ const translations: Record<Language, Record<string, string>> = {
     'loc.youAreHere': "You're viewing",
     'loc.comingSoon': 'Coming soon',
     'loc.placeholderNote': 'Final details coming soon',
-    'loc.discoverExpress': "NEW: discover Wake N' Bake Express",
+    'loc.discoverExpress': "NEW: discover Wake N' Bake Xpress",
     'loc.transition.welcome': 'Welcome to',
     'loc.transition.subtitle': "You're switching location",
     'loc.ourLocations': 'Our Locations',
@@ -818,10 +818,10 @@ const translations: Record<Language, Record<string, string>> = {
     'express.announce.label': 'New Location',
     'express.announce.headline': 'Same love. New place.',
     'express.announce.text':
-      "Wake N' Bake is opening a second home: Wake N' Bake Express in De Pijp. The same crispy schiacciata, the same fresh dough — now on the other side of town, with extended opening hours.",
-    'express.announce.cta': 'Discover Express',
+      "Wake N' Bake is opening a second home: Wake N' Bake Xpress in the heart of the city centre, on the Heisteeg near Spui. The same crispy schiacciata, the same fresh dough — now seven days a week, weekends included.",
+    'express.announce.cta': 'Discover Xpress',
     'express.announce.original.cta': 'Back to the original',
-    'express.hero.badge': 'New in De Pijp',
+    'express.hero.badge': 'New in the city centre',
   },
 }
 

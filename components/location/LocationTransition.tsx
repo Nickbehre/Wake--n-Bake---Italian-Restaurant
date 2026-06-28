@@ -93,7 +93,7 @@ export default function LocationTransition() {
           aria-hidden
           className="absolute font-brand-sm text-[28vw] leading-none opacity-[0.06] select-none whitespace-nowrap"
         >
-          {dest.id === 'express' ? 'Express' : 'Panificio'}
+          {dest.id === 'express' ? 'Xpress' : 'Panificio'}
         </span>
 
         <motion.div
@@ -167,7 +167,7 @@ export default function LocationTransition() {
               exit: { opacity: 0, y: -24, transition: { duration: 0.3 } },
             }}
           >
-            {dest.id === 'express' ? "Wake n' Bake Express" : "Wake n' Bake"}
+            {dest.id === 'express' ? "Wake n' Bake Xpress" : "Wake n' Bake"}
           </motion.h2>
 
           {/* Adres */}

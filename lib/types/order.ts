@@ -3,6 +3,8 @@
 // Based on products.json from Uber Eats menu
 // ============================================
 
+import type { LocationId } from '@/lib/data/locations';
+
 /**
  * Product from the menu
  */
@@ -27,6 +29,8 @@ export interface Product {
   priceRegular?: number;
   priceLarge?: number;
   availableExtras?: ProductExtra[];
+  /** Filialen waar dit product te koop is. Leeg/undefined = beide locaties. */
+  availableAt?: LocationId[];
 }
 
 /**
@@ -44,6 +48,8 @@ export interface Category {
   name: string;
   menu?: MenuType;
   products: Product[];
+  /** Filialen waar deze categorie getoond wordt. Leeg/undefined = beide locaties. */
+  availableAt?: LocationId[];
 }
 
 /**
