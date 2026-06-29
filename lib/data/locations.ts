@@ -23,6 +23,8 @@ export interface RestaurantLocation {
   isNew: boolean
   /** Gegevens nog niet definitief? Dan tonen we 'binnenkort'-hints */
   isPlaceholder: boolean
+  /** Online menu nog in onderhoud? Dan toont /menu een 'under maintenance'-staat */
+  menuUnderMaintenance: boolean
   address: {
     street: string
     postalCode: string
@@ -56,6 +58,7 @@ export const LOCATIONS: Record<LocationId, RestaurantLocation> = {
     shortName: 'Vijzelstraat',
     isNew: false,
     isPlaceholder: false,
+    menuUnderMaintenance: false,
     address: {
       street: 'Vijzelstraat 93h',
       postalCode: '1017 HH',
@@ -96,6 +99,7 @@ export const LOCATIONS: Record<LocationId, RestaurantLocation> = {
     shortName: 'Xpress · Centrum',
     isNew: true,
     isPlaceholder: false,
+    menuUnderMaintenance: true,
     address: {
       street: 'Heisteeg 8',
       postalCode: '1012 WC',

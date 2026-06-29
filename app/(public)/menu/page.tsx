@@ -11,7 +11,7 @@ import MenuPhotoOverlay, { type MenuPhoto } from '@/components/menu/MenuPhotoOve
 import ProductDetailModal from '@/components/menu/ProductDetailModal';
 import { useLanguage } from '@/lib/context/LanguageContext';
 import { useLocation } from '@/lib/context/LocationContext';
-import { ChefHat, ShoppingBag, ChevronDown } from 'lucide-react';
+import { ChefHat, ShoppingBag, ChevronDown, MapPin, Wrench, ArrowRight } from 'lucide-react';
 import SplitTextReveal from '@/components/animation/SplitTextReveal';
 import type { Product } from '@/lib/types/order';
 
@@ -28,7 +28,8 @@ const togoMenuPhotos: MenuPhoto[] = [
 
 export default function MenuPage() {
   const { t } = useLanguage();
-  const { locationId } = useLocation();
+  const { locationId, location, otherLocation, switchLocation } = useLocation();
+  const underMaintenance = location.menuUnderMaintenance;
 
   // Per-filiaal menu (display only): Xpress toont standaard alleen het to-go menu.
   const visibleSchiacciata = useMemo(
@@ -95,7 +96,8 @@ export default function MenuPage() {
 
   return (
     <div className="min-h-screen bg-flour pt-36 md:pt-40 pb-20">
-      {/* Floating Menu Navigation Buttons — appear on scroll */}
+      {/* Floating Menu Navigation Buttons — appear on scroll (verborgen bij onderhoud) */}
+      {!underMaintenance && (
       <AnimatePresence>
         {showFloatingButtons && (
           <>
@@ -161,6 +163,7 @@ export default function MenuPage() {
           </>
         )}
       </AnimatePresence>
+      )}
 
       <div className="container mx-auto px-4">
         {/* Hero Header */}
@@ -187,6 +190,61 @@ export default function MenuPage() {
             {t('menuPage.subtitle')}
           </SplitTextReveal>
         </motion.div>
+
+        {/* Locatie-banner — maakt direct duidelijk welk filiaal je bekijkt */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="flex flex-col items-center gap-3 mb-16"
+        >
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-accent/30 bg-accent/10 px-5 py-2">
+            <MapPin className="w-4 h-4 text-accent" />
+            <span className="font-oswald text-[11px] uppercase tracking-widest text-espresso/55">
+              {t('menuPage.viewingMenuOf')}
+            </span>
+            <span className="font-oswald font-bold text-sm uppercase tracking-wider text-accent">
+              {location.name} · {location.address.area}
+            </span>
+          </div>
+          <button
+            onClick={() => switchLocation()}
+            className="group inline-flex items-center gap-1.5 font-oswald text-xs uppercase tracking-wider text-espresso/50 hover:text-accent transition-colors"
+          >
+            {t('loc.switchTo')} {otherLocation.shortName}
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+          </button>
+        </motion.div>
+
+        {underMaintenance ? (
+          /* ─── Xpress: online menu nog in onderhoud ─── */
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mx-auto max-w-2xl text-center py-10 md:py-16"
+          >
+            <div className="mx-auto mb-8 w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center">
+              <Wrench className="w-9 h-9 text-accent" />
+            </div>
+            <span className="inline-block font-oswald text-xs uppercase tracking-[0.2em] text-accent mb-4">
+              {t('menuPage.maintenanceTag')}
+            </span>
+            <h2 className="font-comodo text-4xl md:text-5xl text-espresso mb-5">
+              {t('menuPage.maintenanceTitle')}
+            </h2>
+            <p className="font-lato text-lg text-espresso/70 leading-relaxed mb-10">
+              {t('menuPage.maintenanceBody')}
+            </p>
+            <button
+              onClick={() => switchLocation('original')}
+              className="inline-flex items-center gap-3 bg-accent text-white font-oswald font-bold uppercase tracking-wider px-8 py-4 rounded-full transition-all duration-300 hover:shadow-2xl group"
+            >
+              {t('menuPage.maintenanceCta')}
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </motion.div>
+        ) : (
+        <>
 
         {/* Sticky Category Navigation */}
         <motion.nav
@@ -424,6 +482,8 @@ export default function MenuPage() {
         <div className="mt-16 text-center">
           <MenuPDFButton />
         </div>
+        </>
+        )}
       </div>
 
       {/* Cart Drawer */}

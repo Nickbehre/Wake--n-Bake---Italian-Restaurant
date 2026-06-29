@@ -91,6 +91,12 @@ const translations: Record<Language, Record<string, string>> = {
     'menuPage.alsoAvailable': 'Ook Verkrijgbaar',
     'menuPage.calzoneSubtitle': 'Folded Pizza',
     'menuPage.byTheSlice': 'By The Slice',
+    'menuPage.viewingMenuOf': 'Je bekijkt het menu van',
+    'menuPage.maintenanceTag': 'In onderhoud',
+    'menuPage.maintenanceTitle': 'Het Xpress-menu is in onderhoud',
+    'menuPage.maintenanceBody':
+      'We zetten het online menu van onze Xpress-locatie nog in elkaar. Binnenkort kun je hier alles bekijken en bestellen. Bekijk ondertussen het volledige menu van ons Panificio.',
+    'menuPage.maintenanceCta': 'Bekijk het Panificio-menu',
 
     // Location Section
     'location.headline': 'Kom Proeven.',
@@ -497,6 +503,12 @@ const translations: Record<Language, Record<string, string>> = {
     'menuPage.alsoAvailable': 'Also Available',
     'menuPage.calzoneSubtitle': 'Folded Pizza',
     'menuPage.byTheSlice': 'By The Slice',
+    'menuPage.viewingMenuOf': "You're viewing the menu of",
+    'menuPage.maintenanceTag': 'Under maintenance',
+    'menuPage.maintenanceTitle': 'The Xpress menu is under maintenance',
+    'menuPage.maintenanceBody':
+      "We're still putting together the online menu for our Xpress location. You'll be able to browse and order here soon. In the meantime, explore the full menu of our Panificio.",
+    'menuPage.maintenanceCta': 'View the Panificio menu',
 
     // Location Section
     'location.headline': 'Come Taste It.',
