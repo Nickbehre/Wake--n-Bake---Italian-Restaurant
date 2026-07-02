@@ -121,8 +121,11 @@ function ReviewMarquee({ items }: { items: Review[] }) {
 export default function ReviewsSection() {
   const { t } = useLanguage()
   const { location } = useLocation()
-  // Publieke Featurable widget-ID (geen secret). Leeg = statische fallback tonen.
-  const featurableId = process.env.NEXT_PUBLIC_FEATURABLE_WIDGET_ID
+  // Publieke Featurable widget-ID (geen secret, staat ook in de embed-code).
+  // Via env te overschrijven; anders de vaste widget. Leeg = statische fallback.
+  const featurableId =
+    process.env.NEXT_PUBLIC_FEATURABLE_WIDGET_ID ||
+    '35ee91d7-e883-489f-a0f5-f9c71af20530'
 
   return (
     <section className="py-24 bg-espresso relative overflow-hidden rounded-[3rem] mx-4 md:mx-8 lg:mx-16 shadow-2xl">
@@ -168,6 +171,7 @@ export default function ReviewsSection() {
           <ReactGoogleReviews
             layout="custom"
             featurableId={featurableId}
+            widgetVersion="v2"
             renderer={(googleReviews) => {
               const mapped = mapGoogleReviews(googleReviews)
               return <ReviewMarquee items={mapped.length ? mapped : fallbackReviews} />
