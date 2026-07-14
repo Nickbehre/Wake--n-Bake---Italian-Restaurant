@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowLeft, User, Mail, Phone, Clock } from 'lucide-react';
@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useOrderStore } from '@/lib/store/order-store';
 import CartSummary from '@/components/order/CartSummary';
 import { StoreStatusGate } from '@/components/order/StoreClosedModal';
+import { trackBeginCheckout, trackPurchase } from '@/lib/analytics';
 
 export default function OrderCheckoutPage() {
   const router = useRouter();
@@ -21,6 +22,22 @@ export default function OrderCheckoutPage() {
   const clearCart = useOrderStore((state) => state.clearCart);
 
   const summary = getCartSummary();
+
+  const checkoutTracked = useRef(false);
+  useEffect(() => {
+    if (items.length === 0 || checkoutTracked.current) return;
+    checkoutTracked.current = true;
+    trackBeginCheckout(
+      items.map((i) => ({
+        item_id: i.productId,
+        item_name: i.name,
+        price: i.price,
+        quantity: i.quantity,
+      })),
+      summary.total
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items.length]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -72,6 +89,17 @@ export default function OrderCheckoutPage() {
       if (!response.ok) {
         throw new Error(result.error || 'Failed to place order');
       }
+
+      trackPurchase(
+        items.map((i) => ({
+          item_id: i.productId,
+          item_name: i.name,
+          price: i.price,
+          quantity: i.quantity,
+        })),
+        summary.total,
+        result.order?.id || `wnb-${formData.pickupTime}-${summary.total}`
+      );
 
       // Clear cart and redirect to success page
       clearCart();

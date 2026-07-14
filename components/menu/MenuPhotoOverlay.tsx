@@ -107,9 +107,9 @@ export default function MenuPhotoOverlay({ isOpen, onClose, photos, initialIndex
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
                 onClick={goPrev}
-                className="absolute left-2 md:left-6 z-20 w-14 h-14 md:w-16 md:h-16 bg-white/10 hover:bg-white/25 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+                className="absolute left-1.5 md:left-6 z-20 w-11 h-11 md:w-16 md:h-16 bg-white/10 hover:bg-white/25 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
               >
-                <ChevronLeft className="w-7 h-7 md:w-8 md:h-8" />
+                <ChevronLeft className="w-6 h-6 md:w-8 md:h-8" />
               </motion.button>
             )}
 
@@ -120,13 +120,13 @@ export default function MenuPhotoOverlay({ isOpen, onClose, photos, initialIndex
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
                 onClick={goNext}
-                className="absolute right-2 md:right-6 z-20 w-14 h-14 md:w-16 md:h-16 bg-white/10 hover:bg-white/25 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+                className="absolute right-1.5 md:right-6 z-20 w-11 h-11 md:w-16 md:h-16 bg-white/10 hover:bg-white/25 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
               >
-                <ChevronRight className="w-7 h-7 md:w-8 md:h-8" />
+                <ChevronRight className="w-6 h-6 md:w-8 md:h-8" />
               </motion.button>
             )}
 
-            {/* Menu image */}
+            {/* Menu image — vult het kader op fotoformaat, met ronde hoeken */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
@@ -134,13 +134,21 @@ export default function MenuPhotoOverlay({ isOpen, onClose, photos, initialIndex
                 animate={{ opacity: 1, scale: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0.9, x: -50 }}
                 transition={{ duration: 0.35, ease: 'easeInOut' }}
-                className="relative w-full max-w-lg h-[75vh] md:h-[85vh]"
+                drag={hasMultiple ? 'x' : false}
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.15}
+                onDragEnd={(_, info) => {
+                  if (info.offset.x < -60) goNext();
+                  else if (info.offset.x > 60) goPrev();
+                }}
+                className="relative aspect-[715/1000] h-[min(72vh,122vw)] md:h-[85vh] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl"
               >
                 <Image
                   src={current.src}
                   alt={current.alt}
                   fill
-                  className="object-contain drop-shadow-2xl"
+                  draggable={false}
+                  className="object-cover"
                   sizes="(max-width: 768px) 95vw, 600px"
                   priority
                 />

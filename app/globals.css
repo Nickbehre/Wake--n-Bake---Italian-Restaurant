@@ -33,6 +33,14 @@ html[data-location='express'] {
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
+    /* Geen grijze tap-flash op iOS/Android — voelt daardoor app-achtig */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a,
+  button {
+    /* Sneller/voorspelbaarder tikken op touch (geen dubbeltik-zoom) */
+    touch-action: manipulation;
   }
 
   body {

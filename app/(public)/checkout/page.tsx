@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "@/components/checkout/CheckoutForm";
@@ -9,6 +9,7 @@ import { useLanguage } from "@/lib/context/LanguageContext";
 import { StoreStatusGate } from "@/components/order/StoreClosedModal";
 import { Loader2, ShoppingBag, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { trackBeginCheckout } from "@/lib/analytics";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "");
 
@@ -19,9 +20,23 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const checkoutTracked = useRef(false);
 
   useEffect(() => {
     if (items.length === 0 || totals.total <= 0) return;
+
+    if (!checkoutTracked.current) {
+      checkoutTracked.current = true;
+      trackBeginCheckout(
+        items.map((i) => ({
+          item_id: i.productId,
+          item_name: i.name,
+          price: i.price,
+          quantity: i.quantity,
+        })),
+        totals.total
+      );
+    }
 
     setIsLoading(true);
     setError(null);

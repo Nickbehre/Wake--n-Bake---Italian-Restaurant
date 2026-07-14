@@ -22,7 +22,7 @@ const schiacciatMenuPhotos: MenuPhoto[] = [
 ];
 
 const togoMenuPhotos: MenuPhoto[] = [
-  { src: '/assets/menu/schiacciatamenutogo.jpg', alt: 'Schiacciata To-Go Menu', label: 'Schiacciata & Pizza', color: 'bg-pistachio' },
+  { src: '/assets/menu/schiacciatamenutogo.jpg', alt: 'Schiacciata To-Go Menu', label: 'Schiacciata To-Go', color: 'bg-pistachio' },
   { src: '/assets/menu/coffeeandsweetsmenu.jpg', alt: 'Coffee & Sweet Treats Menu', label: 'Coffee & Sweet Treats', color: 'bg-pistachio' },
 ];
 

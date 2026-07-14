@@ -284,28 +284,6 @@
         "price": 6
       }
     ],
-    "pizza_al_taglio": [
-      {
-        "name": "MARGHERITA",
-        "ingredients": "TOMATO SAUCE, MOZZARELLA, EVO",
-        "price": 5
-      },
-      {
-        "name": "DIAVOLA",
-        "ingredients": "TOMATO SAUCE, MOZZARELLA, HOT SALAMI",
-        "price": 6
-      },
-      {
-        "name": "COTTO & FUNGHI",
-        "ingredients": "TOMATO SAUCE, MOZZARELLA, HAM, MUSHROOMS, EVO",
-        "price": 6
-      },
-      {
-        "name": "VEGGIE",
-        "ingredients": "TOMATO SAUCE, MOZZARELLA, EGGPLANT, SUNDRIED TOMATOES, ARTICHOKES",
-        "price": 6
-      }
-    ],
     "drinks": [
       {
         "name": "WATER",

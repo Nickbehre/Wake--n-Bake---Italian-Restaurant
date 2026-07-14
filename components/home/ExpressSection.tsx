@@ -61,7 +61,7 @@ function LocationCard({
         </div>
       </div>
 
-      <MiniMap accentHex={loc.accent.hex} className="h-28 md:h-32" />
+      <MiniMap accentHex={loc.accent.hex} variant={loc.id} className="h-28 md:h-32" />
 
       <h3 className="font-stamp text-2xl md:text-3xl mt-5 mb-2" style={{ color: loc.accent.hex }}>
         {loc.name}

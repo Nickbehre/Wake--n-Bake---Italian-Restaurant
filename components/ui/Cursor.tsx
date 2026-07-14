@@ -29,8 +29,8 @@ export default function Cursor() {
 
     const dotX = gsap.quickTo(dot, 'x', { duration: 0.12, ease: 'power2.out' })
     const dotY = gsap.quickTo(dot, 'y', { duration: 0.12, ease: 'power2.out' })
-    const ringX = gsap.quickTo(ring, 'x', { duration: 0.45, ease: 'power3.out' })
-    const ringY = gsap.quickTo(ring, 'y', { duration: 0.45, ease: 'power3.out' })
+    const ringX = gsap.quickTo(ring, 'x', { duration: 0.3, ease: 'power3.out' })
+    const ringY = gsap.quickTo(ring, 'y', { duration: 0.3, ease: 'power3.out' })
 
     let visible = false
     const onMove = (e: MouseEvent) => {
@@ -50,8 +50,8 @@ export default function Cursor() {
 
     const onOver = (e: MouseEvent) => {
       if (isInteractive(e.target)) {
-        gsap.to(ring, { scale: 1.8, duration: 0.35, ease: 'power3.out' })
-        gsap.to(dot, { scale: 0.5, duration: 0.35, ease: 'power3.out' })
+        gsap.to(ring, { scale: 1.35, duration: 0.35, ease: 'power3.out' })
+        gsap.to(dot, { scale: 0.6, duration: 0.35, ease: 'power3.out' })
       }
     }
     const onOut = (e: MouseEvent) => {
@@ -83,11 +83,11 @@ export default function Cursor() {
     <div className="pointer-events-none fixed inset-0 z-[400]" aria-hidden>
       <div
         ref={ringRef}
-        className="fixed top-0 left-0 w-10 h-10 rounded-full border-2 border-accent/70 will-change-transform"
+        className="fixed top-0 left-0 w-6 h-6 rounded-full border border-accent/30 will-change-transform"
       />
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-accent will-change-transform"
+        className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full bg-accent/70 will-change-transform"
       />
     </div>
   )

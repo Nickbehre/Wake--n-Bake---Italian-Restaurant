@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowRight, Coffee, Leaf, Fish, Pizza, UtensilsCrossed } from 'lucide-react'
+import { ArrowRight, Coffee, Leaf, Fish, Sandwich, UtensilsCrossed } from 'lucide-react'
 import { useGSAP } from '@gsap/react'
 import { useLanguage } from '@/lib/context/LanguageContext'
 import { gsap } from '@/lib/animation/gsap'
@@ -19,7 +19,7 @@ const schiacciatMenuPhotos: MenuPhoto[] = [
 ]
 
 const togoMenuPhotos: MenuPhoto[] = [
-  { src: '/assets/menu/schiacciatamenutogo.jpg', alt: 'Schiacciata To-Go Menu', label: 'Schiacciata & Pizza', color: 'bg-pistachio' },
+  { src: '/assets/menu/schiacciatamenutogo.jpg', alt: 'Schiacciata To-Go Menu', label: 'Schiacciata To-Go', color: 'bg-pistachio' },
   { src: '/assets/menu/coffeeandsweetsmenu.jpg', alt: 'Coffee & Sweet Treats Menu', label: 'Coffee & Sweet Treats', color: 'bg-pistachio' },
 ]
 
@@ -65,9 +65,9 @@ const menuCards: MenuCard[] = [
   {
     id: 'togo',
     image: '/assets/menu/schiacciatamenutogo.jpg',
-    label: 'Schiacciata & Pizza',
+    label: 'Schiacciata To-Go',
     sub: 'menuPage.togoMenuTag',
-    icon: <Pizza className="w-4 h-4" />,
+    icon: <Sandwich className="w-4 h-4" />,
     group: 'togo',
     groupIndex: 0,
   },
@@ -114,7 +114,7 @@ export default function MenuSection() {
         () => {
           const getDistance = () => track.scrollWidth - window.innerWidth
 
-          const tween = gsap.to(track, {
+          gsap.to(track, {
             x: () => -getDistance(),
             ease: 'none',
             scrollTrigger: {
@@ -131,25 +131,6 @@ export default function MenuSection() {
                 }
               },
             },
-          })
-
-          // Parallax binnen elke kaart terwijl de track schuift
-          gsap.utils.toArray<HTMLElement>('[data-menu-card] img').forEach((img) => {
-            gsap.fromTo(
-              img,
-              { xPercent: -6 },
-              {
-                xPercent: 6,
-                ease: 'none',
-                scrollTrigger: {
-                  trigger: img,
-                  containerAnimation: tween,
-                  start: 'left right',
-                  end: 'right left',
-                  scrub: true,
-                },
-              }
-            )
           })
         }
       )
@@ -208,14 +189,14 @@ export default function MenuSection() {
                 <Reveal
                   clip
                   delay={i * 0.08}
-                  className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-xl"
+                  className="relative aspect-[5/7] rounded-3xl overflow-hidden shadow-xl"
                 >
                   <Image
                     src={card.image}
                     alt={t(card.label)}
                     fill
                     sizes="(max-width: 1024px) 75vw, 26vw"
-                    className="object-cover scale-110 transition-transform duration-700 ease-out group-hover:scale-[1.18]"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                   />
                   {/* gradient + label */}
                   <div className="absolute inset-0 bg-gradient-to-t from-espresso/85 via-espresso/10 to-transparent" />
@@ -244,7 +225,7 @@ export default function MenuSection() {
               <Reveal
                 clip
                 delay={menuCards.length * 0.08}
-                className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-xl bg-espresso flex items-center justify-center"
+                className="relative aspect-[5/7] rounded-3xl overflow-hidden shadow-xl bg-espresso flex items-center justify-center"
               >
                 <span
                   aria-hidden

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { trackAddToCart } from '@/lib/analytics';
 
 export type ItemSize = 'regular' | 'large' | null;
 
@@ -77,6 +78,17 @@ export const useCartStore = create<CartState>()(
 
                 set({ items: updatedItems });
                 get().calculateTotals();
+
+                trackAddToCart({
+                    item_id: newItem.productId,
+                    item_name: newItem.sizeLabel
+                        ? `${newItem.name} (${newItem.sizeLabel})`
+                        : newItem.name,
+                    price:
+                        newItem.price +
+                        (newItem.extras?.reduce((sum, e) => sum + e.price, 0) ?? 0),
+                    quantity: newItem.quantity,
+                });
             },
 
             removeItem: (itemId) => {

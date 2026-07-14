@@ -428,42 +428,6 @@ const schiacciataTogo: Category = {
   ],
 };
 
-const pizzaAlTaglioCategory: Category = {
-  id: 'pizza-al-taglio',
-  name: 'Pizza Al Taglio',
-  menu: 'togo',
-  products: [
-    {
-      id: 'pizza-margherita',
-      name: 'Margherita',
-      description: 'Tomato sauce, mozzarella, EVO.',
-      price: 5.00,
-      categoryId: 'pizza-al-taglio',
-    },
-    {
-      id: 'pizza-diavola',
-      name: 'Diavola',
-      description: 'Tomato sauce, mozzarella, hot salami.',
-      price: 6.00,
-      categoryId: 'pizza-al-taglio',
-    },
-    {
-      id: 'pizza-cotto-funghi',
-      name: 'Cotto & Funghi',
-      description: 'Tomato sauce, mozzarella, ham, mushrooms, EVO.',
-      price: 6.00,
-      categoryId: 'pizza-al-taglio',
-    },
-    {
-      id: 'pizza-veggie',
-      name: 'Veggie',
-      description: 'Tomato sauce, mozzarella, eggplant, sundried tomatoes, artichokes.',
-      price: 6.00,
-      categoryId: 'pizza-al-taglio',
-    },
-  ],
-};
-
 const drinksCategory: Category = {
   id: 'drinks',
   name: 'Drinks',
@@ -751,7 +715,6 @@ export const schiacciataMenuCategories: Category[] = [
 export const togoMenuCategories: Category[] = [
   calzoneCategory,
   schiacciataTogo,
-  pizzaAlTaglioCategory,
   drinksCategory,
   coffeeHotCategory,
   coldDrinksCategory,

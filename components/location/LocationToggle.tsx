@@ -144,7 +144,7 @@ export default function LocationToggle({
                     )}
                   </div>
 
-                  <MiniMap accentHex={info.accent.hex} />
+                  <MiniMap accentHex={info.accent.hex} variant={info.id} />
 
                   <div className="mt-3 mb-1 font-stamp text-xl" style={{ color: info.accent.hex }}>
                     {info.name}

@@ -163,7 +163,7 @@ export default function LocationSection() {
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-16 flex-shrink-0">
-                    <MiniMap accentHex={otherLocation.accent.hex} className="h-12" />
+                    <MiniMap accentHex={otherLocation.accent.hex} variant={otherLocation.id} className="h-12" />
                   </div>
                   <div className="min-w-0">
                     <p className="font-oswald uppercase tracking-widest text-[10px] text-flour/60 mb-0.5">

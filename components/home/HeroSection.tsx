@@ -284,7 +284,7 @@ export default function HeroSection() {
           <button
             key={index}
             onClick={() => setCurrentImageIndex(index)}
-            className={`h-2 rounded-full transition-all duration-300 ${
+            className={`h-2 box-content bg-clip-content p-1 -m-1 rounded-full transition-all duration-300 ${
               index === currentImageIndex
                 ? 'bg-crust w-8'
                 : 'bg-white/50 hover:bg-white/80 w-2'

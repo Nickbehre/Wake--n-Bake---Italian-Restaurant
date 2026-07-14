@@ -8,6 +8,7 @@ import { CheckCircle2, MapPin, CalendarClock } from "lucide-react";
 import { format } from "date-fns";
 import { nl, enUS } from "date-fns/locale";
 import Confetti from "react-confetti";
+import { trackPurchase } from "@/lib/analytics";
 
 interface OrderSnapshot {
   items: any[];
@@ -24,6 +25,25 @@ export default function OrderSuccessPage() {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [orderData, setOrderData] = useState<OrderSnapshot | null>(null);
 
+  // GA4 purchase-event vanuit een order-snapshot. Dubbel vuren kan niet:
+  // het snapshot wordt direct na lezen verwijderd en de cart geleegd.
+  const trackPurchaseFromSnapshot = (snapshot: OrderSnapshot) => {
+    try {
+      trackPurchase(
+        (snapshot.items || []).map((i: any) => ({
+          item_id: i.productId || i.id,
+          item_name: i.name,
+          price: i.price,
+          quantity: i.quantity,
+        })),
+        snapshot.totals?.total ?? 0,
+        `wnb-stripe-${snapshot.customerDetails?.email || 'guest'}-${snapshot.totals?.total ?? 0}-${snapshot.pickupTime || ''}`
+      );
+    } catch (e) {
+      console.error("Purchase tracking failed:", e);
+    }
+  };
+
   useEffect(() => {
     setMounted(true);
     setDimensions({ width: window.innerWidth, height: window.innerHeight });
@@ -35,6 +55,7 @@ export default function OrderSuccessPage() {
       try {
         const parsed = JSON.parse(savedOrder) as OrderSnapshot;
         setOrderData(parsed);
+        trackPurchaseFromSnapshot(parsed);
 
         // Send confirmation email
         if (parsed.customerDetails?.email) {
@@ -73,6 +94,7 @@ export default function OrderSuccessPage() {
         pickupTime: pt,
         customerDetails: customerDetails,
       });
+      trackPurchaseFromSnapshot({ items, totals, pickupTime: pt, customerDetails });
 
       if (customerDetails?.email) {
         const isTimeOnlyFb = pt && /^\d{2}:\d{2}$/.test(pt);

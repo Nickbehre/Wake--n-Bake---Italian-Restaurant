@@ -8,6 +8,7 @@ import Preloader from '@/components/ui/Preloader'
 import Cursor from '@/components/ui/Cursor'
 import LocationTransition from '@/components/location/LocationTransition'
 import SmoothScroll from '@/components/providers/SmoothScroll'
+import GoogleAnalytics from '@/components/providers/GoogleAnalytics'
 import { ThemeProvider } from 'next-themes'
 import { MotionConfig } from 'framer-motion'
 import { Toaster } from 'sonner'
@@ -22,6 +23,7 @@ export default function PublicLayout({
 }) {
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      <GoogleAnalytics />
       <MotionConfig reducedMotion="user">
       <LanguageProvider>
         <LocationProvider>

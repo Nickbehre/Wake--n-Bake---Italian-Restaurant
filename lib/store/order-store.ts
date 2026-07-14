@@ -5,6 +5,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { trackAddToCart } from '@/lib/analytics';
 import type {
   OrderCartItem,
   CustomerInfo,
@@ -127,6 +128,13 @@ export const useOrderStore = create<OrderStoreState>()(
           };
           set({ items: [...items, cartItem] });
         }
+
+        trackAddToCart({
+          item_id: newItem.productId,
+          item_name: newItem.name,
+          price: newItem.price,
+          quantity: 1,
+        });
       },
 
       /**

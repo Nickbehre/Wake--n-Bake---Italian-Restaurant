@@ -89,9 +89,7 @@ const translations: Record<Language, Record<string, string>> = {
     'menuPage.togoMenuTag': 'Klaar om mee te nemen',
     'menuPage.schiacciatMenuTag': 'Vers op bestelling',
     'menuPage.alsoAvailable': 'Ook Verkrijgbaar',
-    'menuPage.calzoneSubtitle': 'Folded Pizza',
-    'menuPage.byTheSlice': 'By The Slice',
-    'menuPage.viewingMenuOf': 'Je bekijkt het menu van',
+    'menuPage.calzoneSubtitle': 'Folded Pizza',    'menuPage.viewingMenuOf': 'Je bekijkt het menu van',
     'menuPage.maintenanceTag': 'In onderhoud',
     'menuPage.maintenanceTitle': 'Het Xpress-menu is in onderhoud',
     'menuPage.maintenanceBody':
@@ -501,9 +499,7 @@ const translations: Record<Language, Record<string, string>> = {
     'menuPage.togoMenuTag': 'Ready to go',
     'menuPage.schiacciatMenuTag': 'Made to order',
     'menuPage.alsoAvailable': 'Also Available',
-    'menuPage.calzoneSubtitle': 'Folded Pizza',
-    'menuPage.byTheSlice': 'By The Slice',
-    'menuPage.viewingMenuOf': "You're viewing the menu of",
+    'menuPage.calzoneSubtitle': 'Folded Pizza',    'menuPage.viewingMenuOf': "You're viewing the menu of",
     'menuPage.maintenanceTag': 'Under maintenance',
     'menuPage.maintenanceTitle': 'The Xpress menu is under maintenance',
     'menuPage.maintenanceBody':
