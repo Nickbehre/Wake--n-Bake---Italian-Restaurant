@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server'
 const ADMIN_EMAILS = [
   'info@wakenbake.nl',
   'ruben@wakenbake.nl',
+  'nickbehre@gmail.com',
 ]
 
 /**
