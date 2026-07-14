@@ -52,8 +52,10 @@ export default function MenuProductCard({ product, index, onProductClick }: Menu
   const [selectedSize, setSelectedSize] = useState<'regular' | 'large'>('regular');
   const [selectedExtras, setSelectedExtras] = useState<Set<string>>(new Set());
   const { addItem, updateQuantity, items } = useCartStore();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
+  const soldOut = !!product.soldOut;
+  const soldOutLabel = language === 'nl' ? 'Uitverkocht' : 'Sold out';
   const tags = getProductTags(product.description);
   const cleanedDescription = cleanDescription(product.description);
   const hasImage = !!product.image;
@@ -136,7 +138,7 @@ export default function MenuProductCard({ product, index, onProductClick }: Menu
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.03 }}
-      className="group relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
+      className={`group relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col ${soldOut ? 'opacity-70 saturate-50' : ''}`}
     >
       {/* Image Section - 4:3 aspect ratio for beautiful display */}
       {hasImage && (
@@ -177,6 +179,15 @@ export default function MenuProductCard({ product, index, onProductClick }: Menu
                   <Nut className="w-4 h-4 text-amber-600" />
                 </span>
               )}
+            </div>
+          )}
+
+          {/* Uitverkocht-badge */}
+          {soldOut && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+              <span className="bg-espresso text-white font-oswald font-bold text-sm uppercase tracking-widest px-4 py-2 rounded-full shadow-lg">
+                {soldOutLabel}
+              </span>
             </div>
           )}
 
@@ -312,7 +323,11 @@ export default function MenuProductCard({ product, index, onProductClick }: Menu
 
         {/* Add to Cart Button */}
         <div className="mt-auto pt-3 border-t border-espresso/10">
-          {quantityInCart === 0 ? (
+          {soldOut ? (
+            <div className="w-full py-3 rounded-lg font-oswald font-bold uppercase tracking-wide flex items-center justify-center bg-espresso/10 text-espresso/50 cursor-not-allowed">
+              {soldOutLabel}
+            </div>
+          ) : quantityInCart === 0 ? (
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

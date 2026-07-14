@@ -42,7 +42,7 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
   const [selectedExtras, setSelectedExtras] = useState<Set<string>>(new Set());
   const [isAdded, setIsAdded] = useState(false);
   const { addItem, updateQuantity, items } = useCartStore();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   // Reset state when product changes
   useEffect(() => {
@@ -73,6 +73,8 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
 
   if (!product) return null;
 
+  const soldOut = !!product.soldOut;
+  const soldOutLabel = language === 'nl' ? 'Uitverkocht' : 'Sold out';
   const tags = getProductTags(product.description);
   const cleanedDescription = cleanDescription(product.description);
   const hasSizes = product.hasSizes && product.priceRegular && product.priceLarge;
@@ -307,7 +309,11 @@ export default function ProductDetailModal({ product, isOpen, onClose }: Product
 
               {/* Add to cart */}
               <div className="pt-4 border-t border-espresso/10">
-                {quantityInCart === 0 ? (
+                {soldOut ? (
+                  <div className="w-full py-4 rounded-xl font-oswald font-bold text-lg uppercase tracking-wide flex items-center justify-center bg-espresso/10 text-espresso/50 cursor-not-allowed">
+                    {soldOutLabel}
+                  </div>
+                ) : quantityInCart === 0 ? (
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}

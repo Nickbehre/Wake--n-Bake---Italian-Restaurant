@@ -31,6 +31,8 @@ export interface Product {
   availableExtras?: ProductExtra[];
   /** Filialen waar dit product te koop is. Leeg/undefined = beide locaties. */
   availableAt?: LocationId[];
+  /** Tijdelijk uitverkocht — wel tonen, niet bestelbaar. */
+  soldOut?: boolean;
 }
 
 /**

@@ -26,6 +26,9 @@ export default function AdminSettingsPage() {
   const [openingHours, setOpeningHours] = useState<Record<string, DayHours>>({})
   const [storePaused, setStorePaused] = useState(false)
   const [pauseMessage, setPauseMessage] = useState('')
+  const [announcementEnabled, setAnnouncementEnabled] = useState(false)
+  const [announcementNl, setAnnouncementNl] = useState('')
+  const [announcementEn, setAnnouncementEn] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
@@ -51,6 +54,11 @@ export default function AdminSettingsPage() {
         setStorePaused(data.settings.store_paused.value || false)
         setPauseMessage(data.settings.store_paused.message || '')
       }
+      if (data.settings.announcement) {
+        setAnnouncementEnabled(data.settings.announcement.enabled || false)
+        setAnnouncementNl(data.settings.announcement.text_nl || '')
+        setAnnouncementEn(data.settings.announcement.text_en || '')
+      }
     }
     setLoading(false)
   }
@@ -72,6 +80,11 @@ export default function AdminSettingsPage() {
       saveSetting('max_sandwiches_per_day', { value: maxPerDay }),
       saveSetting('opening_hours', openingHours),
       saveSetting('store_paused', { value: storePaused, message: pauseMessage }),
+      saveSetting('announcement', {
+        enabled: announcementEnabled,
+        text_nl: announcementNl,
+        text_en: announcementEn,
+      }),
     ])
 
     if (results.every(Boolean)) {
@@ -188,6 +201,51 @@ export default function AdminSettingsPage() {
             <p className="text-gray-400 text-xs mt-1 font-lato">
               When this number is reached, no more orders will be accepted. 0 = unlimited.
             </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Announcement / daily special */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-oswald text-lg uppercase tracking-wider text-espresso">Announcement</h2>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={announcementEnabled}
+              onChange={(e) => setAnnouncementEnabled(e.target.checked)}
+              className="w-4 h-4 rounded border-gray-300 text-tomato focus:ring-tomato cursor-pointer"
+            />
+            <span className="font-lato text-sm text-gray-600">{announcementEnabled ? 'Visible on website' : 'Off'}</span>
+          </label>
+        </div>
+        <p className="text-gray-400 text-xs mb-4 font-lato">
+          Show a banner on the website — e.g. a daily special or holiday notice. Don&apos;t forget to press Save.
+        </p>
+        <div className="space-y-3">
+          <div>
+            <label className="block font-oswald uppercase text-xs text-gray-500 mb-1 tracking-wider">
+              Text (Nederlands)
+            </label>
+            <input
+              type="text"
+              value={announcementNl}
+              onChange={(e) => setAnnouncementNl(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded font-lato text-sm focus:border-tomato focus:ring-1 focus:ring-tomato outline-none"
+              placeholder="Bijv.: Vandaag: verse Porchetta schiacciata!"
+            />
+          </div>
+          <div>
+            <label className="block font-oswald uppercase text-xs text-gray-500 mb-1 tracking-wider">
+              Text (English)
+            </label>
+            <input
+              type="text"
+              value={announcementEn}
+              onChange={(e) => setAnnouncementEn(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded font-lato text-sm focus:border-tomato focus:ring-1 focus:ring-tomato outline-none"
+              placeholder="E.g.: Today: fresh Porchetta schiacciata!"
+            />
           </div>
         </div>
       </div>

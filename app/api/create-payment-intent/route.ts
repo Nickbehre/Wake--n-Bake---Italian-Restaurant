@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { menuData } from "@/lib/data/menu";
-import { getAllProducts } from "@/lib/data/products";
 import { createAdminClient } from "@/lib/supabase/admin";
-
-// Flatten menu items from both data sources for lookup
-const menuItems = menuData.categories.flatMap((c) => c.items);
-const productItems = getAllProducts();
+import { fetchProductsByIds, type DbProduct } from "@/lib/data/menu-db";
+import type { LocationId } from "@/lib/data/locations";
+import { isValidLocationId } from "@/lib/data/locations";
 
 // Initialize Stripe lazily to avoid build-time errors
 function getStripe() {
@@ -18,12 +15,19 @@ function getStripe() {
 
 // Prices are already inclusive of BTW (VAT)
 
+interface CartItemExtra {
+    id: string;
+    name: string;
+    price: number;
+}
+
 interface CartItem {
     id: string;           // Unique cart ID (e.g., "mortadella-original-large")
     productId: string;    // Original menu item ID
     name: string;
     size: 'regular' | 'large' | null;
     price: number;        // Client-side price (we'll verify server-side)
+    extras?: CartItemExtra[];
     quantity: number;
 }
 
@@ -35,68 +39,83 @@ interface CustomerInfo {
 
 export async function POST(request: Request) {
     try {
-        const { items, customer, pickupTime } = await request.json() as {
+        const { items, customer, pickupTime, location } = await request.json() as {
             items: CartItem[];
             customer?: CustomerInfo;
             pickupTime?: string;
+            location?: string;
         };
 
         if (!items || !Array.isArray(items) || items.length === 0) {
             return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
         }
 
-        // Calculate price on server side - DO NOT TRUST client prices
+        // Calculate price on server side - DO NOT TRUST client prices.
+        // Producten komen uit Supabase (beheerbaar via het dashboard).
+        const productIds = [...new Set(items.map((i) => i.productId || i.id))];
+        const products = await fetchProductsByIds(productIds);
+        const productById = new Map<string, DbProduct>(products.map((p) => [p.id, p]));
+
         let subtotal = 0;
         const verifiedItems: CartItem[] = [];
 
         for (const item of items) {
             const productId = item.productId || item.id;
+            const product = productById.get(productId);
 
-            // Try menu.ts first (items like "mortadella-original")
-            const menuItem = menuItems.find((i) => i.id === productId);
-            // Then try products.ts (items like "schiacciata-caprese")
-            const productItem = productItems.find((i) => i.id === productId);
-
-            let priceVal: number;
-
-            if (menuItem) {
-                // Found in menu.ts — price is a string like "€8 | €12" or "€2.50"
-                if (menuItem.hasSizes && item.size) {
-                    if (item.size === 'large' && menuItem.priceLarge) {
-                        priceVal = menuItem.priceLarge;
-                    } else if (item.size === 'regular' && menuItem.priceRegular) {
-                        priceVal = menuItem.priceRegular;
-                    } else {
-                        priceVal = parseFloat(menuItem.price.replace("€", "").split("|")[0].trim());
-                    }
-                } else {
-                    priceVal = parseFloat(menuItem.price.replace("€", "").replace(",", ".").trim());
-                }
-            } else if (productItem) {
-                // Found in products.ts — price is a number
-                if (productItem.hasSizes && item.size) {
-                    if (item.size === 'large' && productItem.priceLarge) {
-                        priceVal = productItem.priceLarge;
-                    } else if (item.size === 'regular' && productItem.priceRegular) {
-                        priceVal = productItem.priceRegular;
-                    } else {
-                        priceVal = productItem.price;
-                    }
-                } else {
-                    priceVal = productItem.price;
-                }
-            } else {
-                console.warn(`Item not found in menu: ${productId}`);
-                continue;
+            // Onbekend/verborgen/uitverkocht: bestelling weigeren i.p.v. item
+            // stilletjes laten vallen — de checkout toont welk item het is.
+            if (!product || product.hidden || product.sold_out) {
+                const reason = !product
+                    ? 'not_available'
+                    : product.sold_out
+                        ? 'sold_out'
+                        : 'not_available';
+                return NextResponse.json({
+                    error: `"${item.name}" is momenteel niet beschikbaar. Verwijder het uit je winkelmand. / "${item.name}" is currently unavailable. Please remove it from your cart.`,
+                    unavailableItemId: item.id,
+                    reason,
+                }, { status: 400 });
             }
 
-            if (isNaN(priceVal)) {
-                console.error("Invalid price format for item", productId);
-                continue;
+            let priceVal: number;
+            if (product.has_sizes && item.size === 'large' && product.price_large != null) {
+                priceVal = Number(product.price_large);
+            } else if (product.has_sizes && item.size === 'regular' && product.price_regular != null) {
+                priceVal = Number(product.price_regular);
+            } else {
+                priceVal = Number(product.price);
+            }
+
+            // Extras valideren tegen de extras van het product zelf
+            const verifiedExtras: CartItemExtra[] = [];
+            if (item.extras && item.extras.length > 0) {
+                const allowed = new Map((product.extras ?? []).map((e) => [e.id, e]));
+                for (const extra of item.extras) {
+                    const match = allowed.get(extra.id);
+                    if (!match) {
+                        return NextResponse.json({
+                            error: `Extra "${extra.name}" is niet beschikbaar voor "${item.name}". / Extra "${extra.name}" is not available for "${item.name}".`,
+                            unavailableItemId: item.id,
+                            reason: 'invalid_extra',
+                        }, { status: 400 });
+                    }
+                    verifiedExtras.push({ id: match.id, name: match.name, price: Number(match.price) });
+                    priceVal += Number(match.price);
+                }
+            }
+
+            if (isNaN(priceVal) || priceVal <= 0) {
+                console.error("Invalid price for item", productId);
+                return NextResponse.json({ error: "Invalid item price" }, { status: 400 });
             }
 
             subtotal += priceVal * item.quantity;
-            verifiedItems.push({ ...item, price: priceVal });
+            verifiedItems.push({
+                ...item,
+                price: priceVal,
+                extras: verifiedExtras.length > 0 ? verifiedExtras : undefined,
+            });
         }
 
         // Prices already include BTW, so total = subtotal
@@ -114,6 +133,10 @@ export async function POST(request: Request) {
         const random = Math.random().toString(36).substring(2, 8);
         const orderId = `WNB-${timestamp}-${random}`.toUpperCase();
 
+        const orderLocation: LocationId = isValidLocationId(location ?? null)
+            ? (location as LocationId)
+            : 'original';
+
         const stripe = getStripe();
 
         const paymentIntent = await stripe.paymentIntents.create({
@@ -130,6 +153,7 @@ export async function POST(request: Request) {
                 customer_email: customer?.email || '',
                 customer_phone: customer?.phone || '',
                 pickup_time: pickupTime || '',
+                location: orderLocation,
             },
         });
 
@@ -148,6 +172,7 @@ export async function POST(request: Request) {
             payment_method: 'stripe',
             stripe_payment_intent_id: paymentIntent.id,
             stripe_payment_status: 'requires_payment_method',
+            location: orderLocation,
         });
 
         return NextResponse.json({

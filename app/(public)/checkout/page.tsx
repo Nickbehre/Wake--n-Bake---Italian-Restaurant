@@ -6,7 +6,9 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "@/components/checkout/CheckoutForm";
 import { useCartStore } from "@/lib/store/cart-store";
 import { useLanguage } from "@/lib/context/LanguageContext";
+import { useLocation } from "@/lib/context/LocationContext";
 import { StoreStatusGate } from "@/components/order/StoreClosedModal";
+import OrderingUnavailable from "@/components/ui/OrderingUnavailable";
 import { Loader2, ShoppingBag, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { trackBeginCheckout } from "@/lib/analytics";
@@ -15,10 +17,12 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 
 export default function CheckoutPage() {
   const { t } = useLanguage();
+  const { locationId } = useLocation();
   const { totals, items } = useCartStore();
   const [clientSecret, setClientSecret] = useState("");
   const [orderId, setOrderId] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [serviceDown, setServiceDown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const checkoutTracked = useRef(false);
 
@@ -40,17 +44,22 @@ export default function CheckoutPage() {
 
     setIsLoading(true);
     setError(null);
+    setServiceDown(false);
 
     fetch("/api/create-payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items }),
+      body: JSON.stringify({ items, location: locationId }),
     })
-      .then((res) => res.json())
-      .then((data) => {
+      .then(async (res) => ({ status: res.status, data: await res.json() }))
+      .then(({ status, data }) => {
         if (data.clientSecret) {
           setClientSecret(data.clientSecret);
           setOrderId(data.orderId);
+        } else if (status >= 500) {
+          // Server-/databaseprobleem: toon de "bestel in de winkel"-fallback
+          console.error("Server error creating payment intent", data);
+          setServiceDown(true);
         } else {
           console.error("No client secret returned", data);
           setError(data.error || t('checkout.errorPreparing'));
@@ -58,10 +67,10 @@ export default function CheckoutPage() {
       })
       .catch((err) => {
         console.error("Error creating payment intent:", err);
-        setError(t('checkout.errorConnection'));
+        setServiceDown(true);
       })
       .finally(() => setIsLoading(false));
-  }, [items, totals.total, t]);
+  }, [items, totals.total, t, locationId]);
 
   const appearance = {
     theme: 'stripe' as const,
@@ -113,6 +122,8 @@ export default function CheckoutPage() {
               {t('checkout.backToMenu')}
             </Link>
           </div>
+        ) : serviceDown ? (
+          <OrderingUnavailable />
         ) : error ? (
           <div className="text-center py-16 bg-white rounded-lg shadow-sm max-w-md mx-auto">
             <AlertCircle className="w-16 h-16 text-tomato mx-auto mb-4" />

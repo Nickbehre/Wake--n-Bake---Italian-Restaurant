@@ -3,6 +3,7 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import CookieBanner from '@/components/ui/CookieBanner'
+import AnnouncementBanner from '@/components/ui/AnnouncementBanner'
 import CartDrawer from '@/components/cart/CartDrawer'
 import Preloader from '@/components/ui/Preloader'
 import Cursor from '@/components/ui/Cursor'
@@ -13,7 +14,6 @@ import { ThemeProvider } from 'next-themes'
 import { MotionConfig } from 'framer-motion'
 import { Toaster } from 'sonner'
 import { LanguageProvider } from '@/lib/context/LanguageContext'
-import { CartProvider } from '@/lib/context/CartContext'
 import { LocationProvider } from '@/lib/context/LocationContext'
 
 export default function PublicLayout({
@@ -27,7 +27,6 @@ export default function PublicLayout({
       <MotionConfig reducedMotion="user">
       <LanguageProvider>
         <LocationProvider>
-          <CartProvider>
             <SmoothScroll>
               <div className="bg-flour text-espresso">
                 <Preloader />
@@ -37,11 +36,11 @@ export default function PublicLayout({
                 <main className="min-h-screen">{children}</main>
                 <Footer />
                 <CartDrawer />
+                <AnnouncementBanner />
                 <CookieBanner />
                 <Toaster position="bottom-right" />
               </div>
             </SmoothScroll>
-          </CartProvider>
         </LocationProvider>
       </LanguageProvider>
       </MotionConfig>

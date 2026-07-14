@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, ClipboardList, Settings, LogOut, ChefHat, UtensilsCrossed } from 'lucide-react'
+import { LayoutDashboard, ClipboardList, Settings, LogOut, ChefHat, UtensilsCrossed, BookOpen, TrendingUp } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
@@ -59,6 +59,8 @@ export default function AdminSidebar() {
   const navItems = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, badge: 0 },
     { href: '/admin/orders', label: 'Orders', icon: ClipboardList, badge: badges.orders },
+    { href: '/admin/menu', label: 'Menu', icon: BookOpen, badge: 0 },
+    { href: '/admin/menu/insights', label: 'Insights', icon: TrendingUp, badge: 0 },
     { href: '/admin/catering', label: 'Catering', icon: UtensilsCrossed, badge: badges.catering },
     { href: '/admin/settings', label: 'Settings', icon: Settings, badge: 0 },
   ]

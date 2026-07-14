@@ -2,6 +2,14 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   images: {
+    // Menufoto's die via het dashboard geüpload worden staan in Supabase Storage.
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'emionhnjhjhrwdjqhywj.supabase.co',
+        pathname: '/storage/v1/object/public/**',
+      },
+    ],
     // webp-only halves the transformations vs avif+webp (Vercel Hobby quota);
     // sources are now small, so the bandwidth gain from avif is negligible.
     formats: ['image/webp'],

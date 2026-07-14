@@ -2,11 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { OrderCartItem, CustomerInfo, Order } from '@/lib/types/order';
 import { sendOrderEmails } from '@/lib/email/send';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { getAllProducts } from '@/lib/data/products';
-import { menuData } from '@/lib/data/menu';
-
-const menuItems = menuData.categories.flatMap((c) => c.items);
-const productItems = getAllProducts();
+import { fetchProductsByIds } from '@/lib/data/menu-db';
 
 interface OrderRequestBody {
   items: OrderCartItem[];
@@ -73,37 +69,53 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify prices server-side
+    // Verify prices server-side tegen de menuproducten in Supabase
+    const productIds = [...new Set(body.items.map((item) => (item as any).productId || item.id))];
+    const products = await fetchProductsByIds(productIds as string[]);
+    const productById = new Map(products.map((p) => [p.id, p]));
+
     let verifiedTotal = 0;
-    const verifiedItems = body.items.map((item) => {
+    const verifiedItems: OrderCartItem[] = [];
+    for (const item of body.items) {
       const productId = (item as any).productId || item.id;
       const size = (item as any).size;
-      const menuItem = menuItems.find((i) => i.id === productId);
-      const productItem = productItems.find((i) => i.id === productId);
+      const product = productById.get(productId);
 
-      let priceVal = item.price;
+      if (!product || product.hidden || product.sold_out) {
+        return NextResponse.json(
+          { success: false, error: `"${item.name}" is currently unavailable. Please remove it from your cart.` },
+          { status: 400 }
+        );
+      }
 
-      if (menuItem) {
-        if (menuItem.hasSizes && size) {
-          if (size === 'large' && menuItem.priceLarge) priceVal = menuItem.priceLarge;
-          else if (size === 'regular' && menuItem.priceRegular) priceVal = menuItem.priceRegular;
-          else priceVal = parseFloat(menuItem.price.replace('€', '').split('|')[0].trim());
-        } else {
-          priceVal = parseFloat(menuItem.price.replace('€', '').replace(',', '.').trim());
-        }
-      } else if (productItem) {
-        if (productItem.hasSizes && size) {
-          if (size === 'large' && productItem.priceLarge) priceVal = productItem.priceLarge;
-          else if (size === 'regular' && productItem.priceRegular) priceVal = productItem.priceRegular;
-          else priceVal = productItem.price;
-        } else {
-          priceVal = productItem.price;
+      let priceVal: number;
+      if (product.has_sizes && size === 'large' && product.price_large != null) {
+        priceVal = Number(product.price_large);
+      } else if (product.has_sizes && size === 'regular' && product.price_regular != null) {
+        priceVal = Number(product.price_regular);
+      } else {
+        priceVal = Number(product.price);
+      }
+
+      // Extras (indien meegestuurd) valideren tegen het product
+      const sentExtras = (item as any).extras as { id: string; name: string; price: number }[] | undefined;
+      if (sentExtras?.length) {
+        const allowed = new Map((product.extras ?? []).map((e) => [e.id, e]));
+        for (const extra of sentExtras) {
+          const match = allowed.get(extra.id);
+          if (!match) {
+            return NextResponse.json(
+              { success: false, error: `Extra "${extra.name}" is not available for "${item.name}".` },
+              { status: 400 }
+            );
+          }
+          priceVal += Number(match.price);
         }
       }
 
-      if (!isNaN(priceVal)) verifiedTotal += priceVal * item.quantity;
-      return { ...item, price: priceVal };
-    });
+      verifiedTotal += priceVal * item.quantity;
+      verifiedItems.push({ ...item, price: priceVal });
+    }
 
     // Create order object with verified prices
     const order: Order = {

@@ -3,11 +3,13 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { schiacciataMenuCategories, togoMenuCategories, getMenuForLocation } from '@/lib/data/products';
+import { getMenuForLocation } from '@/lib/utils/menu-filter';
+import { toLocalizedCategory, type MenuCategoryPayload } from '@/lib/data/menu-types';
 import MenuCategorySection from '@/components/menu/MenuCategorySection';
 import MenuPDFButton from '@/components/menu/MenuPDFButton';
 import CartDrawer from '@/components/cart/CartDrawer';
 import MenuPhotoOverlay, { type MenuPhoto } from '@/components/menu/MenuPhotoOverlay';
+import OrderingUnavailable from '@/components/ui/OrderingUnavailable';
 import ProductDetailModal from '@/components/menu/ProductDetailModal';
 import { useLanguage } from '@/lib/context/LanguageContext';
 import { useLocation } from '@/lib/context/LocationContext';
@@ -27,19 +29,44 @@ const togoMenuPhotos: MenuPhoto[] = [
 ];
 
 export default function MenuPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { locationId, location, otherLocation, switchLocation } = useLocation();
   const underMaintenance = location.menuUnderMaintenance;
 
+  // Menu komt uit Supabase (beheerbaar via het dashboard)
+  const [menuData, setMenuData] = useState<MenuCategoryPayload[] | null>(null);
+  const [menuError, setMenuError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/products', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled) return;
+        if (data.success) setMenuData(data.categories);
+        else setMenuError(true);
+      })
+      .catch(() => { if (!cancelled) setMenuError(true); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const menuLoading = menuData === null && !menuError;
+
   // Per-filiaal menu (display only): Xpress toont standaard alleen het to-go menu.
-  const visibleSchiacciata = useMemo(
-    () => getMenuForLocation(schiacciataMenuCategories, locationId),
-    [locationId]
-  );
-  const visibleTogo = useMemo(
-    () => getMenuForLocation(togoMenuCategories, locationId),
-    [locationId]
-  );
+  const visibleSchiacciata = useMemo(() => {
+    if (!menuData) return [];
+    const localized = menuData
+      .filter((c) => c.menu === 'schiacciata')
+      .map((c) => toLocalizedCategory(c, language));
+    return getMenuForLocation(localized, locationId);
+  }, [menuData, language, locationId]);
+  const visibleTogo = useMemo(() => {
+    if (!menuData) return [];
+    const localized = menuData
+      .filter((c) => c.menu === 'togo')
+      .map((c) => toLocalizedCategory(c, language));
+    return getMenuForLocation(localized, locationId);
+  }, [menuData, language, locationId]);
   const hasSchiacciata = visibleSchiacciata.length > 0;
   const hasTogo = visibleTogo.length > 0;
 
@@ -243,6 +270,25 @@ export default function MenuPage() {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </motion.div>
+        ) : menuLoading ? (
+          /* ─── Menu wordt geladen uit Supabase ─── */
+          <div className="max-w-5xl mx-auto space-y-10 animate-pulse" aria-busy="true">
+            <div className="h-48 md:h-64 rounded-2xl bg-espresso/10" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="bg-white rounded-xl shadow-sm overflow-hidden">
+                  <div className="aspect-[4/3] bg-espresso/10" />
+                  <div className="p-5 space-y-3">
+                    <div className="h-5 w-2/3 bg-espresso/10 rounded" />
+                    <div className="h-4 w-full bg-espresso/5 rounded" />
+                    <div className="h-10 w-full bg-espresso/5 rounded-lg" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : menuError ? (
+          <OrderingUnavailable />
         ) : (
         <>
 
