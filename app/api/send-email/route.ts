@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import OrderReceipt from "@/components/emails/OrderReceipt";
+import { customerConfirmationEmail, storeNotificationEmail, type OrderEmailData } from "@/lib/email/templates";
 
 // Initialize Resend lazily to avoid build-time errors
 function getResend() {
@@ -16,6 +16,8 @@ function generateOrderId(): string {
     return `WNB-${timestamp}-${random}`.toUpperCase();
 }
 
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'info@order.wakenbake.nl';
+const FROM_NAME = "Wake N' Bake Panificio";
 const STORE_EMAIL = process.env.ORDER_NOTIFICATION_EMAIL || 'info@wakenbake.nl';
 
 export async function POST(request: Request) {
@@ -26,35 +28,37 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Email required" }, { status: 400 });
         }
 
-        // Use env var for from address, fallback to Resend sandbox for testing
-        const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
         const orderId = orderDetails.orderId || generateOrderId();
 
         const resend = getResend();
 
-        const receiptProps = {
-            customerName: orderDetails.customerDetails?.name || "Customer",
+        const emailData: OrderEmailData = {
             orderId,
-            pickupTimeFormatted: pickupTimeFormatted,
             items: orderDetails.items || [],
-            totals: orderDetails.totals || { subtotal: 0, tax: 0, total: 0 },
+            customer: {
+                name: orderDetails.customerDetails?.name || "Klant",
+                email,
+                phone: orderDetails.customerDetails?.phone || "",
+            },
+            total: orderDetails.totals?.total ?? 0,
+            pickupTime: pickupTimeFormatted || "Onbekend",
         };
 
         // Send both customer confirmation and store notification
         const results = await Promise.allSettled([
             // Email 1: Customer confirmation
             resend.emails.send({
-                from: `Wake n Bake <${fromEmail}>`,
+                from: `${FROM_NAME} <${FROM_EMAIL}>`,
                 to: [email],
-                subject: `Order Confirmation - Wake n Bake #${orderId}`,
-                react: OrderReceipt(receiptProps),
+                subject: `Orderbevestiging ${orderId} - Wake N' Bake`,
+                html: customerConfirmationEmail(emailData),
             }),
             // Email 2: Store notification
             resend.emails.send({
-                from: `Wake n Bake <${fromEmail}>`,
+                from: `${FROM_NAME} <${FROM_EMAIL}>`,
                 to: [STORE_EMAIL],
-                subject: `NEW ORDER #${orderId} - Pickup ${pickupTimeFormatted}`,
-                react: OrderReceipt(receiptProps),
+                subject: `NIEUWE BESTELLING ${orderId} - Ophalen ${emailData.pickupTime}`,
+                html: storeNotificationEmail(emailData),
             }),
         ]);
 

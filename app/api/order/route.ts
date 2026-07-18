@@ -3,6 +3,7 @@ import type { OrderCartItem, CustomerInfo, Order } from '@/lib/types/order';
 import { sendOrderEmails } from '@/lib/email/send';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { fetchProductsByIds } from '@/lib/data/menu-db';
+import { isStoreAcceptingOrders } from '@/lib/server/store-status';
 
 interface OrderRequestBody {
   items: OrderCartItem[];
@@ -65,6 +66,15 @@ export async function POST(request: NextRequest) {
     if (validationError) {
       return NextResponse.json(
         { success: false, error: validationError },
+        { status: 400 }
+      );
+    }
+
+    // Server-side openingscontrole — de frontend-gate is te omzeilen
+    const storeState = await isStoreAcceptingOrders();
+    if (!storeState.open) {
+      return NextResponse.json(
+        { success: false, error: storeState.message },
         { status: 400 }
       );
     }

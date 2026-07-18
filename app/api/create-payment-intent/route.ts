@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fetchProductsByIds, type DbProduct } from "@/lib/data/menu-db";
+import { isStoreAcceptingOrders } from "@/lib/server/store-status";
 import type { LocationId } from "@/lib/data/locations";
 import { isValidLocationId } from "@/lib/data/locations";
 
@@ -48,6 +49,15 @@ export async function POST(request: Request) {
 
         if (!items || !Array.isArray(items) || items.length === 0) {
             return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
+        }
+
+        // Server-side openingscontrole — de frontend-gate is te omzeilen
+        const storeState = await isStoreAcceptingOrders();
+        if (!storeState.open) {
+            return NextResponse.json(
+                { error: storeState.message, reason: "store_closed" },
+                { status: 400 }
+            );
         }
 
         // Calculate price on server side - DO NOT TRUST client prices.
@@ -168,7 +178,9 @@ export async function POST(request: Request) {
             subtotal: total,
             total: total,
             pickup_time: pickupTime || '',
-            status: 'pending',
+            // Pas zichtbaar voor het personeel nadat Stripe de betaling
+            // bevestigt (webhook zet de status dan op 'pending').
+            status: 'awaiting_payment',
             payment_method: 'stripe',
             stripe_payment_intent_id: paymentIntent.id,
             stripe_payment_status: 'requires_payment_method',

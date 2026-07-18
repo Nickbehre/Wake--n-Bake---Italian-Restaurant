@@ -36,15 +36,18 @@ export async function POST(request: Request) {
       const orderId = pi.metadata.order_id
 
       if (orderId) {
+        // Betaald → nu pas als "New order" zichtbaar voor het personeel
+        // (orders staan tot dan op 'awaiting_payment' en zijn verborgen)
         await supabase
           .from('orders')
           .update({
             stripe_payment_status: 'succeeded',
             stripe_amount_received: pi.amount_received,
-            status: 'confirmed',
+            status: 'pending',
             updated_at: new Date().toISOString(),
           })
           .eq('id', orderId)
+          .eq('status', 'awaiting_payment')
 
         // Create notification
         await supabase.from('notifications').insert({

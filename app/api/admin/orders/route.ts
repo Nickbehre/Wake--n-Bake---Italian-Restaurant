@@ -23,6 +23,10 @@ export async function GET(request: NextRequest) {
 
   if (status && status !== 'all') {
     query = query.eq('status', status)
+  } else {
+    // Onbetaalde Stripe-checkouts verbergen — pas na betaling wordt een
+    // order 'pending' en dus zichtbaar
+    query = query.not('status', 'eq', 'awaiting_payment')
   }
 
   if (search) {

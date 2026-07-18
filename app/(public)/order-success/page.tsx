@@ -62,9 +62,9 @@ export default function OrderSuccessPage() {
           const isTimeOnly = parsed.pickupTime && /^\d{2}:\d{2}$/.test(parsed.pickupTime);
           const pickupFormatted = parsed.pickupTime
             ? (isTimeOnly
-              ? `${format(new Date(), "EEEE d MMMM", { locale: enUS })} at ${parsed.pickupTime}`
-              : format(new Date(parsed.pickupTime), "EEEE d MMMM 'at' HH:mm", { locale: enUS }))
-            : "Date unknown";
+              ? `${format(new Date(), "EEEE d MMMM", { locale: nl })} om ${parsed.pickupTime}`
+              : format(new Date(parsed.pickupTime), "EEEE d MMMM 'om' HH:mm", { locale: nl }))
+            : "Onbekend";
           fetch("/api/send-email", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -100,9 +100,9 @@ export default function OrderSuccessPage() {
         const isTimeOnlyFb = pt && /^\d{2}:\d{2}$/.test(pt);
         const pickupFormatted = pt
           ? (isTimeOnlyFb
-            ? `${format(new Date(), "EEEE d MMMM", { locale: enUS })} at ${pt}`
-            : format(new Date(pt), "EEEE d MMMM 'at' HH:mm", { locale: enUS }))
-          : "Date unknown";
+            ? `${format(new Date(), "EEEE d MMMM", { locale: nl })} om ${pt}`
+            : format(new Date(pt), "EEEE d MMMM 'om' HH:mm", { locale: nl }))
+          : "Onbekend";
         fetch("/api/send-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

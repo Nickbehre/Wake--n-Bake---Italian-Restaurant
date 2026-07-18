@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     .from('orders')
     .select('items, location, status, created_at')
     .gte('created_at', prevSince)
-    .not('status', 'eq', 'cancelled')
+    .not('status', 'in', '("cancelled","awaiting_payment")')
 
   if (location === 'original' || location === 'express') {
     query = query.eq('location', location)

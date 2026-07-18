@@ -139,6 +139,8 @@ export default function AdminDashboard() {
       .select('*')
       .gte('created_at', startOfDay)
       .lte('created_at', endOfDay)
+      // Onbetaalde Stripe-checkouts zijn nog geen echte bestellingen
+      .not('status', 'eq', 'awaiting_payment')
       .order('created_at', { ascending: false })
 
     if (todayOrders) setTodaysOrders(todayOrders)
