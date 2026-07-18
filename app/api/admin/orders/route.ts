@@ -9,9 +9,10 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const status = searchParams.get('status')
   const search = searchParams.get('search')
-  const date = searchParams.get('date')
-  const limit = parseInt(searchParams.get('limit') || '50')
-  const offset = parseInt(searchParams.get('offset') || '0')
+  const from = searchParams.get('from')
+  const to = searchParams.get('to')
+  const limit = Math.min(parseInt(searchParams.get('limit') || '50') || 50, 500)
+  const offset = parseInt(searchParams.get('offset') || '0') || 0
 
   const admin = createAdminClient()
   let query = admin
@@ -32,11 +33,9 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  if (date) {
-    const startOfDay = `${date}T00:00:00.000Z`
-    const endOfDay = `${date}T23:59:59.999Z`
-    query = query.gte('created_at', startOfDay).lte('created_at', endOfDay)
-  }
+  // Datumbereik (ISO-strings; client rekent Amsterdamse daggrenzen om via lib/utils/dutch-time)
+  if (from) query = query.gte('created_at', from)
+  if (to) query = query.lte('created_at', to)
 
   const { data, error, count } = await query
 

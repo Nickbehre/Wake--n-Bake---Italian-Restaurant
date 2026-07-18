@@ -31,6 +31,8 @@ export default function AdminSettingsPage() {
   const [announcementEn, setAnnouncementEn] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  // Welke sectie er op dit moment opslaat (per-sectie Save-knoppen)
+  const [savingSection, setSavingSection] = useState<string | null>(null)
 
   useEffect(() => {
     fetchSettings()
@@ -95,6 +97,34 @@ export default function AdminSettingsPage() {
     setSaving(false)
   }
 
+  /** Slaat één sectie op; `entries` = de settings-keys van die sectie. */
+  async function handleSaveSection(section: string, entries: [string, any][]) {
+    setSavingSection(section)
+    const results = await Promise.all(entries.map(([key, value]) => saveSetting(key, value)))
+    if (results.every(Boolean)) {
+      toast.success('Saved')
+    } else {
+      toast.error('Could not save')
+    }
+    setSavingSection(null)
+  }
+
+  function SectionSaveButton({ section, entries }: { section: string; entries: [string, any][] }) {
+    const busy = savingSection === section
+    return (
+      <div className="flex justify-end mt-5 pt-4 border-t border-gray-100">
+        <button
+          onClick={() => handleSaveSection(section, entries)}
+          disabled={busy}
+          className="flex items-center gap-2 px-4 py-2 bg-espresso text-white rounded-lg font-oswald uppercase text-xs tracking-wider hover:bg-espresso/85 transition disabled:opacity-50"
+        >
+          {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+          Save
+        </button>
+      </div>
+    )
+  }
+
   async function toggleStorePause() {
     const newValue = !storePaused
     setStorePaused(newValue)
@@ -130,7 +160,7 @@ export default function AdminSettingsPage() {
           className="flex items-center gap-2 px-6 py-3 bg-tomato text-white rounded-lg font-oswald uppercase tracking-wider hover:bg-red-700 transition disabled:opacity-50"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Save
+          Save all
         </button>
       </div>
 
@@ -163,6 +193,12 @@ export default function AdminSettingsPage() {
               placeholder="E.g.: We are temporarily closed due to..."
             />
           </div>
+        )}
+        {storePaused && (
+          <SectionSaveButton
+            section="store"
+            entries={[['store_paused', { value: storePaused, message: pauseMessage }]]}
+          />
         )}
       </div>
 
@@ -203,6 +239,13 @@ export default function AdminSettingsPage() {
             </p>
           </div>
         </div>
+        <SectionSaveButton
+          section="capacity"
+          entries={[
+            ['max_sandwiches_per_slot', { value: maxSandwiches }],
+            ['max_sandwiches_per_day', { value: maxPerDay }],
+          ]}
+        />
       </div>
 
       {/* Announcement / daily special */}
@@ -248,6 +291,12 @@ export default function AdminSettingsPage() {
             />
           </div>
         </div>
+        <SectionSaveButton
+          section="announcement"
+          entries={[
+            ['announcement', { enabled: announcementEnabled, text_nl: announcementNl, text_en: announcementEn }],
+          ]}
+        />
       </div>
 
       {/* Opening Hours */}
@@ -289,6 +338,7 @@ export default function AdminSettingsPage() {
             )
           })}
         </div>
+        <SectionSaveButton section="hours" entries={[['opening_hours', openingHours]]} />
       </div>
     </div>
   )

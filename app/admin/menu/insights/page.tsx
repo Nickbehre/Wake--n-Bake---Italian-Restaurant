@@ -15,7 +15,24 @@ interface InsightsData {
   location: string
   orderCount: number
   totalRevenue: number
+  previous?: { orderCount: number; totalRevenue: number }
   bestSellers: BestSeller[]
+}
+
+/** "+12% vs previous 30 days" onder een stat-kaart; grijs als er geen vorige data is. */
+function TrendLine({ current, previous, days }: { current: number; previous: number | undefined; days: number }) {
+  if (previous === undefined || (previous === 0 && current === 0)) return null
+  if (previous === 0) {
+    return <p className="text-xs font-lato text-gray-400 mt-1">No data in previous {days} days</p>
+  }
+  const pct = Math.round(((current - previous) / previous) * 100)
+  const color = pct > 0 ? 'text-green-600' : pct < 0 ? 'text-red-600' : 'text-gray-400'
+  const sign = pct > 0 ? '+' : ''
+  return (
+    <p className={`text-xs font-lato mt-1 ${color}`}>
+      {sign}{pct}% vs previous {days} days
+    </p>
+  )
 }
 
 const RANGES = [7, 30, 90]
@@ -35,7 +52,9 @@ export default function MenuInsightsPage() {
     setLoading(true)
     fetch(`/api/admin/menu/insights?days=${days}&location=${location}`)
       .then((res) => res.json())
-      .then((d) => setData(d))
+      // Foutrespons ({error}) niet als data behandelen — voorkomt crash op toFixed
+      .then((d) => setData(d && typeof d.totalRevenue === 'number' ? d : null))
+      .catch(() => setData(null))
       .finally(() => setLoading(false))
   }, [days, location])
 
@@ -89,10 +108,12 @@ export default function MenuInsightsPage() {
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-5">
               <p className="font-oswald uppercase text-xs text-gray-400 tracking-wider mb-1">Orders</p>
               <p className="font-oswald text-3xl text-espresso">{data.orderCount}</p>
+              <TrendLine current={data.orderCount} previous={data.previous?.orderCount} days={data.days} />
             </div>
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-5">
               <p className="font-oswald uppercase text-xs text-gray-400 tracking-wider mb-1">Revenue</p>
               <p className="font-oswald text-3xl text-espresso">€{data.totalRevenue.toFixed(2)}</p>
+              <TrendLine current={data.totalRevenue} previous={data.previous?.totalRevenue} days={data.days} />
             </div>
           </div>
 

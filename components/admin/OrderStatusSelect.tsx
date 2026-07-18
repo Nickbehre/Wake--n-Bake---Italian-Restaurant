@@ -4,10 +4,10 @@ import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 
 const statusOptions = [
-  { value: 'pending', label: 'New' },
+  { value: 'pending', label: 'New order' },
   { value: 'confirmed', label: 'Confirmed' },
   { value: 'preparing', label: 'Preparing' },
-  { value: 'ready', label: 'Ready' },
+  { value: 'ready', label: 'Ready for pickup' },
   { value: 'completed', label: 'Picked up' },
   { value: 'cancelled', label: 'Cancelled' },
 ]

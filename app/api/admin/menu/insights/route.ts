@@ -24,30 +24,45 @@ export async function GET(request: NextRequest) {
   const location = searchParams.get('location') || 'all'
 
   const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString()
+  // Vorige, even lange periode (voor de +/- % vergelijking)
+  const prevSince = new Date(Date.now() - 2 * days * 24 * 60 * 60 * 1000).toISOString()
 
   const admin = createAdminClient()
   let query = admin
     .from('orders')
     .select('items, location, status, created_at')
-    .gte('created_at', since)
+    .gte('created_at', prevSince)
     .not('status', 'eq', 'cancelled')
 
   if (location === 'original' || location === 'express') {
     query = query.eq('location', location)
   }
 
-  const { data, error } = await query
+  const { data: allData, error } = await query
   if (error) {
     console.error('Error fetching insights:', error)
     return NextResponse.json({ error: 'Failed to fetch insights' }, { status: 500 })
   }
+
+  const data = (allData ?? []).filter((o) => o.created_at >= since)
+  const prevData = (allData ?? []).filter((o) => o.created_at < since)
 
   // Aggregatie in JS — ordervolume is klein genoeg
   const byProduct = new Map<string, { name: string; quantity: number; revenue: number }>()
   let orderCount = 0
   let totalRevenue = 0
 
-  for (const order of data ?? []) {
+  // Vorige periode: alleen totalen
+  let prevOrderCount = 0
+  let prevRevenue = 0
+  for (const order of prevData) {
+    prevOrderCount++
+    for (const item of (order.items ?? []) as OrderItemRow[]) {
+      prevRevenue += (item.price ?? 0) * (item.quantity ?? 1)
+    }
+  }
+
+  for (const order of data) {
     orderCount++
     const items = (order.items ?? []) as OrderItemRow[]
     for (const item of items) {
@@ -84,6 +99,10 @@ export async function GET(request: NextRequest) {
     location,
     orderCount,
     totalRevenue: Number(totalRevenue.toFixed(2)),
+    previous: {
+      orderCount: prevOrderCount,
+      totalRevenue: Number(prevRevenue.toFixed(2)),
+    },
     bestSellers,
   })
 }

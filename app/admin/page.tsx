@@ -5,13 +5,16 @@ import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { ShoppingBag, Euro, Clock, TrendingUp, ChevronRight, AlertCircle, Flame } from 'lucide-react'
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge'
+import OrderQuickActions from '@/components/admin/OrderQuickActions'
+import OrderRowCard from '@/components/admin/OrderRowCard'
+import { dutchDayBounds } from '@/lib/utils/dutch-time'
 
 function getUrgency(order: OrderRow): { level: 'critical' | 'high' | 'medium' | 'low'; label: string; color: string; bg: string } {
   const now = new Date()
   const created = new Date(order.created_at)
   const minutesSinceCreated = Math.floor((now.getTime() - created.getTime()) / 60000)
 
-  if (order.status === 'ready' || order.status === 'picked_up' || order.status === 'cancelled') {
+  if (order.status === 'ready' || order.status === 'completed' || order.status === 'cancelled') {
     return { level: 'low', label: '', color: '', bg: '' }
   }
 
@@ -92,15 +95,17 @@ const SHOP_SECTIONS = [
 
 const ACTIVE_STATUSES = ['pending', 'confirmed', 'preparing', 'ready']
 
+type ShopFilter = 'both' | 'original' | 'express'
+
+const SHOP_FILTERS: { value: ShopFilter; label: string }[] = [
+  { value: 'both', label: 'Both shops' },
+  { value: 'original', label: 'Panificio' },
+  { value: 'express', label: 'Xpress' },
+]
+
 export default function AdminDashboard() {
   const [todaysOrders, setTodaysOrders] = useState<OrderRow[]>([])
-  const [stats, setStats] = useState<Stats>({
-    todayOrders: 0,
-    todayRevenue: 0,
-    pendingCount: 0,
-    preparingCount: 0,
-    readyCount: 0,
-  })
+  const [shopFilter, setShopFilter] = useState<ShopFilter>('both')
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
@@ -125,15 +130,8 @@ export default function AdminDashboard() {
   }, [])
 
   async function fetchData() {
-    // Get today's date in Dutch timezone (handles CET/CEST automatically)
-    const dutchDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Amsterdam' }).format(new Date())
-    // Calculate Amsterdam's UTC offset dynamically
-    const ref = new Date(`${dutchDate}T12:00:00Z`)
-    const amsterdamHour = parseInt(new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Amsterdam', hour: 'numeric', hour12: false }).format(ref))
-    const offsetHours = amsterdamHour - 12 // 1 for CET, 2 for CEST
-    // Convert Amsterdam midnight/end-of-day to UTC
-    const startOfDay = new Date(new Date(`${dutchDate}T00:00:00Z`).getTime() - offsetHours * 3600000).toISOString()
-    const endOfDay = new Date(new Date(`${dutchDate}T23:59:59.999Z`).getTime() - offsetHours * 3600000).toISOString()
+    // Vandaag in Amsterdamse tijd (CET/CEST automatisch)
+    const { start: startOfDay, end: endOfDay } = dutchDayBounds()
 
     // Fetch today's orders (stats + live per-shop sections)
     const { data: todayOrders } = await supabase
@@ -143,21 +141,15 @@ export default function AdminDashboard() {
       .lte('created_at', endOfDay)
       .order('created_at', { ascending: false })
 
-    if (todayOrders) {
-      const paidStatuses = ['confirmed', 'preparing', 'ready', 'picked_up']
-      setStats({
-        todayOrders: todayOrders.filter((o) => o.status !== 'cancelled').length,
-        todayRevenue: todayOrders
-          .filter((o) => paidStatuses.includes(o.status))
-          .reduce((sum, o) => sum + Number(o.total), 0),
-        pendingCount: todayOrders.filter((o) => o.status === 'pending').length,
-        preparingCount: todayOrders.filter((o) => o.status === 'preparing').length,
-        readyCount: todayOrders.filter((o) => o.status === 'ready').length,
-      })
-      setTodaysOrders(todayOrders)
-    }
-
+    if (todayOrders) setTodaysOrders(todayOrders)
     setLoading(false)
+  }
+
+  // Directe UI-update na een snelactie (realtime haalt daarna vers op)
+  const handleStatusChange = (orderId: string, newStatus: string) => {
+    setTodaysOrders((prev) =>
+      prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
+    )
   }
 
   if (loading) {
@@ -168,11 +160,47 @@ export default function AdminDashboard() {
     )
   }
 
+  // Stats afgeleid van het gekozen filiaal (of beide)
+  const scopedOrders =
+    shopFilter === 'both'
+      ? todaysOrders
+      : todaysOrders.filter(SHOP_SECTIONS.find((s) => s.id === shopFilter)!.match)
+  const paidStatuses = ['confirmed', 'preparing', 'ready', 'completed']
+  const stats: Stats = {
+    todayOrders: scopedOrders.filter((o) => o.status !== 'cancelled').length,
+    todayRevenue: scopedOrders
+      .filter((o) => paidStatuses.includes(o.status))
+      .reduce((sum, o) => sum + Number(o.total), 0),
+    pendingCount: scopedOrders.filter((o) => o.status === 'pending').length,
+    preparingCount: scopedOrders.filter((o) => o.status === 'preparing').length,
+    readyCount: scopedOrders.filter((o) => o.status === 'ready').length,
+  }
+  const visibleSections = SHOP_SECTIONS.filter(
+    (s) => shopFilter === 'both' || s.id === shopFilter
+  )
+
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="font-oswald text-3xl uppercase tracking-wider text-espresso">Dashboard</h1>
-        <p className="text-gray-500 font-lato mt-1">Today&apos;s overview</p>
+    <div className="space-y-6 lg:space-y-8">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="font-oswald text-3xl uppercase tracking-wider text-espresso">Dashboard</h1>
+          <p className="text-gray-500 font-lato mt-1">Today&apos;s overview</p>
+        </div>
+
+        {/* Filiaal-switcher */}
+        <div className="flex gap-1 bg-white border border-gray-200 rounded-lg p-1">
+          {SHOP_FILTERS.map((f) => (
+            <button
+              key={f.value}
+              onClick={() => setShopFilter(f.value)}
+              className={`px-4 py-1.5 rounded-md font-oswald uppercase text-xs tracking-wider transition whitespace-nowrap ${
+                shopFilter === f.value ? 'bg-espresso text-white' : 'text-espresso/60 hover:text-espresso'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -245,7 +273,7 @@ export default function AdminDashboard() {
       )}
 
       {/* Live orders per filiaal */}
-      {SHOP_SECTIONS.map((shop) => {
+      {visibleSections.map((shop) => {
         const shopOrders = todaysOrders.filter(shop.match)
         const activeCount = shopOrders.filter((o) => ACTIVE_STATUSES.includes(o.status)).length
         return (
@@ -285,7 +313,25 @@ export default function AdminDashboard() {
                 No orders today
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <>
+              {/* Mobiel: kaarten */}
+              <div className="md:hidden divide-y divide-gray-100">
+                {shopOrders.slice(0, 10).map((order) => {
+                  const urgency = getUrgency(order)
+                  return (
+                    <OrderRowCard
+                      key={order.id}
+                      order={order}
+                      onStatusChange={handleStatusChange}
+                      urgencyLabel={urgency.label || undefined}
+                      urgencyClassName={`${urgency.color} ${urgency.bg}`}
+                    />
+                  )
+                })}
+              </div>
+
+              {/* Desktop: tabel */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gray-50">
                     <tr>
@@ -298,6 +344,7 @@ export default function AdminDashboard() {
                       <th className="text-left px-6 py-3 font-oswald uppercase text-xs text-gray-500 tracking-wider">Received</th>
                       <th className="text-left px-6 py-3 font-oswald uppercase text-xs text-gray-500 tracking-wider">Status</th>
                       <th className="text-left px-6 py-3 font-oswald uppercase text-xs text-gray-500 tracking-wider">Payment</th>
+                      <th className="text-left px-6 py-3 font-oswald uppercase text-xs text-gray-500 tracking-wider">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
@@ -336,6 +383,13 @@ export default function AdminDashboard() {
                             <OrderStatusBadge status={order.status} />
                           </td>
                           <td className="px-6 py-4 font-lato text-sm capitalize">{order.payment_method}</td>
+                          <td className="px-6 py-4">
+                            <OrderQuickActions
+                              orderId={order.id}
+                              status={order.status}
+                              onStatusChange={handleStatusChange}
+                            />
+                          </td>
                         </tr>
                       )
                     })}
@@ -347,6 +401,7 @@ export default function AdminDashboard() {
                   </p>
                 )}
               </div>
+              </>
             )}
           </div>
         )
