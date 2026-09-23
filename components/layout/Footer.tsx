@@ -6,6 +6,7 @@ import { Instagram, MapPin, Phone, Mail, Clock, ArrowRight } from 'lucide-react'
 import { useLanguage } from '@/lib/context/LanguageContext'
 import { useLocation } from '@/lib/context/LocationContext'
 import { LOCATIONS, RestaurantLocation } from '@/lib/data/locations'
+import { INSTAGRAM_URL, TRIPADVISOR_URL } from '@/lib/seo'
 
 function FooterLocation({
   loc,
@@ -186,7 +187,7 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-4">
             <a
-              href="https://www.instagram.com/wakenbake.nl/"
+              href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 bg-white/10 hover:bg-crust rounded-full transition-colors"
@@ -194,15 +195,17 @@ export default function Footer() {
             >
               <Instagram className="w-5 h-5" />
             </a>
-            <a
-              href="https://www.tripadvisor.com/wakenbakepanificio"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 bg-white/10 hover:bg-crust rounded-full transition-colors"
-              aria-label="TripAdvisor"
-            >
-              <span className="text-sm font-bold">TA</span>
-            </a>
+            {TRIPADVISOR_URL && (
+              <a
+                href={TRIPADVISOR_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-white/10 hover:bg-crust rounded-full transition-colors"
+                aria-label="TripAdvisor"
+              >
+                <span className="text-sm font-bold">TA</span>
+              </a>
+            )}
           </div>
         </div>
 

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Montserrat, Lato, Playfair_Display, Oswald } from 'next/font/google'
 import { LOCATIONS, toOpeningHoursSchema } from '@/lib/data/locations'
+import { SITE_URL, SITE_NAME, SOCIAL_PROFILES } from '@/lib/seo'
 import './globals.css'
 
 const montserrat = Montserrat({
@@ -32,7 +33,11 @@ const oswald = Oswald({
 })
 
 export const metadata: Metadata = {
-  title: "Wake N' Bake Panificio | Authentieke Italiaanse Bakkerij in Amsterdam",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Wake N' Bake Panificio | Authentieke Italiaanse Bakkerij in Amsterdam",
+    template: `%s | ${SITE_NAME}`,
+  },
   description:
     "Geniet van vers gebakken focaccia, schiacciata en Italiaanse specialiteiten. Twee locaties in hartje Amsterdam: Vijzelstraat 93h en Wake N' Bake Xpress aan de Heisteeg (bij het Spui).",
   keywords:
@@ -40,8 +45,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Wake N' Bake Panificio | Vers Italiaans Brood",
     description: 'Authentieke Italiaanse bakkerij in Amsterdam',
-    url: 'https://www.wakenbakepanificio.nl',
-    siteName: "Wake N' Bake Panificio",
+    url: '/',
+    siteName: SITE_NAME,
     locale: 'nl_NL',
     type: 'website',
   },
@@ -50,6 +55,7 @@ export const metadata: Metadata = {
     title: "Wake N' Bake Panificio",
     description: 'Authentieke Italiaanse bakkerij in Amsterdam',
   },
+  alternates: { canonical: '/' },
   robots: {
     index: true,
     follow: true,
@@ -98,12 +104,11 @@ export default function RootLayout({
                       ? 'https://www.wakenbakepanificio.nl/?loc=express'
                       : 'https://www.wakenbakepanificio.nl',
                   servesCuisine: 'Italian',
+                  hasMenu: `${SITE_URL}/menu`,
+                  acceptsReservations: false,
                   priceRange: '€€',
                   openingHoursSpecification: toOpeningHoursSchema(loc),
-                  sameAs: [
-                    'https://www.instagram.com/wakenbake.nl/',
-                    'https://www.tripadvisor.com/wakenbakepanificio',
-                  ],
+                  sameAs: SOCIAL_PROFILES,
                 }
               })
             ),
