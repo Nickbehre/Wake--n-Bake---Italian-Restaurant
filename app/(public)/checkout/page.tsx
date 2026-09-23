@@ -143,7 +143,7 @@ export default function CheckoutPage() {
           </div>
         ) : (
           <Elements options={options} stripe={stripePromise}>
-            <CheckoutForm orderId={orderId} />
+            <CheckoutForm orderId={orderId} clientSecret={clientSecret} />
           </Elements>
         )}
       </div>

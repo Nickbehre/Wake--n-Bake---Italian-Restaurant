@@ -16,6 +16,14 @@ export async function GET(request: NextRequest) {
     .order('created_at', { ascending: false })
     .limit(50)
 
+  // Vermoedelijke spam wordt wel bewaard, maar niet in de lijst getoond.
+  // Opvragen kan met ?status=spam.
+  if (searchParams.get('status') === 'spam') {
+    query = query.eq('status', 'spam')
+  } else {
+    query = query.neq('status', 'spam')
+  }
+
   if (subject) {
     query = query.eq('subject', subject)
   }

@@ -31,7 +31,7 @@ const checkoutSchema = z.object({
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
-export default function CheckoutForm({ orderId }: { orderId?: string }) {
+export default function CheckoutForm({ orderId, clientSecret }: { orderId?: string; clientSecret?: string }) {
     const stripe = useStripe();
     const elements = useElements();
     const { t } = useLanguage();
@@ -126,22 +126,30 @@ export default function CheckoutForm({ orderId }: { orderId?: string }) {
         localStorage.setItem('wnb-last-order', JSON.stringify(orderSnapshot));
 
         try {
-            // Update order in DB with customer details and pickup time
-            if (orderId) {
+            // Contactgegevens + ophaaltijd bij de order opslaan vóór de redirect.
+            // (Eerder ging dit naar /api/update-order, dat admin-only is en dus
+            // altijd een 401 gaf — orders kwamen zonder naam/telefoon binnen.)
+            if (orderId && clientSecret) {
                 const pickupTimeStr = typeof pickupTime === 'string'
                     ? pickupTime
                     : pickupTime instanceof Date
                         ? pickupTime.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
                         : '';
-                await fetch('/api/update-order', {
-                    method: 'PATCH',
+                const detailsRes = await fetch('/api/checkout-details', {
+                    method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         orderId,
+                        clientSecret,
                         customer: { name: data.name, email: data.email, phone: fullPhone },
                         pickupTime: pickupTimeStr,
                     }),
                 });
+                if (!detailsRes.ok) {
+                    // Niet blokkerend: de webhook haalt de gegevens alsnog uit de
+                    // PaymentIntent-metadata. Wel loggen zodat het opvalt.
+                    console.error('Kon contactgegevens niet opslaan:', await detailsRes.text());
+                }
             }
 
             const { error: submitError } = await elements.submit();

@@ -274,6 +274,12 @@ const translations: Record<Language, Record<string, string>> = {
     'success.emailSent': 'We hebben een bevestiging gestuurd naar',
     'success.showAtStore': 'Laat deze zien in de winkel bij het afhalen.',
     'success.backHome': 'Terug naar Home',
+    'success.verifying': 'Betaling controleren...',
+    'success.notPaidTitle': 'Betaling niet afgerond',
+    'success.notPaidSubtitle': 'We hebben (nog) geen betaling ontvangen',
+    'success.notPaidBody': 'Je bestelling is niet doorgegeven aan de winkel. Er is niets afgeschreven. Probeer het opnieuw, of bestel gewoon aan de balie.',
+    'success.retryPayment': 'Opnieuw betalen',
+    'success.payAtPickupNote': 'Je betaalt bij het ophalen in de winkel.',
 
     // Checkout Options Page
     'checkoutOptions.title': 'Kies Bezorgmethode',
@@ -684,6 +690,12 @@ const translations: Record<Language, Record<string, string>> = {
     'success.emailSent': 'We have sent a confirmation to',
     'success.showAtStore': 'Show this at the store when picking up.',
     'success.backHome': 'Back to Home',
+    'success.verifying': 'Checking your payment...',
+    'success.notPaidTitle': 'Payment not completed',
+    'success.notPaidSubtitle': 'We have not received a payment (yet)',
+    'success.notPaidBody': 'Your order was not sent to the store and you have not been charged. Please try again, or simply order at the counter.',
+    'success.retryPayment': 'Try payment again',
+    'success.payAtPickupNote': 'You will pay when you collect your order in the store.',
 
     // Checkout Options Page
     'checkoutOptions.title': 'Choose Delivery Method',

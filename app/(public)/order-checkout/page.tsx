@@ -103,7 +103,11 @@ export default function OrderCheckoutPage() {
 
       // Clear cart and redirect to success page
       clearCart();
-      router.push('/order-success');
+      // Betalen bij ophalen: geef het ordernummer mee, zodat de success-pagina
+      // de bestelling bij de server kan verifiëren (er is hier geen Stripe-
+      // betaling om te controleren).
+      const placedId = result.order?.id;
+      router.push(placedId ? `/order-success?order=${encodeURIComponent(placedId)}` : '/order-success');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {

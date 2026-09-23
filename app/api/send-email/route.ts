@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { customerConfirmationEmail, storeNotificationEmail, type OrderEmailData } from "@/lib/email/templates";
+import { verifyAdmin } from "@/lib/auth/admin";
 
 // Initialize Resend lazily to avoid build-time errors
 function getResend() {
@@ -20,7 +21,18 @@ const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'info@order.wakenbake.nl';
 const FROM_NAME = "Wake N' Bake Panificio";
 const STORE_EMAIL = process.env.ORDER_NOTIFICATION_EMAIL || 'info@wakenbake.nl';
 
+/**
+ * POST /api/send-email — alleen voor beheerders (handmatig een bevestiging
+ * opnieuw versturen).
+ *
+ * Dit endpoint was publiek en werd door de success-pagina aangeroepen. Daarmee
+ * kon iedereen de winkel een "NIEUWE BESTELLING"-mail sturen zonder te betalen.
+ * Ordermails lopen nu via /lib/server/fulfil-order, na bevestiging door Stripe.
+ */
 export async function POST(request: Request) {
+    const auth = await verifyAdmin();
+    if (auth.error) return auth.error;
+
     try {
         const { email, orderDetails, pickupTimeFormatted } = await request.json();
 

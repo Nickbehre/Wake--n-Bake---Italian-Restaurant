@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -19,6 +19,9 @@ type FormData = {
 export default function ContactForm() {
   const { t } = useLanguage()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  // Anti-spam: tijdstip waarop het formulier geopend is (bots versturen direct)
+  const startedAt = useRef(Date.now())
+  const honeypot = useRef<HTMLInputElement>(null)
 
   const formSchema = z.object({
     name: z.string().min(2, t('form.nameError')),
@@ -44,7 +47,11 @@ export default function ContactForm() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          website: honeypot.current?.value ?? '',
+          startedAt: startedAt.current,
+        }),
       })
 
       if (!res.ok) throw new Error('Failed')
@@ -60,6 +67,16 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" data-contact-form>
+      {/* Honeypot: onzichtbaar voor mensen, bots vullen het wel in */}
+      <input
+        ref={honeypot}
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute left-[-9999px] w-px h-px opacity-0"
+      />
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <label

@@ -121,6 +121,8 @@ export interface Order {
  * Order status enum
  */
 export type OrderStatus =
+  /** Online checkout gestart, nog niet betaald — onzichtbaar voor het personeel. */
+  | 'awaiting_payment'
   | 'pending'
   | 'confirmed'
   | 'preparing'

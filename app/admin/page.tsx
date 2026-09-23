@@ -62,6 +62,7 @@ interface OrderRow {
   status: string
   pickup_time: string
   payment_method: string
+  stripe_payment_status: string | null
   created_at: string
   items: any[]
   location: string | null
@@ -167,11 +168,19 @@ export default function AdminDashboard() {
     shopFilter === 'both'
       ? todaysOrders
       : todaysOrders.filter(SHOP_SECTIONS.find((s) => s.id === shopFilter)!.match)
-  const paidStatuses = ['confirmed', 'preparing', 'ready', 'completed']
+  // Omzet volgt de bétaling, niet de keukenstatus. Een online betaalde order
+  // telt dus direct mee, ook als het personeel hem nog niet heeft bevestigd.
+  // (Voorheen gold alleen 'confirmed' en later, waardoor betaalde orders op
+  // 'pending' als EUR 0,00 in beeld kwamen.)
+  const isPaid = (o: OrderRow) =>
+    o.status !== 'cancelled' &&
+    (o.stripe_payment_status === 'succeeded' ||
+      // Betalen bij ophalen: pas geld in de kassa zodra de order is opgehaald.
+      (o.payment_method !== 'stripe' && o.status === 'completed'))
   const stats: Stats = {
     todayOrders: scopedOrders.filter((o) => o.status !== 'cancelled').length,
     todayRevenue: scopedOrders
-      .filter((o) => paidStatuses.includes(o.status))
+      .filter(isPaid)
       .reduce((sum, o) => sum + Number(o.total), 0),
     pendingCount: scopedOrders.filter((o) => o.status === 'pending').length,
     preparingCount: scopedOrders.filter((o) => o.status === 'preparing').length,
@@ -384,7 +393,17 @@ export default function AdminDashboard() {
                           <td className="px-6 py-4">
                             <OrderStatusBadge status={order.status} />
                           </td>
-                          <td className="px-6 py-4 font-lato text-sm capitalize">{order.payment_method}</td>
+                          <td className="px-6 py-4 font-lato text-sm">
+                            <div className="capitalize">{order.payment_method}</div>
+                            {/* Betaald of niet expliciet tonen: een "betaal bij
+                                ophalen"-order zag er hiervoor precies zo uit als
+                                een online betaalde order. */}
+                            {order.stripe_payment_status === 'succeeded' ? (
+                              <span className="text-xs font-bold text-green-600">Betaald</span>
+                            ) : (
+                              <span className="text-xs font-bold text-red-600">Niet betaald</span>
+                            )}
+                          </td>
                           <td className="px-6 py-4">
                             <OrderQuickActions
                               orderId={order.id}
