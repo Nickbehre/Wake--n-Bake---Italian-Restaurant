@@ -32,7 +32,6 @@ export default function GoogleAnalytics() {
     // verloren — die staan gebufferd en worden hier direct geflusht.
     window.dataLayer = window.dataLayer || []
     window.gtag = function gtag() {
-       
       window.dataLayer!.push(arguments)
     }
     window.gtag('js', new Date())
