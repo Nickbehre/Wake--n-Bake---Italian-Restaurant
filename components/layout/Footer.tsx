@@ -165,6 +165,12 @@ export default function Footer() {
                 {t('nav.contact')}
               </Link>
               <Link
+                href="/contact#catering"
+                className="block text-white/80 hover:text-crust transition-colors"
+              >
+                Catering
+              </Link>
+              <Link
                 href="/privacy"
                 className="block text-white/80 hover:text-crust transition-colors"
               >

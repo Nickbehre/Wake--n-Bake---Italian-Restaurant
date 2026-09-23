@@ -218,7 +218,7 @@ export default function ContactPage() {
       </section>
 
       {/* Catering */}
-      <section className="py-20 bg-crust rounded-[3rem] mx-4 md:mx-8 lg:mx-16 shadow-2xl">
+      <section id="catering" className="scroll-mt-28 py-20 bg-crust rounded-[3rem] mx-4 md:mx-8 lg:mx-16 shadow-2xl">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
@@ -271,6 +271,7 @@ export default function ContactPage() {
                   data-cursor="link"
                   onClick={(e) => {
                     e.preventDefault()
+                    window.dispatchEvent(new CustomEvent('contact:subject', { detail: 'catering' }))
                     const form = document.querySelector('[data-contact-form]')
                     if (form) form.scrollIntoView({ behavior: 'smooth' })
                   }}

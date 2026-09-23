@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -36,9 +36,22 @@ export default function ContactForm() {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   })
+
+  // Onderwerp vooraf invullen: via /contact#catering (footer-link) of het
+  // 'contact:subject'-event van de catering-knop op dezelfde pagina.
+  useEffect(() => {
+    if (window.location.hash === '#catering') setValue('subject', 'catering')
+    const onPreset = (e: Event) => {
+      const subject = (e as CustomEvent<string>).detail
+      if (subject) setValue('subject', subject, { shouldValidate: true })
+    }
+    window.addEventListener('contact:subject', onPreset)
+    return () => window.removeEventListener('contact:subject', onPreset)
+  }, [setValue])
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
