@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, ClipboardList, Settings, LogOut, ChefHat, UtensilsCrossed, BookOpen, TrendingUp, Menu as MenuIcon, X } from 'lucide-react'
@@ -135,7 +136,7 @@ export default function AdminSidebar() {
       {/* Mobiel: topbar met hamburger */}
       <header className="lg:hidden sticky top-0 z-40 flex items-center justify-between bg-espresso text-white px-4 py-3">
         <Link href="/admin" className="flex items-center gap-2.5">
-          <img src="/assets/logo.png" alt="Wake N' Bake" className="w-8 h-8 object-contain" />
+          <Image src="/assets/logo.png" alt="Wake N' Bake" width={32} height={32} className="w-8 h-8 object-contain" />
           <span className="font-oswald text-base uppercase tracking-wider">Wake N&apos; Bake Admin</span>
         </Link>
         <button
@@ -159,7 +160,7 @@ export default function AdminSidebar() {
           <div className="absolute inset-y-0 left-0 w-72 max-w-[85vw] bg-espresso text-white flex flex-col shadow-2xl">
             <div className="p-5 border-b border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <img src="/assets/logo.png" alt="Wake N' Bake" className="w-9 h-9 object-contain" />
+                <Image src="/assets/logo.png" alt="Wake N' Bake" width={36} height={36} className="w-9 h-9 object-contain" />
                 <div>
                   <h1 className="font-oswald text-base uppercase tracking-wider">Wake N&apos; Bake</h1>
                   <p className="text-xs text-white/50 font-lato">Admin Panel</p>

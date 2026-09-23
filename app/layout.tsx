@@ -16,10 +16,13 @@ const lato = Lato({
   display: 'swap',
 })
 
+// Weinig gebruikt (alleen enkele accenten): niet preloaden, zodat deze font
+// het kritieke pad van elke pagina niet vertraagt.
 const playfair = Playfair_Display({
   subsets: ['latin'],
   variable: '--font-playfair',
   display: 'swap',
+  preload: false,
 })
 
 const oswald = Oswald({

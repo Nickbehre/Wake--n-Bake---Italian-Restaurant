@@ -1,7 +1,7 @@
 'use client'
 
-import { useRef, useState, useCallback } from 'react'
-import { motion, AnimatePresence, useInView } from 'framer-motion'
+import { useRef, useState, useCallback, useEffect } from 'react'
+import { motion, AnimatePresence, useInView, useReducedMotion } from 'framer-motion'
 import { useLanguage } from '@/lib/context/LanguageContext'
 import { Play, X, Instagram, Volume2, VolumeX } from 'lucide-react'
 import SplitTextReveal from '@/components/animation/SplitTextReveal'
@@ -11,6 +11,7 @@ const instagramReels = [
   {
     id: 1,
     video: '/assets/videos/story-1.mp4',
+    poster: '/assets/videos/story-1-poster.jpg',
     captionKey: 'story.video1.caption',
     descriptionKey: 'story.video1.description',
     rotation: -3,
@@ -18,6 +19,7 @@ const instagramReels = [
   {
     id: 2,
     video: '/assets/videos/story-2.mp4',
+    poster: '/assets/videos/story-2-poster.jpg',
     captionKey: 'story.video2.caption',
     descriptionKey: 'story.video2.description',
     rotation: 2,
@@ -25,6 +27,7 @@ const instagramReels = [
   {
     id: 3,
     video: '/assets/videos/story-3.mp4',
+    poster: '/assets/videos/story-3-poster.jpg',
     captionKey: 'story.video3.caption',
     descriptionKey: 'story.video3.description',
     rotation: -2,
@@ -42,6 +45,19 @@ function ReelCard({ reel, index, onOpen }: ReelCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const isInView = useInView(cardRef, { once: true, margin: '-100px' })
+  // Video pas laden/afspelen als de kaart in beeld is, en pauzeren daarbuiten
+  const isVisible = useInView(cardRef, { margin: '200px' })
+  const reduceMotion = useReducedMotion()
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    if (isVisible && !reduceMotion) {
+      video.play().catch(() => {})
+    } else {
+      video.pause()
+    }
+  }, [isVisible, reduceMotion])
 
   return (
     <motion.div
@@ -76,11 +92,12 @@ function ReelCard({ reel, index, onOpen }: ReelCardProps) {
           <video
             ref={videoRef}
             src={reel.video}
+            poster={reel.poster}
             muted
             loop
             playsInline
-            autoPlay
-            preload="auto"
+            preload="none"
+            aria-label={t(reel.captionKey)}
             className="absolute inset-0 w-full h-full object-cover bg-[#2C2C2C]"
             style={{ backgroundColor: '#2C2C2C' }}
           />
@@ -203,6 +220,7 @@ function Lightbox({ reel, onClose }: LightboxProps) {
             <video
               ref={videoRef}
               src={reel.video}
+              poster={reel.poster}
               muted={isMuted}
               loop
               playsInline

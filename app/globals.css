@@ -195,3 +195,17 @@ html[data-location='express'] {
     display: none;
   }
 }
+
+/* Vangnet voor bezoekers met "beweging verminderen": CSS-animaties en
+   -transities vrijwel uitschakelen. JS-animaties (GSAP/Framer/Lenis) checken
+   dit zelf al via prefersReducedMotion() en MotionConfig. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
