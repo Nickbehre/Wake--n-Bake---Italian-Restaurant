@@ -1,15 +1,12 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createClient } from "@/lib/supabase/server";
+import { verifyAdmin } from "@/lib/auth/admin";
 
 export async function PATCH(request: Request) {
     try {
-        // Verify authentication - only admins can update orders
-        const authClient = await createClient();
-        const { data: { user } } = await authClient.auth.getUser();
-        if (!user) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
+        // Only admins can update orders (any logged-in user is not enough)
+        const auth = await verifyAdmin();
+        if (auth.error) return auth.error;
 
         const { orderId, customer, pickupTime } = await request.json();
 

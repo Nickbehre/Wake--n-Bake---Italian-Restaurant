@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { limitByIp } from '@/lib/server/rate-limit'
 
 // Minimale tijd tussen het openen van het formulier en versturen. Een mens
 // doet er altijd langer over; bots posten binnen een seconde.
@@ -28,6 +29,10 @@ function looksLikeSpam(name: string, message: string): boolean {
 }
 
 export async function POST(request: NextRequest) {
+  // Max 5 berichten per IP per 10 minuten
+  const limited = limitByIp(request, 'contact', 5, 10 * 60 * 1000)
+  if (limited) return limited
+
   const { name, email, phone, subject, message, website, startedAt } = await request.json()
 
   if (!name || !email || !subject || !message) {

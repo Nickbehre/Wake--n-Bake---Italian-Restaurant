@@ -60,3 +60,8 @@ Thumbs.db
 
 .vercel
 .env*
+
+# Private business documents (invoices, offertes) — niet in de repo
+invoice-*.html
+pricing-*.html
+/private/

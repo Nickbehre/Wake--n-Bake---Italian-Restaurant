@@ -5,6 +5,7 @@ import { fetchProductsByIds, type DbProduct } from "@/lib/data/menu-db";
 import { isStoreAcceptingOrders } from "@/lib/server/store-status";
 import type { LocationId } from "@/lib/data/locations";
 import { isValidLocationId } from "@/lib/data/locations";
+import { limitByIp } from "@/lib/server/rate-limit";
 
 // Initialize Stripe lazily to avoid build-time errors
 function getStripe() {
@@ -39,6 +40,10 @@ interface CustomerInfo {
 }
 
 export async function POST(request: Request) {
+    // Remt card-testing bots af: max 20 betaalpogingen per IP per 10 minuten
+    const limited = limitByIp(request, "payment-intent", 20, 10 * 60 * 1000);
+    if (limited) return limited;
+
     try {
         const { items, customer, pickupTime, location } = await request.json() as {
             items: CartItem[];

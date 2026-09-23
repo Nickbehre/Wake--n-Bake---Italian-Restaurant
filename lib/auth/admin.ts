@@ -1,12 +1,22 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
-// Allowed admin emails - only these users can access admin API routes
-const ADMIN_EMAILS = [
+// Allowed admin emails - only these users can access admin API routes.
+// Configure via ADMIN_EMAILS (comma-separated) so staff can be added or
+// removed without a code change; falls back to the original list.
+const DEFAULT_ADMIN_EMAILS = [
   'info@wakenbake.nl',
   'ruben@wakenbake.nl',
   'nickbehre@gmail.com',
 ]
+
+export function getAdminEmails(): string[] {
+  const fromEnv = (process.env.ADMIN_EMAILS ?? '')
+    .split(',')
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean)
+  return fromEnv.length > 0 ? fromEnv : DEFAULT_ADMIN_EMAILS
+}
 
 /**
  * Verify the current user is an authenticated admin.
@@ -23,7 +33,7 @@ export async function verifyAdmin(): Promise<
     return { error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) }
   }
 
-  if (!ADMIN_EMAILS.includes(user.email)) {
+  if (!getAdminEmails().includes(user.email.toLowerCase())) {
     return { error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }) }
   }
 

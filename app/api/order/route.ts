@@ -4,6 +4,7 @@ import { sendOrderEmails } from '@/lib/email/send';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { fetchProductsByIds } from '@/lib/data/menu-db';
 import { isStoreAcceptingOrders } from '@/lib/server/store-status';
+import { limitByIp } from '@/lib/server/rate-limit';
 
 interface OrderRequestBody {
   items: OrderCartItem[];
@@ -58,6 +59,11 @@ function validateOrderRequest(body: OrderRequestBody): string | null {
  * Create a new order
  */
 export async function POST(request: NextRequest) {
+  // Onbetaalde (contant) bestellingen sturen mails naar een opgegeven adres:
+  // max 5 per IP per 10 minuten tegen misbruik.
+  const limited = limitByIp(request, 'order', 5, 10 * 60 * 1000);
+  if (limited) return limited;
+
   try {
     const body: OrderRequestBody = await request.json();
 
