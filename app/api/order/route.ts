@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { fetchProductsByIds } from '@/lib/data/menu-db';
 import { isStoreAcceptingOrders } from '@/lib/server/store-status';
 import { limitByIp } from '@/lib/server/rate-limit';
+import { priceCart } from '@/lib/server/pricing';
 
 interface OrderRequestBody {
   items: OrderCartItem[];
@@ -86,52 +87,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify prices server-side tegen de menuproducten in Supabase
-    const productIds = [...new Set(body.items.map((item) => (item as any).productId || item.id))];
-    const products = await fetchProductsByIds(productIds as string[]);
-    const productById = new Map(products.map((p) => [p.id, p]));
-
-    let verifiedTotal = 0;
-    const verifiedItems: OrderCartItem[] = [];
-    for (const item of body.items) {
-      const productId = (item as any).productId || item.id;
-      const size = (item as any).size;
-      const product = productById.get(productId);
-
-      if (!product || product.hidden || product.sold_out) {
-        return NextResponse.json(
-          { success: false, error: `"${item.name}" is currently unavailable. Please remove it from your cart.` },
-          { status: 400 }
-        );
-      }
-
-      let priceVal: number;
-      if (product.has_sizes && size === 'large' && product.price_large != null) {
-        priceVal = Number(product.price_large);
-      } else if (product.has_sizes && size === 'regular' && product.price_regular != null) {
-        priceVal = Number(product.price_regular);
-      } else {
-        priceVal = Number(product.price);
-      }
-
-      // Extras (indien meegestuurd) valideren tegen het product
-      const sentExtras = (item as any).extras as { id: string; name: string; price: number }[] | undefined;
-      if (sentExtras?.length) {
-        const allowed = new Map((product.extras ?? []).map((e) => [e.id, e]));
-        for (const extra of sentExtras) {
-          const match = allowed.get(extra.id);
-          if (!match) {
-            return NextResponse.json(
-              { success: false, error: `Extra "${extra.name}" is not available for "${item.name}".` },
-              { status: 400 }
-            );
-          }
-          priceVal += Number(match.price);
-        }
-      }
-
-      verifiedTotal += priceVal * item.quantity;
-      verifiedItems.push({ ...item, price: priceVal });
+    const productIds = [...new Set(body.items.map((item) => item.productId || item.id))];
+    const products = await fetchProductsByIds(productIds);
+    const priced = priceCart(body.items, new Map(products.map((p) => [p.id, p])));
+    if (!priced.ok) {
+      return NextResponse.json(
+        { success: false, error: priced.error, unavailableItemId: priced.itemId, reason: priced.reason },
+        { status: 400 }
+      );
     }
+    const verifiedItems = priced.items;
+    const verifiedTotal = priced.subtotal;
 
     // Create order object with verified prices
     const order: Order = {

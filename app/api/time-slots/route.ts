@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { getTimezoneOffset, formatInTimeZone } from 'date-fns-tz'
+import { getTimezoneOffset } from 'date-fns-tz'
+import { buildPickupSlots, toMinutes } from '@/lib/utils/pickup-slots'
+import { dutchDayBounds } from '@/lib/utils/dutch-time'
 
-const SLOT_INTERVAL_MINUTES = 15
-const PREP_BUFFER_MINUTES = 15
 const TIMEZONE = 'Europe/Amsterdam'
 
 const DAY_MAP: Record<number, string> = {
@@ -14,11 +14,6 @@ const DAY_MAP: Record<number, string> = {
   4: 'thursday',
   5: 'friday',
   6: 'saturday',
-}
-
-/** Convert hours + minutes to total minutes for easy comparison */
-function toMinutes(h: number, m: number): number {
-  return h * 60 + m
 }
 
 export async function GET() {
@@ -79,12 +74,14 @@ export async function GET() {
   }
 
   // Fetch today's orders to check capacity
-  const todayStr = formatInTimeZone(now, TIMEZONE, 'yyyy-MM-dd')
+  // Amsterdamse dag (niet UTC), anders tellen bestellingen rond middernacht
+  // bij de verkeerde dag
+  const today = dutchDayBounds()
   const { data: todayOrders } = await supabase
     .from('orders')
     .select('pickup_time, items')
-    .gte('created_at', `${todayStr}T00:00:00.000Z`)
-    .lte('created_at', `${todayStr}T23:59:59.999Z`)
+    .gte('created_at', today.start)
+    .lte('created_at', today.end)
     .not('status', 'eq', 'cancelled')
 
   // Count items per time slot and total for the day
@@ -110,30 +107,13 @@ export async function GET() {
     })
   }
 
-  // Generate slots using pure minutes arithmetic (no fake Date objects)
-  const nowMinutes = toMinutes(amsterdamHour, amsterdamMinute)
-  const minimumPickupMinutes = nowMinutes + PREP_BUFFER_MINUTES
-  const openMinutes = toMinutes(openHour, openMinute)
-  const closeMinutes = toMinutes(closeHour, closeMinute)
-
-  const slots: Array<{ time: string; date: string; available: boolean; remaining: number }> = []
-
-  for (let slotMin = openMinutes; slotMin < closeMinutes; slotMin += SLOT_INTERVAL_MINUTES) {
-    if (slotMin > minimumPickupMinutes) {
-      const h = Math.floor(slotMin / 60)
-      const m = slotMin % 60
-      const label = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`
-      const used = slotCounts[label] || 0
-      const remaining = Math.max(0, maxPerSlot - used)
-
-      slots.push({
-        time: label,
-        date: label,
-        available: remaining > 0,
-        remaining,
-      })
-    }
-  }
+  const slots = buildPickupSlots({
+    nowMinutes: toMinutes(amsterdamHour, amsterdamMinute),
+    openMinutes: toMinutes(openHour, openMinute),
+    closeMinutes: toMinutes(closeHour, closeMinute),
+    maxPerSlot,
+    slotCounts,
+  })
 
   return NextResponse.json({ slots, paused: false })
 }

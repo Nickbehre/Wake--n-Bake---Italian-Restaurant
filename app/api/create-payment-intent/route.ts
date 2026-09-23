@@ -6,6 +6,7 @@ import { isStoreAcceptingOrders } from "@/lib/server/store-status";
 import type { LocationId } from "@/lib/data/locations";
 import { isValidLocationId } from "@/lib/data/locations";
 import { limitByIp } from "@/lib/server/rate-limit";
+import { priceCart } from "@/lib/server/pricing";
 
 // Initialize Stripe lazily to avoid build-time errors
 function getStripe() {
@@ -71,67 +72,19 @@ export async function POST(request: Request) {
         const products = await fetchProductsByIds(productIds);
         const productById = new Map<string, DbProduct>(products.map((p) => [p.id, p]));
 
-        let subtotal = 0;
-        const verifiedItems: CartItem[] = [];
-
-        for (const item of items) {
-            const productId = item.productId || item.id;
-            const product = productById.get(productId);
-
-            // Onbekend/verborgen/uitverkocht: bestelling weigeren i.p.v. item
-            // stilletjes laten vallen — de checkout toont welk item het is.
-            if (!product || product.hidden || product.sold_out) {
-                const reason = !product
-                    ? 'not_available'
-                    : product.sold_out
-                        ? 'sold_out'
-                        : 'not_available';
-                return NextResponse.json({
-                    error: `"${item.name}" is momenteel niet beschikbaar. Verwijder het uit je winkelmand. / "${item.name}" is currently unavailable. Please remove it from your cart.`,
-                    unavailableItemId: item.id,
-                    reason,
-                }, { status: 400 });
+        const priced = priceCart(items, productById);
+        if (!priced.ok) {
+            if (priced.reason === 'invalid_price') {
+                console.error("Invalid price for item", priced.itemId);
             }
-
-            let priceVal: number;
-            if (product.has_sizes && item.size === 'large' && product.price_large != null) {
-                priceVal = Number(product.price_large);
-            } else if (product.has_sizes && item.size === 'regular' && product.price_regular != null) {
-                priceVal = Number(product.price_regular);
-            } else {
-                priceVal = Number(product.price);
-            }
-
-            // Extras valideren tegen de extras van het product zelf
-            const verifiedExtras: CartItemExtra[] = [];
-            if (item.extras && item.extras.length > 0) {
-                const allowed = new Map((product.extras ?? []).map((e) => [e.id, e]));
-                for (const extra of item.extras) {
-                    const match = allowed.get(extra.id);
-                    if (!match) {
-                        return NextResponse.json({
-                            error: `Extra "${extra.name}" is niet beschikbaar voor "${item.name}". / Extra "${extra.name}" is not available for "${item.name}".`,
-                            unavailableItemId: item.id,
-                            reason: 'invalid_extra',
-                        }, { status: 400 });
-                    }
-                    verifiedExtras.push({ id: match.id, name: match.name, price: Number(match.price) });
-                    priceVal += Number(match.price);
-                }
-            }
-
-            if (isNaN(priceVal) || priceVal <= 0) {
-                console.error("Invalid price for item", productId);
-                return NextResponse.json({ error: "Invalid item price" }, { status: 400 });
-            }
-
-            subtotal += priceVal * item.quantity;
-            verifiedItems.push({
-                ...item,
-                price: priceVal,
-                extras: verifiedExtras.length > 0 ? verifiedExtras : undefined,
-            });
+            return NextResponse.json({
+                error: priced.error,
+                unavailableItemId: priced.itemId,
+                reason: priced.reason,
+            }, { status: 400 });
         }
+        const verifiedItems = priced.items;
+        const subtotal = priced.subtotal;
 
         // Prices already include BTW, so total = subtotal
         const total = subtotal;
