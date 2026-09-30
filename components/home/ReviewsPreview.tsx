@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { Star, Quote } from 'lucide-react'
 import Link from 'next/link'
+import { TRIPADVISOR_URL } from '@/lib/seo'
 
 const reviews = [
   {
@@ -83,14 +84,16 @@ export default function ReviewsPreview() {
           viewport={{ once: true }}
           className="text-center"
         >
-          <a
-            href="https://www.tripadvisor.com/wakenbakepanificio"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block text-espresso hover:text-crust font-montserrat font-semibold underline underline-offset-4 transition-colors"
-          >
-            Bekijk alle reviews op TripAdvisor
-          </a>
+          {TRIPADVISOR_URL && (
+            <a
+              href={TRIPADVISOR_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block text-espresso hover:text-crust font-montserrat font-semibold underline underline-offset-4 transition-colors"
+            >
+              Bekijk alle reviews op TripAdvisor
+            </a>
+          )}
         </motion.div>
       </div>
     </section>

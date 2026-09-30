@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 
-export const SITE_URL = 'https://www.wakenbakepanificio.nl'
+// Het echte domein van de site. Overschrijfbaar via NEXT_PUBLIC_SITE_URL
+// (zonder slash aan het eind), bv. voor een preview-omgeving.
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.wakenbake.nl').replace(/\/$/, '')
 export const SITE_NAME = "Wake N' Bake Panificio"
 
 export const INSTAGRAM_URL = 'https://www.instagram.com/wakenbake.nl/'

@@ -80,7 +80,7 @@ export default function RootLayout({
                 return {
                   '@context': 'https://schema.org',
                   '@type': 'Bakery',
-                  '@id': `https://www.wakenbakepanificio.nl/#${id}`,
+                  '@id': `${SITE_URL}/#${id}`,
                   name: loc.name,
                   description:
                     id === 'express'
@@ -101,8 +101,8 @@ export default function RootLayout({
                   telephone: loc.phone,
                   url:
                     id === 'express'
-                      ? 'https://www.wakenbakepanificio.nl/?loc=express'
-                      : 'https://www.wakenbakepanificio.nl',
+                      ? `${SITE_URL}/?loc=express`
+                      : SITE_URL,
                   servesCuisine: 'Italian',
                   hasMenu: `${SITE_URL}/menu`,
                   acceptsReservations: false,
